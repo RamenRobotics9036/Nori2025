@@ -1,20 +1,20 @@
 package frc.robot.util;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OperatorConstants;
 
 /**
  * AppliedController.
  */
-public class AppliedController extends XboxController {
+public class CommandAppliedController extends CommandXboxController {
 
     private double m_controllerExponent; //expo factor for the analog axises
 
     /**
      * Constructor.
      */
-    public AppliedController(int port) {
+    public CommandAppliedController(int port) {
         super(port);
         this.m_controllerExponent = Math.pow(OperatorConstants.kExpo, OperatorConstants.kExpoRatio);
     }

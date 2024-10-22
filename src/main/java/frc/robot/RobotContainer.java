@@ -9,7 +9,7 @@ import frc.robot.commands.AbsoluteDrive;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.util.AppliedController;
+import frc.robot.util.CommandAppliedController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -30,8 +30,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final AppliedController m_driverController =
-      new AppliedController(OperatorConstants.kDriverPort);
+  private final CommandAppliedController m_driverController =
+      new CommandAppliedController(OperatorConstants.kDriverPort);
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
   // Applies deadbands and inverts controls because joysticks
