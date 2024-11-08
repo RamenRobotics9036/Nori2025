@@ -44,7 +44,7 @@ public class RobotContainer {
   // right stick controls the rotational velocity 
   // buttons are quick rotation positions to different ways to face
   // WARNING: default buttons are on the same buttons as the ones defined in configureBindings
-  AbsoluteDrive closedAbsoluteDrive = new AbsoluteDrive(drivebase,
+  AbsoluteDrive m_closedAbsoluteDrive = new AbsoluteDrive(drivebase,
                                                                  () -> -m_driverController.getLeftY(),
                                                                  () -> -m_driverController.getLeftX(),
                                                                  () -> -m_driverController.getRightX(),
@@ -54,7 +54,7 @@ public class RobotContainer {
   // controls are front-left positive
   // left stick controls translation
   // right stick controls the desired angle NOT angular rotation
-  Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
+  Command m_driveFieldOrientedDirectAngle = drivebase.driveCommand(
       () -> -m_driverController.getLeftY(),
       () -> -m_driverController.getLeftX(),
       () -> -m_driverController.getRightX(),
@@ -65,7 +65,7 @@ public class RobotContainer {
   // controls are front-left positive
   // left stick controls translation
   // right stick controls the angular velocity of the robot
-  Command driveFieldOrientedAngularVelocity = drivebase.driveCommand(
+  Command m_driveFieldOrientedAngularVelocity = drivebase.driveCommand(
       () -> -m_driverController.getLeftY(),
       () -> -m_driverController.getLeftX(),
       () -> -m_driverController.getRightX());
@@ -109,7 +109,7 @@ public class RobotContainer {
     m_driverController.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
     m_driverController.rightBumper().onTrue(Commands.none());
 */
-    drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+    drivebase.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
 
 
   }
