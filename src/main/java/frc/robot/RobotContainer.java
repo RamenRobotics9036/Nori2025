@@ -68,7 +68,14 @@ public class RobotContainer {
   Command m_driveFieldOrientedAngularVelocity = drivebase.driveCommand(
       () -> -m_driverController.getLeftY(),
       () -> -m_driverController.getLeftX(),
-      () -> -m_driverController.getRightX());
+      () -> -m_driverController.getRightX(),
+      true);
+
+    Command m_robotOrientedAngularVelocity = drivebase.driveCommand(
+      () -> -m_driverController.getLeftY(),
+      () -> -m_driverController.getLeftX(),
+      () -> -m_driverController.getRightX(),
+      false);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -109,7 +116,7 @@ public class RobotContainer {
     m_driverController.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
     m_driverController.rightBumper().onTrue(Commands.none());
 */
-    drivebase.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
+    drivebase.setDefaultCommand(m_robotOrientedAngularVelocity);
 
 
   }
