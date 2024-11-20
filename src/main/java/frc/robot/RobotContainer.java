@@ -109,14 +109,18 @@ public class RobotContainer {
                                     new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
                               ));
     m_driverController.y().whileTrue(drivebase.aimAtSpeaker(2));
-*/
     m_driverController.start().whileTrue(Commands.none());
     m_driverController.back().whileTrue(Commands.none());
-/*
     m_driverController.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
     m_driverController.rightBumper().onTrue(Commands.none());
 */
-    drivebase.setDefaultCommand(m_robotOrientedAngularVelocity);
+m_driverController.povUp().onTrue((drivebase.driveCommand(() -> 0.5, () -> 0, () -> 0, false)));
+m_driverController.povDown().onTrue((drivebase.driveCommand(() -> -0.5, () -> 0, () -> 0, false)));
+m_driverController.povLeft().onTrue((drivebase.driveCommand(() -> 0, () -> -0.5, () -> 0, false)));
+m_driverController.povRight().onTrue((drivebase.driveCommand(() -> 0, () -> 0.5, () -> 0, false)));
+
+
+drivebase.setDefaultCommand(m_robotOrientedAngularVelocity);
 
 
   }
