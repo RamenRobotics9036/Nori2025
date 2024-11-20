@@ -114,10 +114,10 @@ public class RobotContainer {
     m_driverController.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
     m_driverController.rightBumper().onTrue(Commands.none());
 */
-m_driverController.povUp().onTrue((drivebase.driveCommand(() -> 0.5, () -> 0, () -> 0, false)));
-m_driverController.povDown().onTrue((drivebase.driveCommand(() -> -0.5, () -> 0, () -> 0, false)));
-m_driverController.povLeft().onTrue((drivebase.driveCommand(() -> 0, () -> -0.5, () -> 0, false)));
-m_driverController.povRight().onTrue((drivebase.driveCommand(() -> 0, () -> 0.5, () -> 0, false)));
+m_driverController.povUp().onTrue((drivebase.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
+m_driverController.povDown().onTrue((drivebase.driveCommand(() -> -0.3, () -> 0, () -> 0, false)));
+m_driverController.povLeft().onTrue((drivebase.driveCommand(() -> 0, () -> -0.3, () -> 0, false)));
+m_driverController.povRight().onTrue((drivebase.driveCommand(() -> 0, () -> 0.3, () -> 0, false)));
 
 
 drivebase.setDefaultCommand(m_robotOrientedAngularVelocity);
