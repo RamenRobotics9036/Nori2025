@@ -114,14 +114,19 @@ public class RobotContainer {
     m_driverController.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
     m_driverController.rightBumper().onTrue(Commands.none());
 */
+/*
+//d-pad and X, B test controls:
 m_driverController.povUp().onTrue((drivebase.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
 m_driverController.povDown().onTrue((drivebase.driveCommand(() -> -0.3, () -> 0, () -> 0, false)));
-m_driverController.povLeft().onTrue((drivebase.driveCommand(() -> 0, () -> -0.3, () -> 0, false)));
-m_driverController.povRight().onTrue((drivebase.driveCommand(() -> 0, () -> 0.3, () -> 0, false)));
-
-
-drivebase.setDefaultCommand(m_robotOrientedAngularVelocity);
-
+m_driverController.povLeft().onTrue((drivebase.driveCommand(() -> 0, () -> 0.3, () -> 0, false)));
+m_driverController.povRight().onTrue((drivebase.driveCommand(() -> 0, () -> -0.3, () -> 0, false)));
+m_driverController.x().onTrue(drivebase.driveCommand(() -> 0, () -> 0, () -> 0.5, false));
+m_driverController.b().onTrue(drivebase.driveCommand(() -> 0, () -> 0, () -> -0.5, false));
+*/
+//this is field relative, right stick controls orientation around z axis
+//drivebase.setDefaultCommand(m_driveFieldOrientedDirectAngle);
+//this is field relative, right stick controls rotation around z axis
+drivebase.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
 
   }
 
