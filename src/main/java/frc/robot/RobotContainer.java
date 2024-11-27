@@ -10,11 +10,14 @@ import frc.robot.commands.Autos;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.CommandAppliedController;
+/*
+import edu.wpi.first.math.estimator.ExtendedKalmanFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+ */
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -41,7 +44,7 @@ public class RobotContainer {
   // right stick controls the rotational velocity 
   // buttons are quick rotation positions to different ways to face
   // WARNING: default buttons are on the same buttons as the ones defined in configureBindings
-  AbsoluteDrive closedAbsoluteDrive = new AbsoluteDrive(drivebase,
+  AbsoluteDrive m_closedAbsoluteDrive = new AbsoluteDrive(drivebase,
                                                                  () -> -m_driverController.getLeftY(),
                                                                  () -> -m_driverController.getLeftX(),
                                                                  () -> -m_driverController.getRightX(),
@@ -51,26 +54,28 @@ public class RobotContainer {
   // controls are front-left positive
   // left stick controls translation
   // right stick controls the desired angle NOT angular rotation
-  Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
-      () -> m_driverController.getLeftY(),
-      () -> m_driverController.getLeftX(),
-      () -> m_driverController.getRightX(),
-      () -> m_driverController.getRightY());
+  Command m_driveFieldOrientedDirectAngle = drivebase.driveCommand(
+      () -> -m_driverController.getLeftY(),
+      () -> -m_driverController.getLeftX(),
+      () -> -m_driverController.getRightX(),
+      () -> -m_driverController.getRightY());
 
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
   // controls are front-left positive
   // left stick controls translation
   // right stick controls the angular velocity of the robot
-  Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
-      () -> m_driverController.getLeftY() * -1,
-      () -> m_driverController.getLeftX() * -1,
-      () -> m_driverController.getRightX() * -1);
+  Command m_driveFieldOrientedAngularVelocity = drivebase.driveCommand(
+      () -> -m_driverController.getLeftY(),
+      () -> -m_driverController.getLeftX(),
+      () -> -m_driverController.getRightX(),
+      true);
 
-  Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
-      () -> m_driverController.getLeftY(),
-      () -> m_driverController.getLeftX(),
-      () -> m_driverController.getRawAxis(2));
+    Command m_robotOrientedAngularVelocity = drivebase.driveCommand(
+      () -> -m_driverController.getLeftY(),
+      () -> -m_driverController.getLeftX(),
+      () -> -m_driverController.getRightX(),
+      false);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -88,42 +93,40 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+/*
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    //new Trigger(m_exampleSubsystem::exampleCondition).onTrue(new ExampleCommand(m_exampleSubsystem));
+    new Trigger(m_exampleSubsystem::exampleCondition).onTrue(new ExampleCommand(m_exampleSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    if (DriverStation.isTest())
-    {
-      // TODO: here I am
-      m_driverController.b().whileTrue(drivebase.sysIdDriveMotorCommand());
-      m_driverController.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      m_driverController.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2));
-      m_driverController.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      m_driverController.back().whileTrue(drivebase.centerModulesCommand());
-      m_driverController.leftBumper().onTrue(Commands.none());
-      m_driverController.rightBumper().onTrue(Commands.none());
-      drivebase.setDefaultCommand(
-          !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedDirectAngleSim);
-    } else
-    {
-      m_driverController.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      m_driverController.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
-      m_driverController.b().whileTrue(
-          Commands.deferredProxy(() -> drivebase.driveToPose(
-                                     new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
-                                ));
-      m_driverController.y().whileTrue(drivebase.aimAtSpeaker(2));
-      m_driverController.start().whileTrue(Commands.none());
-      m_driverController.back().whileTrue(Commands.none());
-      m_driverController.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      m_driverController.rightBumper().onTrue(Commands.none());
-      drivebase.setDefaultCommand(
-          !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
-    }
-
-
+    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+*/
+    m_driverController.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+/*
+    m_driverController.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
+    m_driverController.b().whileTrue(
+        Commands.deferredProxy(() -> drivebase.driveToPose(
+                                    new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
+                              ));
+    m_driverController.y().whileTrue(drivebase.aimAtSpeaker(2));
+    m_driverController.start().whileTrue(Commands.none());
+    m_driverController.back().whileTrue(Commands.none());
+    m_driverController.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+    m_driverController.rightBumper().onTrue(Commands.none());
+*/
+/*
+//d-pad and X, B test controls:
+m_driverController.povUp().onTrue((drivebase.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
+m_driverController.povDown().onTrue((drivebase.driveCommand(() -> -0.3, () -> 0, () -> 0, false)));
+m_driverController.povLeft().onTrue((drivebase.driveCommand(() -> 0, () -> 0.3, () -> 0, false)));
+m_driverController.povRight().onTrue((drivebase.driveCommand(() -> 0, () -> -0.3, () -> 0, false)));
+m_driverController.x().onTrue(drivebase.driveCommand(() -> 0, () -> 0, () -> 0.5, false));
+m_driverController.b().onTrue(drivebase.driveCommand(() -> 0, () -> 0, () -> -0.5, false));
+*/
+//this is field relative, right stick controls orientation around z axis
+//drivebase.setDefaultCommand(m_driveFieldOrientedDirectAngle);
+//this is field relative, right stick controls rotation around z axis
+drivebase.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
 
   }
 

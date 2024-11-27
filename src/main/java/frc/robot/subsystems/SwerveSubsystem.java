@@ -360,7 +360,7 @@ public class SwerveSubsystem extends SubsystemBase
    * @param angularRotationX Angular velocity of the robot to set. Cubed for smoother controls.
    * @return Drive command.
    */
-  public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX)
+  public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX, boolean fieldRelative)
   {
     return run(() -> {
       // Make the robot move
@@ -368,7 +368,7 @@ public class SwerveSubsystem extends SubsystemBase
                             translationX.getAsDouble() * swerveDrive.getMaximumVelocity(),
                             translationY.getAsDouble() * swerveDrive.getMaximumVelocity()), 0.8),
                         Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumAngularVelocity(),
-                        true,
+                        fieldRelative,
                         false);
     });
   }
