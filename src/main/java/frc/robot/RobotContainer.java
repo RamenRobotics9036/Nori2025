@@ -123,8 +123,9 @@ m_driverController.povRight().onTrue((drivebase.driveCommand(() -> 0, () -> -0.3
 m_driverController.x().onTrue(drivebase.driveCommand(() -> 0, () -> 0, () -> 0.5, false));
 m_driverController.b().onTrue(drivebase.driveCommand(() -> 0, () -> 0, () -> -0.5, false));
 */
-//this is field relative, right stick controls orientation around z axis
+//this is field relative, right stick controls orientation relative to the field
 //drivebase.setDefaultCommand(m_driveFieldOrientedDirectAngle);
+
 //this is field relative, right stick controls rotation around z axis
 drivebase.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
 
