@@ -78,7 +78,7 @@ public class LimeLightSubsystem extends SubsystemBase {
         
         sbX = visionTab.add("X Degrees", getX())
             .withWidget(BuiltInWidgets.kNumberBar)
-            .withPosition(4, 2)
+            .withPosition(4, 4)
             .withProperties(Map.of("min", -90, "max", 90))
             .getEntry();
         
@@ -113,7 +113,7 @@ public class LimeLightSubsystem extends SubsystemBase {
         
         sbID = visionTab.add("ID", getID())
             .withWidget(BuiltInWidgets.kTextView)
-            .withPosition(4, 2)
+            .withPosition(2, 2)
             .getEntry();
     }
     /**
@@ -164,7 +164,7 @@ public class LimeLightSubsystem extends SubsystemBase {
     }
 
     /**
-     * Distance to April tag in meters Y.
+     * Distance to April tag in meters Y. (THIS IS DEF BROKEN FROM LOOKING AT THE NUMBERS)
      */
     public double getDistanceMetersY() {
         double angleToGoalRadians = limelightMountAngleRadiansY + getYRadians();
