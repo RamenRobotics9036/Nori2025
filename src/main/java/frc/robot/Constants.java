@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.geometry.Translation3d;
@@ -53,6 +56,42 @@ public final class Constants
   /**
    * Constants for autonomous mode.
    */
+
+  public static final class VisionConstants
+  {
+      /**
+         * Angle of camera pointing upwards.
+         */
+        public static final double limelightMountAngleRadiansY = 0;
+        /**
+         * Angle of camera pointing side-to-side.
+         */
+        public static final double limelightMountAngleRadiansX = 0;
+
+        public static final double limelightLensHeightMeters = 0.51; // I don't know if limelight already accounts for this because there is a setting in the limelight client
+        public static final double aprilTagHeightMeters = 0.68;
+
+        public static final String limelightName = "limelight-nori";
+
+        public static final ArrayList<Double> targetedIDList = new ArrayList<Double>(
+                Arrays.asList(
+                        1.0,
+                        2.0,
+                        3.0,
+                        4.0,
+                        5.0,
+                        6.0,
+                        7.0,
+                        8.0,
+                        9.0,
+                        10.0,
+                        11.0,
+                        12.0,
+                        13.0,
+                        14.0,
+                        15.0,
+                        16.0));
+  }
   public static final class AutoConstants
   {
     public static final PIDConstants kTranslationpid = new PIDConstants(0.7, 0, 0); // try 0.7,0,0 from YAGSL-Example
