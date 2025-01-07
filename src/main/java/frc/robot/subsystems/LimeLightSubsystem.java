@@ -25,6 +25,8 @@ public class LimeLightSubsystem extends SubsystemBase {
     private GenericEntry sbArea;
     private GenericEntry sbIsDetecting;
     private GenericEntry sbID;
+    private GenericEntry sbY;
+    private GenericEntry sbX;
 
     private final double limelightMountAngleRadiansY = VisionConstants.limelightMountAngleRadiansY;
     private final double limelightMountAngleRadiansX = VisionConstants.limelightMountAngleRadiansX;
@@ -72,6 +74,18 @@ public class LimeLightSubsystem extends SubsystemBase {
             .withWidget(BuiltInWidgets.kNumberBar)
             .withPosition(0, 3)
             .withProperties(Map.of("min", -5, "max", 5))
+            .getEntry();
+        
+        sbX = visionTab.add("X Degrees", getX())
+            .withWidget(BuiltInWidgets.kNumberBar)
+            .withPosition(4, 2)
+            .withProperties(Map.of("min", -90, "max", 90))
+            .getEntry();
+        
+        sbY = visionTab.add("Y Degrees", getY())
+            .withWidget(BuiltInWidgets.kNumberBar)
+            .withPosition(4, 3)
+            .withProperties(Map.of("min", -90, "max", 90))
             .getEntry();
         
         sbDistanceX = visionTab.add("Distance Meters X", getDistanceMetersX())
@@ -177,6 +191,8 @@ public class LimeLightSubsystem extends SubsystemBase {
         sbYDisplacement.setDouble(getYRadians());
         sbXTangent.setDouble(Math.tan(getXRadians()));
         sbYTangent.setDouble(Math.tan(getYRadians()));
+        sbX.setDouble(getX());
+        sbY.setDouble(getY());
         sbDistanceX.setDouble(getDistanceMetersX());
         sbDistanceY.setDouble(getDistanceMetersY());
         sbArea.setDouble(getArea());

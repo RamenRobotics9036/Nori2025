@@ -9,6 +9,7 @@ import frc.robot.commands.AbsoluteDrive;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
+import frc.robot.commands.VisionRotate;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.CommandAppliedController;
 /*
@@ -33,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final LimeLightSubsystem m_LimeLightSubsystem = new LimeLightSubsystem();
 
   private final CommandAppliedController m_driverController =
       new CommandAppliedController(OperatorConstants.kDriverPort);
@@ -103,6 +105,8 @@ public class RobotContainer {
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 */
     m_driverController.a().onTrue((Commands.runOnce(drivebase::zeroGyro))); // THIS SEEMS IMPORTANT (RESETS FIELD RELATIVITY)
+    m_driverController.b().onTrue(new VisionRotate(m_LimeLightSubsystem, drivebase));
+
 /*
     m_driverController.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
     m_driverController.b().whileTrue(
