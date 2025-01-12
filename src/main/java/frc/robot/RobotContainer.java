@@ -66,15 +66,15 @@ public class RobotContainer {
   // left stick controls translation
   // right stick controls the angular velocity of the robot
   Command m_driveFieldOrientedAngularVelocity = drivebase.driveCommand(
-      () -> 0.1,
-      () -> -0,
-      () -> -0,
-      false);
+    () -> -m_driverController.getLeftY(), 
+    () -> -m_driverController.getLeftX(), 
+    () -> -m_driverController.getRightX(), 
+    false);
 
     Command m_robotOrientedAngularVelocity = drivebase.driveCommand(
-      () -> 0.1,
-      () -> -0,
-      () -> 0,
+      () -> -m_driverController.getLeftY(), 
+      () -> -m_driverController.getLeftX(), 
+      () -> -m_driverController.getRightX(), 
       false);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
