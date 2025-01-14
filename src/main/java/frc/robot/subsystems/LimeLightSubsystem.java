@@ -78,7 +78,7 @@ public class LimeLightSubsystem extends SubsystemBase {
         
         sbX = visionTab.add("X Degrees", getX())
             .withWidget(BuiltInWidgets.kNumberBar)
-            .withPosition(4, 4)
+            .withPosition(4, 2)
             .withProperties(Map.of("min", -90, "max", 90))
             .getEntry();
         
