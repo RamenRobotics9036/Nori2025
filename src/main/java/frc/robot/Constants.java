@@ -58,4 +58,19 @@ public final class Constants
     public static final PIDConstants kAnglePID = new PIDConstants(0.4, 0, 0.01); // try 0.4,0,0.01 from YAGSL-Example
     public static final double kMaxSpeedMetersPerSecond = 5.06; // try 4.5 from YAGSL-Example
   }
+
+  public static final class VisionConstants {
+    public static final String limelightName = "limelight";
+    public static final double allowedAngleUncertainty = 0.5;
+  }
+
+  public static final class CommandConstants {
+    public static final class AimAtLimeLightConstants {
+      public static final double maxTimeSeconds = 5;
+      public static final double kP = 0.01;
+      public static final double kI = 0.0;
+      public static final double kD = 0.0;
+      public static final double maxSpeed = 0.02;
+    }
+  }
 }
