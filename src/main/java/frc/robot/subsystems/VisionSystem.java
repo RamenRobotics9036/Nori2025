@@ -1,5 +1,11 @@
 package frc.robot.subsystems;
 
+import java.util.Optional;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -14,12 +20,15 @@ public class VisionSystem {
     private static NetworkTableEntry m_tableX = m_limelightTable.getEntry("tx");
     private static NetworkTableEntry m_tableY = m_limelightTable.getEntry("ty");
     private static NetworkTableEntry m_tableArea = m_limelightTable.getEntry("ta");
+    private static NetworkTableEntry m_tableID = m_limelightTable.getEntry("tid");
+    private static AprilTagFieldLayout m_aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
     public static void initShuffleboad() {
         ShuffleboardTab tab = Shuffleboard.getTab("Vision");
         tab.addDouble("TX", () -> getTX());
         tab.addDouble("TY", () -> getTY());
         tab.addBoolean("Is Detecting", () -> isDetecting());
+        tab.addDouble("ID", () -> getID());
     }
 
     public static double getTX() {
@@ -36,5 +45,18 @@ public class VisionSystem {
 
     public static boolean isDetecting() {
         return (getTX() + getTY() + getTA()) != 0;
+    }
+
+    public static double getID() {
+        return m_tableID.getDouble(0.0);
+    }
+
+    public static Pose2d getTargetPose() {
+        Optional<Pose3d> targetPose =  m_aprilTagLayout.getTagPose((int) getID());
+        if (targetPose.isPresent()) {
+            return targetPose.get().toPose2d();
+        } else {
+            return null;
+        }
     }
 }

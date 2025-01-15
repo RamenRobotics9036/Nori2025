@@ -10,12 +10,11 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.AbsoluteDriveAdv;
-import frc.robot.commands.AimAtLimeLight;
+import frc.robot.commands.AlignRobot;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSystem;
 
@@ -134,7 +133,7 @@ public class RobotContainer
     // (Condition) ? Return-On-True : Return-on-False
     m_swerveDrive.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     new Trigger(() -> m_driveController.getAButtonReleased()).onTrue(
-      new AimAtLimeLight(m_swerveDrive)
+      new AlignRobot(m_swerveDrive)
     );
   }
 

@@ -72,5 +72,25 @@ public final class Constants
       public static final double kD = 0.0;
       public static final double maxSpeed = 0.02;
     }
+
+    public static final class AlignRobotConstants {
+      public static final double maxTimeSeconds = 5;
+      public static final double maxSpeed = 0.02;
+
+      /**
+       * How much the robot should be offset from the April tag pose rotation.
+      */
+      public static final double transformRot = 0.0;
+
+      /**
+       * How much the robot should be offset from the April tag pose x direction.
+      */
+      public static final double transformX = -2.0;
+
+      /**
+       * How much the robot should be offset from the April tag pose y direction.
+      */
+      public static final double transformY = -2.0;
+    }
   }
 }
