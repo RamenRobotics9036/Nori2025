@@ -17,11 +17,14 @@ public class VisionSystem {
 
     private static NetworkTable m_limelightTable = NetworkTableInstance.getDefault()
             .getTable(VisionConstants.limelightName);
-    private static NetworkTableEntry m_tableX = m_limelightTable.getEntry("tx");
+    private static  NetworkTableEntry m_tableX = m_limelightTable.getEntry("tx");
     private static NetworkTableEntry m_tableY = m_limelightTable.getEntry("ty");
     private static NetworkTableEntry m_tableArea = m_limelightTable.getEntry("ta");
     private static NetworkTableEntry m_tableID = m_limelightTable.getEntry("tid");
     private static AprilTagFieldLayout m_aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+
+    private static Pose2d m_targetPose;
+    private static Pose2d m_robotPose;
 
     public static void initShuffleboad() {
         ShuffleboardTab tab = Shuffleboard.getTab("Vision");
@@ -29,6 +32,11 @@ public class VisionSystem {
         tab.addDouble("TY", () -> getTY());
         tab.addBoolean("Is Detecting", () -> isDetecting());
         tab.addDouble("ID", () -> getID());
+    }
+
+    public static void updatePose() {
+        m_targetPose = getTargetPoseCall();
+        m_robotPose = getRobotPoseCall();
     }
 
     public static double getTX() {
@@ -51,12 +59,24 @@ public class VisionSystem {
         return m_tableID.getDouble(0.0);
     }
 
-    public static Pose2d getTargetPose() {
+    private static Pose2d getTargetPoseCall() {
         Optional<Pose3d> targetPose =  m_aprilTagLayout.getTagPose((int) getID());
         if (targetPose.isPresent()) {
             return targetPose.get().toPose2d();
         } else {
             return null;
         }
+    }
+
+    private static Pose2d getRobotPoseCall() {
+        return new Pose2d();
+    }
+
+    public static Pose2d getTargetPose() {
+        return m_targetPose;
+    }
+
+    public static Pose2d getRobotPose() {
+        return m_robotPose;
     }
 }

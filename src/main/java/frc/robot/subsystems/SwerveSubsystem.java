@@ -125,6 +125,9 @@ public class SwerveSubsystem extends SubsystemBase
     if (visionDriveTest)
     {
       swerveDrive.updateOdometry();
+      if (VisionSystem.isDetecting()) {
+        swerveDrive.addVisionMeasurement(VisionSystem.getRobotPose(), DriverStation.getMatchTime());
+      }
     }
   }
 

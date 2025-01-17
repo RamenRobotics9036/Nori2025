@@ -31,6 +31,7 @@ public class RobotContainer
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final         XboxController m_driveController = new XboxController(OperatorConstants.kDriverPort);
+
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       m_swerveDrive  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 SwerveConstants.kJsonDirectory));
@@ -132,9 +133,9 @@ public class RobotContainer
   {
     // (Condition) ? Return-On-True : Return-on-False
     m_swerveDrive.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-    new Trigger(() -> m_driveController.getAButtonReleased()).onTrue(
-      new AlignRobot(m_swerveDrive)
-    );
+    // new Trigger(() -> m_driveController.getAButtonReleased()).onTrue(
+    //   new AlignRobot(m_swerveDrive)
+    // );
   }
 
   /**
@@ -151,5 +152,9 @@ public class RobotContainer
   public void setMotorBrake(boolean brake)
   {
     m_swerveDrive.setMotorBrake(brake);
+  }
+
+  public void updateVisionPose() {
+    VisionSystem.updatePose();
   }
 }

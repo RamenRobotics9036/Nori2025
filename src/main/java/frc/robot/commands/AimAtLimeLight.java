@@ -17,6 +17,8 @@ public class AimAtLimeLight extends Command {
 
     public AimAtLimeLight(SwerveSubsystem swerveDrive) {
         m_swerveDrive = swerveDrive;
+
+        addRequirements(m_swerveDrive);
     }
 
     @Override
