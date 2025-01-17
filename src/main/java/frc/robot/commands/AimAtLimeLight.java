@@ -30,7 +30,7 @@ public class AimAtLimeLight extends Command {
     public void execute() {
         Translation2d translation = new Translation2d(0, 0);
         double rotation = m_pidController.calculate(VisionSystem.getTX());
-        rotation = MathUtil.clamp(rotation, -AimAtLimeLightConstants.maxSpeed, -AimAtLimeLightConstants.maxSpeed);
+        rotation = MathUtil.clamp(rotation, -AimAtLimeLightConstants.maxSpeed, AimAtLimeLightConstants.maxSpeed);
         m_swerveDrive.drive(translation, rotation, true);
     }
 

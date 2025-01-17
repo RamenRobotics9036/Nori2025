@@ -61,12 +61,12 @@ public final class Constants
 
   public static final class VisionConstants {
     public static final String limelightName = "limelight";
-    public static final double allowedAngleUncertainty = 0.5;
+    public static final double allowedAngleUncertainty = 0.2;
   }
 
   public static final class CommandConstants {
     public static final class AimAtLimeLightConstants {
-      public static final double maxTimeSeconds = 5;
+      public static final double maxTimeSeconds = 10;
       public static final double kP = 0.01;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
@@ -74,7 +74,7 @@ public final class Constants
     }
 
     public static final class AlignRobotConstants {
-      public static final double maxTimeSeconds = 5;
+      public static final double maxTimeSeconds = 10;
       public static final double maxSpeed = 0.02;
 
       /**

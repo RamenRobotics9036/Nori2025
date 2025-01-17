@@ -125,7 +125,6 @@ public class SwerveSubsystem extends SubsystemBase
     if (visionDriveTest)
     {
       swerveDrive.updateOdometry();
-//      vision.updatePoseEstimation(swerveDrive);
     }
   }
 
@@ -691,6 +690,5 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
   public void stopSystem() {
-    drive(new Translation2d(0, 0), 0, true);
   }
 }
