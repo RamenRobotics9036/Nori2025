@@ -27,11 +27,15 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.vision.VisionSystem;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +67,9 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Enable vision odometry updates while driving.
    */
-  private final boolean             visionDriveTest     = false;
+  private final boolean             visionDriveTest     = true;
+
+  private Field2d m_field = new Field2d();
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -117,6 +123,10 @@ public class SwerveSubsystem extends SubsystemBase
                                              Rotation2d.fromDegrees(0)));
   }
 
+  public void initShuffleboad() {
+    ShuffleboardTab tab = Shuffleboard.getTab("Field");
+    tab.add("Robot Position on Field", m_field);
+  }
 
   @Override
   public void periodic()
@@ -129,6 +139,7 @@ public class SwerveSubsystem extends SubsystemBase
         swerveDrive.addVisionMeasurement(VisionSystem.getRobotPose(), DriverStation.getMatchTime());
       }
     }
+    m_field.setRobotPose(getPose());
   }
 
   @Override

@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.vision;
 
 import java.util.Optional;
 
@@ -60,16 +60,20 @@ public class VisionSystem {
     }
 
     private static Pose2d getTargetPoseCall() {
-        Optional<Pose3d> targetPose =  m_aprilTagLayout.getTagPose((int) getID());
-        if (targetPose.isPresent()) {
-            return targetPose.get().toPose2d();
-        } else {
-            return null;
+        if (isDetecting()) {
+            Optional<Pose3d> targetPose =  m_aprilTagLayout.getTagPose((int) getID());
+            if (targetPose.isPresent()) {
+                return targetPose.get().toPose2d();
+            }
         }
+        return null;
     }
 
     private static Pose2d getRobotPoseCall() {
-        return new Pose2d();
+        if (isDetecting() && m_targetPose != null) {
+            return LimelightHelpers.getBotPose2d_wpiBlue(VisionConstants.limelightName);
+        }
+        return null;
     }
 
     public static Pose2d getTargetPose() {

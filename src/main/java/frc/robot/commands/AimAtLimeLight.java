@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.CommandConstants.AimAtLimeLightConstants;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.VisionSystem;
+import frc.robot.vision.VisionSystem;
 
 public class AimAtLimeLight extends Command {
     private Timer m_timer = new Timer();
