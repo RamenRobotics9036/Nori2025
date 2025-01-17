@@ -2,10 +2,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.CommandConstants.AlignRobotConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.vision.VisionSystem;
@@ -25,9 +25,10 @@ public class AlignRobot extends Command {
 
     @Override
     public void initialize() {
-        double drive = m_drivePIDController.calculate(VisionSystem.getTX());
-        double strafe = m_strafePIDController.calculate(VisionSystem.getTX());
-        double rotation = m_rotationPIDController.calculate(VisionSystem.getTX());
+        Pose2d targetPose = VisionSystem.getTargetPose();
+        double drive = m_drivePIDController.calculate(targetPose.getX());
+        double strafe = m_strafePIDController.calculate(targetPose.getY());
+        double rotation = m_rotationPIDController.calculate(targetPose.getRotation().getDegrees());
 
         drive = MathUtil.clamp(drive, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed);
         strafe = MathUtil.clamp(strafe, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed);
