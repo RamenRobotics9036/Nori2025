@@ -25,7 +25,7 @@ public class AimAtLimeLight extends Command {
     public void initialize() {
         m_timer.restart();
         m_pidController.setSetpoint(0);
-        m_pidController.setTolerance(VisionConstants.allowedAngleUncertainty);
+        m_pidController.setTolerance(VisionConstants.allowedAngleUncertaintyDegrees);
     }
     
     @Override
