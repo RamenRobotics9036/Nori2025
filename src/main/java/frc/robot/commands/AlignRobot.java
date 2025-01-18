@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.VisionConstants;
@@ -58,8 +59,7 @@ public class AlignRobot extends Command {
         strafe = MathUtil.clamp(strafe, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed);
         rotation = MathUtil.clamp(rotation, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed);
 
-        Translation2d translation = new Translation2d(0.05, 0);
-        m_swerveDrive.drive(translation, 0, false);
+        m_swerveDrive.drive(new ChassisSpeeds(drive, strafe, 0));
     }
 
     @Override
