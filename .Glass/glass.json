@@ -1,5 +1,13 @@
 {
   "NetworkTables": {
+    "transitory": {
+      "Shuffleboard": {
+        "Vision": {
+          "open": true
+        },
+        "open": true
+      }
+    },
     "types": {
       "/FMSInfo": "FMSInfo",
       "/Shuffleboard/Field/Robot Position on Field": "Field2d",

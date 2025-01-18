@@ -7,8 +7,8 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -32,7 +32,7 @@ public class RobotContainer
 {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  final         XboxController m_driveController = new XboxController(OperatorConstants.kDriverPort);
+  final         CommandXboxController m_driveController = new CommandXboxController(OperatorConstants.kDriverPort);
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       m_swerveDrive  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
@@ -135,9 +135,38 @@ public class RobotContainer
    */
   private void configureBindings()
   {
-    // (Condition) ? Return-On-True : Return-on-False
+    /*
+        m_driverController.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
+        m_driverController.b().whileTrue(
+            Commands.deferredProxy(() -> drivebase.driveToPose(
+                                        new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
+                                  ));
+        m_driverController.y().whileTrue(drivebase.aimAtSpeaker(2));
+        m_driverController.start().whileTrue(Commands.none());
+        m_driverController.back().whileTrue(Commands.none());
+        m_driverController.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+        m_driverController.rightBumper().onTrue(Commands.none());
+    */
+    /*
+    //d-pad and X, B test controls:
+    m_driverController.povUp().onTrue((drivebase.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
+    m_driverController.povDown().onTrue((drivebase.driveCommand(() -> -0.3, () -> 0, () -> 0, false)));
+    m_driverController.povLeft().onTrue((drivebase.driveCommand(() -> 0, () -> 0.3, () -> 0, false)));
+    m_driverController.povRight().onTrue((drivebase.driveCommand(() -> 0, () -> -0.3, () -> 0, false)));
+    m_driverController.x().onTrue(drivebase.driveCommand(() -> 0, () -> 0, () -> 0.5, false));
+    m_driverController.b().onTrue(drivebase.driveCommand(() -> 0, () -> 0, () -> -0.5, false));
+    */
+    //this is field relative, right stick controls orientation relative to the field
+    //drivebase.setDefaultCommand(m_driveFieldOrientedDirectAngle);
+
+
+
+    //this is field relative, right stick controls rotation around z axis
     m_swerveDrive.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-    new Trigger(() -> m_driveController.getAButtonReleased()).onTrue(
+  
+    m_driveController.start().onTrue((Commands.runOnce(m_swerveDrive::zeroGyro)));
+    
+    m_driveController.a().onTrue(
       new AlignRobot(m_swerveDrive)
     );
   }

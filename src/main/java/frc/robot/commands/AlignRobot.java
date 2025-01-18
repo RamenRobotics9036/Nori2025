@@ -18,7 +18,7 @@ public class AlignRobot extends Command {
 
     private PIDController m_drivePIDController = new PIDController(0.01, 0, 0);
     private PIDController m_strafePIDController = new PIDController(0.01, 0, 0);
-    private PIDController m_rotationPIDController = new PIDController(0.01, 0, 0);
+    private PIDController m_rotationPIDController = new PIDController(0.1, 0, 0.05);
 
 
     public AlignRobot(SwerveSubsystem swerveDrive) {
@@ -40,6 +40,10 @@ public class AlignRobot extends Command {
         }
         m_timer.restart();
         m_targetPose = VisionSystem.getTargetPose();
+
+        m_drivePIDController.reset();
+        m_strafePIDController.reset();
+        m_rotationPIDController.reset();
     }
 
     @Override
@@ -48,15 +52,14 @@ public class AlignRobot extends Command {
 
         double drive = m_drivePIDController.calculate(robotPose.getX() - m_targetPose.getX());
         double strafe = m_strafePIDController.calculate(robotPose.getY() - m_targetPose.getY());
-        // double rotation = m_rotationPIDController.calculate(VisionSystem.getTX());
-        double rotation = 0;
+        double rotation = m_rotationPIDController.calculate(VisionSystem.getTX());
 
         drive = MathUtil.clamp(drive, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed);
         strafe = MathUtil.clamp(strafe, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed);
         rotation = MathUtil.clamp(rotation, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed);
 
-        Translation2d translation = new Translation2d(drive, strafe);
-        m_swerveDrive.drive(translation, rotation, false);
+        Translation2d translation = new Translation2d(0.05, 0);
+        m_swerveDrive.drive(translation, 0, false);
     }
 
     @Override
@@ -67,7 +70,7 @@ public class AlignRobot extends Command {
         // if (!VisionSystem.isDetecting()) {
         //     return true;
         // }
-        return (m_drivePIDController.atSetpoint() && m_strafePIDController.atSetpoint()) && m_rotationPIDController.atSetpoint();
+        return m_drivePIDController.atSetpoint(); // && (m_drivePIDController.atSetpoint() && m_strafePIDController.atSetpoint());
     }
 
     @Override
