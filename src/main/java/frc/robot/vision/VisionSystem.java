@@ -1,11 +1,6 @@
 package frc.robot.vision;
 
-import java.util.Optional;
-
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -21,7 +16,6 @@ public class VisionSystem {
     private static NetworkTableEntry m_tableY = m_limelightTable.getEntry("ty");
     private static NetworkTableEntry m_tableArea = m_limelightTable.getEntry("ta");
     private static NetworkTableEntry m_tableID = m_limelightTable.getEntry("tid");
-    private static AprilTagFieldLayout m_aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
     private static Pose2d m_targetPose;
     private static Pose2d m_robotPose;
@@ -32,6 +26,11 @@ public class VisionSystem {
         tab.addDouble("TY", () -> getTY());
         tab.addBoolean("Is Detecting", () -> isDetecting());
         tab.addDouble("ID", () -> getID());
+
+        tab.addDouble("April Tag Relative X", () -> getTargetPose().getX());
+        tab.addDouble("April Tag Relative Y", () -> getTargetPose().getY());
+        tab.addDouble("April Tag Relative Rot", () -> getTargetPose().getRotation().getDegrees());
+
     }
 
     public static void updatePose() {
@@ -61,19 +60,16 @@ public class VisionSystem {
 
     private static Pose2d getTargetPoseCall() {
         if (isDetecting()) {
-            Optional<Pose3d> targetPose =  m_aprilTagLayout.getTagPose((int) getID());
-            if (targetPose.isPresent()) {
-                return targetPose.get().toPose2d();
-            }
+            return LimelightHelpers.getTargetPose3d_CameraSpace(VisionConstants.limelightName).toPose2d();
         }
-        return null;
+        return new Pose2d();
     }
 
     private static Pose2d getRobotPoseCall() {
-        if (isDetecting() && m_targetPose != null) {
+        if (isDetecting()) {
             return LimelightHelpers.getBotPose2d_wpiBlue(VisionConstants.limelightName);
         }
-        return null;
+        return new Pose2d();
     }
 
     public static Pose2d getTargetPose() {
