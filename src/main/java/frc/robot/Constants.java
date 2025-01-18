@@ -76,7 +76,7 @@ public final class Constants
 
     public static final class AlignRobotConstants {
       public static final double maxTimeSeconds = 10;
-      public static final double maxSpeed = 0.04;
+      public static final double maxSpeed = 0.3;
 
       /**
        * How much the robot should be offset from the April tag pose rotation.
