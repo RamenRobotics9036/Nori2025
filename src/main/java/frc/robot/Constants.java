@@ -62,7 +62,8 @@ public final class Constants
   public static final class VisionConstants {
     public static final String limelightName = "limelight";
     public static final double allowedAngleUncertaintyDegrees = 0.5;
-    public static final double allowedAngleUncertaintyMeters = 0.1;
+    public static final double allowedAngleUncertaintyMetersDrive = 0.05;
+    public static final double allowedAngleUncertaintyMetersStrafe = 0.025;
   }
 
   public static final class CommandConstants {
@@ -77,6 +78,7 @@ public final class Constants
     public static final class AlignRobotConstants {
       public static final double maxTimeSeconds = 10;
       public static final double maxSpeed = 0.4;
+      public static final double maxSpeedRot = 0.2;
 
       /**
        * How much the robot should be offset from the April tag pose rotation.
