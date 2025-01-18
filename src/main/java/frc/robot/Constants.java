@@ -86,7 +86,7 @@ public final class Constants
       /**
        * How much the robot should be offset from the April tag pose x direction.
       */
-      public static final double transformDrive = 4.0;
+      public static final double transformDrive = 0.4;
 
       /**
        * How much the robot should be offset from the April tag pose y direction.

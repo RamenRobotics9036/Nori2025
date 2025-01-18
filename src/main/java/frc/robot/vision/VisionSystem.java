@@ -1,6 +1,7 @@
 package frc.robot.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -17,7 +18,7 @@ public class VisionSystem {
     private static NetworkTableEntry m_tableArea = m_limelightTable.getEntry("ta");
     private static NetworkTableEntry m_tableID = m_limelightTable.getEntry("tid");
 
-    private static Pose2d m_targetPose;
+    private static Pose3d m_targetPose;
     private static Pose2d m_robotPose;
 
     public static void initShuffleboad() {
@@ -27,9 +28,10 @@ public class VisionSystem {
         tab.addBoolean("Is Detecting", () -> isDetecting());
         tab.addDouble("ID", () -> getID());
 
-        tab.addDouble("April Tag Relative X", () -> getTargetPose().getX());
-        tab.addDouble("April Tag Relative Y", () -> getTargetPose().getY());
-        tab.addDouble("April Tag Relative Rot", () -> getTargetPose().getRotation().getDegrees());
+        tab.addDouble("April Tag Relative X", () -> m_targetPose.getX());
+        tab.addDouble("April Tag Relative Y", () -> m_targetPose.getY());
+        tab.addDouble("April Tag Relative Z", () -> m_targetPose.getZ());
+        tab.addDouble("April Tag Relative Rot", () -> m_targetPose.getRotation().getAngle());
 
     }
 
@@ -58,11 +60,11 @@ public class VisionSystem {
         return m_tableID.getDouble(0.0);
     }
 
-    private static Pose2d getTargetPoseCall() {
+    private static Pose3d getTargetPoseCall() {
         if (isDetecting()) {
-            return LimelightHelpers.getTargetPose3d_CameraSpace(VisionConstants.limelightName).toPose2d();
+            return LimelightHelpers.getTargetPose3d_CameraSpace(VisionConstants.limelightName);
         }
-        return new Pose2d();
+        return new Pose3d();
     }
 
     private static Pose2d getRobotPoseCall() {
@@ -72,7 +74,7 @@ public class VisionSystem {
         return new Pose2d();
     }
 
-    public static Pose2d getTargetPose() {
+    public static Pose3d getTargetPose() {
         return m_targetPose;
     }
 

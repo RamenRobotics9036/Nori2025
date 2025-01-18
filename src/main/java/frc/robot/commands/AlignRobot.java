@@ -2,7 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,18 +40,19 @@ public class AlignRobot extends Command {
 
     @Override
     public void execute() {
-        Pose2d targetPose = VisionSystem.getTargetPose();
+        Pose3d targetPose = VisionSystem.getTargetPose();
 
-        double drive = m_drivePIDController.calculate(targetPose.getY());
+        double drive = m_drivePIDController.calculate(targetPose.getZ());
         double strafe = m_strafePIDController.calculate(targetPose.getX());
-        double rotate = -m_rotatePIDController.calculate(targetPose.getRotation().getDegrees());
+        double rotate = -m_rotatePIDController.calculate(targetPose.getRotation().getAngle());
 
         drive = MathUtil.clamp(drive, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed);
         strafe = MathUtil.clamp(strafe, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed);
         rotate = MathUtil.clamp(rotate, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed);
 
         //Zeroing out rotation. not working yet.
-        m_swerveDrive.drive(new Translation2d(drive, strafe), 0, false);
+        // Drive is negative
+        m_swerveDrive.drive(new Translation2d(-drive, strafe), 0, false);
     }
 
     @Override
