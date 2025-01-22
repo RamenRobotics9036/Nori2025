@@ -4,7 +4,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.VisionConstants;
@@ -45,14 +44,14 @@ public class AlignRobot extends Command {
 
         double drive = m_drivePIDController.calculate(targetPose.getZ());
         double strafe = m_strafePIDController.calculate(targetPose.getX());
-        double rotate = m_rotatePIDController.calculate(Units.radiansToDegrees(targetPose.getRotation().getAngle()));
+        double rotate = m_rotatePIDController.calculate(VisionSystem.getTX());
 
         drive = MathUtil.clamp(drive, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed);
         strafe = MathUtil.clamp(strafe, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed);
         rotate = MathUtil.clamp(rotate, -AlignRobotConstants.maxSpeedRot, AlignRobotConstants.maxSpeedRot);
 
         // Drive is negative
-        m_swerveDrive.drive(new Translation2d(-drive, strafe), 0, false);
+        m_swerveDrive.drive(new Translation2d(-drive, strafe), -rotate, false);
     }
 
     @Override
@@ -63,7 +62,7 @@ public class AlignRobot extends Command {
         if (!VisionSystem.isDetecting()) {
             return true;
         }
-        return m_drivePIDController.atSetpoint() && m_strafePIDController.atSetpoint();
+        return (m_drivePIDController.atSetpoint() && m_strafePIDController.atSetpoint()) && m_rotatePIDController.atSetpoint();
     }
 
     @Override
