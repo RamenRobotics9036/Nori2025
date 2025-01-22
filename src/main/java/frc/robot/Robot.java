@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
     // Record both DS control and joystick data
     DriverStation.startDataLog(DataLogManager.getLog());
 
-    DataLogManager.log("Logging enabled!");
+    DataLogManager.log("Logging enabled with joystick!");
   }
 
   /**
@@ -57,6 +57,7 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+    m_robotContainer.updateVisionPose();
     CommandScheduler.getInstance().run();
   }
 
