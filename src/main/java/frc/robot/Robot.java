@@ -27,6 +27,7 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   private DoubleLogEntry m_voltageLog;
+  private DoubleLogEntry m_canBusUtilizationLog;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -44,21 +45,25 @@ public class Robot extends TimedRobot {
   }
 
   private void enableLogging() {
+    // Enable logging of all NetworkTables data
+    DataLogManager.logNetworkTables(true);
+
     // Starts recording to data log
     DataLogManager.start();
 
     // Record both DS control and joystick data
     DriverStation.startDataLog(DataLogManager.getLog());
 
-    m_voltageLog = new DoubleLogEntry(DataLogManager.getLog(), "Voltage");
+    // Custom logging
+    m_voltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/my/Voltage");
+    m_canBusUtilizationLog = new DoubleLogEntry(DataLogManager.getLog(), "/my/CAN_Bus_Utilization");
 
-    DataLogManager.log("Logging enabled with voltage!");
-
+    DataLogManager.log("Logging enabled with canbus and NT!");
   }
 
-  private void logVoltage() {
-    double voltageValue = RobotController.getBatteryVoltage();
-    m_voltageLog.append(voltageValue);
+  private void logCustomMetrics() {
+    m_voltageLog.append(RobotController.getBatteryVoltage());
+    m_canBusUtilizationLog.append(RobotController.getCANStatus().percentBusUtilization);
   }
 
   /**
@@ -83,7 +88,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.updateVisionPose();
     CommandScheduler.getInstance().run();
 
-    logVoltage();
+    logCustomMetrics();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
