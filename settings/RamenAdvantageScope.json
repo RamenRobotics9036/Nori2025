@@ -10,24 +10,28 @@
           "width": 300,
           "expanded": [
             "/NT",
-            "/NT/SmartDashboard/Pigeon 2 (v6) [18]",
-            "/NT/SmartDashboard/Motors",
             "/NT/SmartDashboard/Motors/infos",
             "/NT/SmartDashboard/Motors/warnings",
-            "/NT/SmartDashboard/Swerve Drive",
             "/NT/SmartDashboard/swerve",
-            "/NT/Shuffleboard",
-            "/NT/Shuffleboard/.recording",
             "/NT/Shuffleboard/Field/Robot Position on Field",
-            "/NT/SmartDashboard",
-            "/NT/SmartDashboard/Encoders",
-            "/NT/SmartDashboard/IMU",
             "/NT/SmartDashboard/swerve/advantagescope",
-            "/NT/SmartDashboard/Field"
+            "/NT/SmartDashboard/swerve/imu",
+            "/NT/PathPlanner/activePath/0",
+            "/NT/PathPlanner/activePath/0/rotation",
+            "/NT/Shuffleboard/Field/Robot Position on Field/Robot",
+            "/NT/SmartDashboard/Encoders",
+            "/NT/SmartDashboard/Encoders/infos",
+            "/NT/SmartDashboard/Encoders/errors",
+            "/NT/SmartDashboard/Encoders/warnings",
+            "/NT/LiveWindow/.status",
+            "/NT/SmartDashboard",
+            "/NT/SmartDashboard/swerve/advantagescope/robotRotation",
+            "/NT/SmartDashboard/swerve/measuredChassisSpeeds",
+            "/NT/SmartDashboard/swerve/modules/backleft"
           ]
         },
         "tabs": {
-          "selected": 1,
+          "selected": 5,
           "tabs": [
             {
               "type": 0,
@@ -98,11 +102,21 @@
               "controlsHeight": 200
             },
             {
+              "type": 5,
+              "title": "Console",
+              "controller": "messages",
+              "controllerUUID": "veurl2x3ripsh8oi574j2ziea5pfk8zl",
+              "renderer": {
+                "highlight": false
+              },
+              "controlsHeight": 0
+            },
+            {
               "type": 8,
               "title": "Joysticks",
               "controller": [
-                "None",
                 "Xbox Controller (White)",
+                "None",
                 "None",
                 "None",
                 "None",
@@ -135,6 +149,49 @@
                 "size": 30
               },
               "controllerUUID": "do16zjk5mnqjpehsbef4jc5s9qzpoxec",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 1,
+              "title": "Line Graph",
+              "controller": {
+                "leftSources": [],
+                "rightSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "DS:enabled",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "DS:autonomous",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "ohkjphw3e68yc11fk55n1legfh4curq6",
               "renderer": null,
               "controlsHeight": 200
             }
