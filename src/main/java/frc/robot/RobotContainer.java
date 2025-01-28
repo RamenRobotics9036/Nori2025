@@ -129,6 +129,12 @@ public class RobotContainer
     // this is field relative, right stick controls rotation around z axis
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
   
+    //D-pad drives straight (no gyro) for tests
+    m_driverController.povUp().onTrue((m_swerveDrive.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
+    m_driverController.povDown().onTrue((m_swerveDrive.driveCommand(() -> -0.3, () -> 0, () -> 0, false)));
+    m_driverController.povLeft().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> 0.3, () -> 0, false)));
+    m_driverController.povRight().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> -0.3, () -> 0, false)));
+  
     // Start button resets the gyro
     m_driverController.start().onTrue((Commands.runOnce(m_swerveDrive::zeroGyro)));
     
