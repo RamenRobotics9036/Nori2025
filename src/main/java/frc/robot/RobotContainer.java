@@ -148,7 +148,7 @@ public class RobotContainer
     m_driverController.start().onTrue((Commands.runOnce(m_swerveDrive::zeroGyro)));
     
     // A button aligns the robot using the AprilTag
-    m_driverController.a().onTrue(new AlignRobot(m_swerveDrive));
+    // m_driverController.a().onTrue(new AlignRobot(m_swerveDrive)); $TODO - Restore this
   }
 
   /**
