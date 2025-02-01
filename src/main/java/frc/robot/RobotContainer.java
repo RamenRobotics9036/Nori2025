@@ -4,7 +4,22 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AbsoluteDrive;
+import frc.robot.commands.Autos;
+import frc.robot.commands.IntakeTestCommand;
+import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.IntakeSystem;
+import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.CommandAppliedController;
+
+import org.ironmaple.simulation.IntakeSimulation.IntakeSide;
+
+/*
+import edu.wpi.first.math.estimator.ExtendedKalmanFilter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -78,17 +93,10 @@ public class RobotContainer
   Command m_driveFieldOrientedAngularVelocity = m_swerveDrive.driveFieldOriented(driveAngularVelocity);
 
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer()
-  {
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    DriverStation.silenceJoystickConnectionWarning(true);
-
-    VisionSystem.initShuffleboad();
-    m_swerveDrive.initShuffleboad();
   }
 
   /**
@@ -125,6 +133,8 @@ public class RobotContainer
     //drivebase.setDefaultCommand(m_driveFieldOrientedDirectAngle);
 
 
+//this is field relative, right stick controls rotation around z axis
+drivebase.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
 
     // this is field relative, right stick controls rotation around z axis
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
