@@ -59,8 +59,9 @@ public final class Constants
     public static final double kMaxSpeedMetersPerSecond = 5.06; // try 4.5 from YAGSL-Example
   }
   public static final class IntakeConstants{
-    public static final int pullMotorID = 5;
-    public static final int loadMotorID = 6;
-    public static final double maxOutputPercentage = 0.4;
+    public static final int kPullMotorID = 20;
+    public static final int kLoadMotorID = 21;
+    public static final int kStallLimit = 20;
+    public static final double kMaxOutputPercentage = 0.4;
   }
 }

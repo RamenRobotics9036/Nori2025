@@ -7,9 +7,14 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AbsoluteDrive;
 import frc.robot.commands.Autos;
+import frc.robot.commands.IntakeTestCommand;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.CommandAppliedController;
+
+import org.ironmaple.simulation.IntakeSimulation.IntakeSide;
+
 /*
 import edu.wpi.first.math.estimator.ExtendedKalmanFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -77,10 +82,13 @@ public class RobotContainer {
       () -> -m_driverController.getRightX(),
       false);
 
+  private final IntakeSystem m_intakeSystem = new IntakeSystem();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    
   }
 
   /**
@@ -128,6 +136,7 @@ m_driverController.b().onTrue(drivebase.driveCommand(() -> 0, () -> 0, () -> -0.
 
 //this is field relative, right stick controls rotation around z axis
 drivebase.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
+m_intakeSystem.setDefaultCommand(new IntakeTestCommand(m_intakeSystem));
 
   }
 
