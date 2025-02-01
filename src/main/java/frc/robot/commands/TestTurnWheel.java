@@ -10,7 +10,7 @@ import swervelib.SwerveModule;
 public class TestTurnWheel extends Command {
     private SwerveSubsystem m_swerveDrive;
     private Timer m_timer = new Timer();
-    private static final double TURN_TIME_SECONDS = 2.0;
+    private static final double TURN_TIME_SECONDS = 4.0;
     private SwerveModule m_module = null;
 
     // Constructor
@@ -36,6 +36,8 @@ public class TestTurnWheel extends Command {
 
         double fraction = Math.min(m_timer.get() / TURN_TIME_SECONDS, 1.0);
         double angleDegrees = fraction * 90.0;
+
+        m_module.setAngle(angleDegrees);
     }
 
     private SwerveModule getSingleModuleByName(SwerveModule[] moduleList, String name) {

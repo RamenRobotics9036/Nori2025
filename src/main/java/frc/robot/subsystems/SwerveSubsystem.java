@@ -374,6 +374,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Command sysIdAngleMotorCommand()
   {
+    // $TODO - They already have routines to test robot wheels!
     return SwerveDriveTest.generateSysIdCommand(
         SwerveDriveTest.setAngleSysIdRoutine(
             new Config(),
