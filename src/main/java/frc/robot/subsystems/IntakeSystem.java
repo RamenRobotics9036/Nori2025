@@ -13,20 +13,25 @@ import frc.robot.Constants.IntakeConstants;
 public class IntakeSystem extends SubsystemBase{
     //the front motor, for pulling the coarl in and scoring on L1
     private SparkMax m_pullMotor = new SparkMax(IntakeConstants.kPullMotorID, MotorType.kBrushless);
+    private SparkMaxConfig m_pullConfig = new SparkMaxConfig();
     //the back motor, for loading onto the robot
     private SparkMax m_loadMotor = new SparkMax(IntakeConstants.kLoadMotorID, MotorType.kBrushless);
-    private SparkMaxConfig config = new SparkMaxConfig();
+    private SparkMaxConfig m_loadConfig = new SparkMaxConfig();
 
     private double maxOutput = IntakeConstants.kMaxOutputPercentage;
 
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit
     public IntakeSystem(){
-        config.idleMode(SparkBaseConfig.IdleMode.kBrake);
-        config.smartCurrentLimit(IntakeConstants.kStallLimit);
-        m_pullMotor.configure(config, 
+        //pull inverted because of motor positioning
+        m_pullConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+        m_pullConfig.smartCurrentLimit(IntakeConstants.kStallLimit);
+        m_pullConfig.inverted(true);
+        m_pullMotor.configure(m_pullConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
-        m_loadMotor.configure(config, 
+        m_loadConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+        m_loadConfig.smartCurrentLimit(IntakeConstants.kStallLimit);
+        m_loadMotor.configure(m_loadConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
     }
