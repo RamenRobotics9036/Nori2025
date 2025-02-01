@@ -60,6 +60,12 @@ public final class Constants
     public static final PIDConstants kAnglePID = new PIDConstants(0.4, 0, 0.01); // try 0.4,0,0.01 from YAGSL-Example
     public static final double kMaxSpeedMetersPerSecond = 5.06; // try 4.5 from YAGSL-Example
   }
+  public static final class IntakeConstants{
+    public static final int pullMotorID = 5;
+    public static final int loadMotorID = 6;
+
+  
+  }
 
   public static final class VisionConstants {
     public static final String limelightName = "limelight";
