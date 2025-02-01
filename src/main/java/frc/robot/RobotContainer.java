@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.TestSwerveConstants;
 import frc.robot.commands.AlignRobot;
+import frc.robot.commands.TestTurnWheel;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.CommandAppliedController;
 import frc.robot.vision.VisionSystem;
@@ -127,7 +129,14 @@ public class RobotContainer
 
 
     // this is field relative, right stick controls rotation around z axis
-    m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
+    if (!TestSwerveConstants.kIsTestMode) {
+      // Real robot has drive controlled by joystick
+      m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
+    } else {
+      // Test mode has (b) button triggering a test sequence
+      m_driverController.b().onTrue(new TestTurnWheel(m_swerveDrive));
+    }
+
   
     //D-pad drives straight (no gyro) for tests
     m_driverController.povUp().onTrue((m_swerveDrive.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
