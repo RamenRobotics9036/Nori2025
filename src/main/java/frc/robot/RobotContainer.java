@@ -135,8 +135,8 @@ m_driverController.b().onTrue(drivebase.driveCommand(() -> 0, () -> 0, () -> -0.
 //drivebase.setDefaultCommand(m_driveFieldOrientedDirectAngle);
 
 //this is field relative, right stick controls rotation around z axis
-drivebase.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
-m_intakeSystem.setDefaultCommand(new IntakeTestCommand(m_intakeSystem));
+  drivebase.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
+  m_intakeSystem.setDefaultCommand(new IntakeTestCommand(m_intakeSystem));
 
   }
 
