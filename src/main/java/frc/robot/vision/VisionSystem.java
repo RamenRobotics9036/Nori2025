@@ -1,5 +1,8 @@
 package frc.robot.vision;
 
+import org.photonvision.proto.Photon;
+import org.photonvision.simulation.VisionSystemSim;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTable;
@@ -13,13 +16,21 @@ public class VisionSystem {
 
     private static NetworkTable m_limelightTable = NetworkTableInstance.getDefault()
             .getTable(VisionConstants.limelightName);
-    private static  NetworkTableEntry m_tableX = m_limelightTable.getEntry("tx");
+    private static NetworkTableEntry m_tableX = m_limelightTable.getEntry("tx");
     private static NetworkTableEntry m_tableY = m_limelightTable.getEntry("ty");
     private static NetworkTableEntry m_tableArea = m_limelightTable.getEntry("ta");
     private static NetworkTableEntry m_tableID = m_limelightTable.getEntry("tid");
 
     private static Pose3d m_targetPose;
     private static Pose2d m_robotPose;
+
+    // Photon Vision Simulation
+    public VisionSystemSim m_visionSim = null;
+
+    // Constructor
+    public VisionSystem() {
+        m_visionSim = new VisionSystemSim("Vision");
+    }
 
     public static void initShuffleboad() {
         ShuffleboardTab tab = Shuffleboard.getTab("Vision");
