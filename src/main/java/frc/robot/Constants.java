@@ -61,7 +61,6 @@ public final class Constants
   public static final class IntakeConstants{
     public static final int pullMotorID = 5;
     public static final int loadMotorID = 6;
-
-  
+    public static final double maxOutputPercentage = 0.4;
   }
 }
