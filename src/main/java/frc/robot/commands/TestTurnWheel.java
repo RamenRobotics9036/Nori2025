@@ -11,6 +11,7 @@ public class TestTurnWheel extends Command {
     private SwerveSubsystem m_swerveDrive;
     private Timer m_timer = new Timer();
     private static final double TURN_TIME_SECONDS = 4.0;
+    private static final int CYCLES = 4; // Number of full back and forth cycles
     private SwerveModule m_module = null;
 
     // Constructor
@@ -34,9 +35,22 @@ public class TestTurnWheel extends Command {
             return;
         }
 
-        double fraction = Math.min(m_timer.get() / TURN_TIME_SECONDS, 1.0);
-        double angleDegrees = fraction * 90.0;
-
+        double elapsed = m_timer.get();
+        double fullCycleTime = 2 * TURN_TIME_SECONDS;
+        double phaseTime = elapsed % fullCycleTime;
+        double angleDegrees = 0.0;
+        
+        if (phaseTime < TURN_TIME_SECONDS) {
+            // Forward phase: 0 -> 90 using sinusoidal interpolation
+            double fraction = phaseTime / TURN_TIME_SECONDS;
+            angleDegrees = 90.0 * Math.sin((Math.PI / 2.0) * fraction);
+        } else {
+            // Backward phase: 90 -> 0 using sinusoidal interpolation
+            double fraction = (phaseTime - TURN_TIME_SECONDS) / TURN_TIME_SECONDS;
+            angleDegrees = 90.0 * Math.cos((Math.PI / 2.0) * fraction);
+        }
+        
+        System.out.println("Elapsed time: " + elapsed + "s, Angle: " + angleDegrees + " degrees");
         m_module.setAngle(angleDegrees);
     }
 
@@ -56,11 +70,17 @@ public class TestTurnWheel extends Command {
             return true;
         }
 
+        double totalTime = 2 * TURN_TIME_SECONDS * CYCLES;
+
+        // Safety check of N seconds
+        if (totalTime > TestSwerveConstants.maxTimeSeconds) {
+            throw new IllegalStateException("Total time exceeds maximum allowed time. Total time: " + totalTime + ", Max allowed time: " + TestSwerveConstants.maxTimeSeconds);
+        }
         if (m_timer.get() > TestSwerveConstants.maxTimeSeconds) {
             return true;
         }
 
-        return m_timer.get() >= TURN_TIME_SECONDS;
+        return m_timer.get() >= totalTime;
     }
 
     @Override

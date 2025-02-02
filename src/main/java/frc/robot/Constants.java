@@ -63,7 +63,7 @@ public final class Constants
 
   public static final class TestSwerveConstants {
     public static final boolean kIsTestMode = true;
-    public static final double maxTimeSeconds = 10;
+    public static final double maxTimeSeconds = 60;
   }
 
   public static final class VisionConstants {
