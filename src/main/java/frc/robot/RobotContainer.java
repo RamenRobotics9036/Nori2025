@@ -7,11 +7,14 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TestSwerveConstants;
@@ -131,9 +134,6 @@ public class RobotContainer
     // this is field relative, right stick controls rotation around z axis
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
 
-    // Test mode has (b) button triggering a test sequence
-    m_driverController.b().onTrue(new TestTurnWheel(m_swerveDrive));
-  
     //D-pad drives straight (no gyro) for tests
     m_driverController.povUp().onTrue((m_swerveDrive.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
     m_driverController.povDown().onTrue((m_swerveDrive.driveCommand(() -> -0.3, () -> 0, () -> 0, false)));
@@ -142,9 +142,27 @@ public class RobotContainer
   
     // Start button resets the gyro
     m_driverController.start().onTrue((Commands.runOnce(m_swerveDrive::zeroGyro)));
-    
+
     // A button aligns the robot using the AprilTag
-    // $TODO - Removed m_driverController.a().onTrue(new AlignRobot(m_swerveDrive)); $TODO - Restore this
+    m_driverController.a().onTrue(new AlignRobot(m_swerveDrive));
+
+    // Test mode has (b) button triggering a test sequence
+    m_driverController.b().onTrue(createTestWheelsCommand());
+  }
+
+  private Command testSequence() {
+    return new SequentialCommandGroup(
+      new TestTurnWheel(m_swerveDrive, "frontleft"),
+      new TestTurnWheel(m_swerveDrive, "frontright"),
+      new TestTurnWheel(m_swerveDrive, "backleft"),
+      new TestTurnWheel(m_swerveDrive, "backright"));
+  }
+
+  private Command createTestWheelsCommand() {
+    return new ConditionalCommand(
+      testSequence(),
+      new InstantCommand(),
+      () -> DriverStation.isTest());
   }
 
   /**

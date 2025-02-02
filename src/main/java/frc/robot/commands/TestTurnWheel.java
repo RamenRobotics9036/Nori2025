@@ -20,6 +20,7 @@ class ModuleInfo {
 
 public class TestTurnWheel extends Command {
     private SwerveSubsystem m_swerveDriveSubsystem;
+    private String m_moduleName;
     private Timer m_timer = new Timer();
     private static final double TURN_TIME_SECONDS = 1.0;
     private static final int CYCLES = 2; // Number of full back and forth cycles
@@ -27,8 +28,9 @@ public class TestTurnWheel extends Command {
     private SwerveDrive m_swerve = null;
     
     // Constructor
-    public TestTurnWheel(SwerveSubsystem swerveDriveSubsystem) {
+    public TestTurnWheel(SwerveSubsystem swerveDriveSubsystem, String moduleName) {
         m_swerveDriveSubsystem = swerveDriveSubsystem;
+        m_moduleName = moduleName;
 
         addRequirements(m_swerveDriveSubsystem);
     }
@@ -40,7 +42,7 @@ public class TestTurnWheel extends Command {
         System.out.println("TestTurnWheel: initialize");
 
         m_swerve = m_swerveDriveSubsystem.getSwerveDrive();
-        m_moduleInfo = getModuleByName(m_swerve.getModules(), "frontleft");
+        m_moduleInfo = getModuleByName(m_swerve.getModules(), m_moduleName);
     }
 
     @Override
