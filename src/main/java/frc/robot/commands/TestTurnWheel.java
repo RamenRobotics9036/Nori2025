@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.TestSwerveConstants;
@@ -7,20 +8,29 @@ import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
 
+class ModuleInfo {
+    public int index;
+    public SwerveModule obj;
+
+    public ModuleInfo(int moduleIndex, SwerveModule moduleObj) {
+        this.index = moduleIndex;
+        this.obj = moduleObj;
+    }
+}
+
 public class TestTurnWheel extends Command {
-    private SwerveSubsystem m_swerveDrive;
+    private SwerveSubsystem m_swerveDriveSubsystem;
     private Timer m_timer = new Timer();
     private static final double TURN_TIME_SECONDS = 1.0;
     private static final int CYCLES = 2; // Number of full back and forth cycles
-    private SwerveModule m_module = null;
+    private ModuleInfo m_moduleInfo = null;
     private SwerveDrive m_swerve = null;
-    private int m_moduleIndex = -1;
-
+    
     // Constructor
-    public TestTurnWheel(SwerveSubsystem swerveDrive) {
-        m_swerveDrive = swerveDrive;
+    public TestTurnWheel(SwerveSubsystem swerveDriveSubsystem) {
+        m_swerveDriveSubsystem = swerveDriveSubsystem;
 
-        addRequirements(m_swerveDrive);
+        addRequirements(m_swerveDriveSubsystem);
     }
 
     @Override
@@ -29,14 +39,13 @@ public class TestTurnWheel extends Command {
 
         System.out.println("TestTurnWheel: initialize");
 
-        m_swerve = m_swerveDrive.getSwerveDrive();
-        m_moduleIndex = getModuleIndexByName(m_swerve.getModules(), "frontleft");
-        m_module = getModuleByName(m_swerve.getModules(), "frontleft");
+        m_swerve = m_swerveDriveSubsystem.getSwerveDrive();
+        m_moduleInfo = getModuleByName(m_swerve.getModules(), "frontleft");
     }
 
     @Override
     public void execute() {
-        if (m_moduleIndex == -1) {
+        if (m_moduleInfo == null) {
             return;
         }
 
@@ -54,10 +63,14 @@ public class TestTurnWheel extends Command {
             double fraction = (phaseTime - TURN_TIME_SECONDS) / TURN_TIME_SECONDS;
             angleDegrees = 90.0 * (1 + Math.cos(Math.PI * fraction)) / 2.0;
         }
-        
-        System.out.println("Elapsed time: " + elapsed + "s, Angle: " + angleDegrees + " degrees");
-        m_module.setAngle(angleDegrees);
-        setAngleOnModules(angleDegrees);
+
+        //System.out.println("Elapsed time: " + elapsed + "s, Angle: " + angleDegrees + " degrees");
+        m_moduleInfo.obj.setAngle(angleDegrees);
+
+        // In simulation, we need to update the current module state
+        if (RobotBase.isSimulation()) {
+            setAngleOnModules(angleDegrees);
+        }
     }
 
     // Set the angles by calling setModuleStates.  Not sure if this works.
@@ -66,13 +79,13 @@ public class TestTurnWheel extends Command {
         var currentStates = m_swerve.getStates();
         
         // Ensure the index is valid
-        if (m_moduleIndex < 0 || m_moduleIndex >= currentStates.length) {
-            throw new IllegalArgumentException("Invalid module index: " + m_moduleIndex);
+        if (m_moduleInfo.index < 0 || m_moduleInfo.index >= currentStates.length) {
+            throw new IllegalArgumentException("Invalid module index: " + m_moduleInfo.index);
         }
         
         // Preserve the current drive speed, update the angle
-        var oldState = currentStates[m_moduleIndex];
-        currentStates[m_moduleIndex] = new edu.wpi.first.math.kinematics.SwerveModuleState(
+        var oldState = currentStates[m_moduleInfo.index];
+        currentStates[m_moduleInfo.index] = new edu.wpi.first.math.kinematics.SwerveModuleState(
                 oldState.speedMetersPerSecond,
                 edu.wpi.first.math.geometry.Rotation2d.fromDegrees(angleDegrees)
         );
@@ -81,21 +94,12 @@ public class TestTurnWheel extends Command {
         m_swerve.setModuleStates(currentStates, true);
     }
 
-    private SwerveModule getModuleByName(SwerveModule[] moduleList, String name) {
-        for (SwerveModule module : moduleList) {
-            if (module.configuration.name.equals(name)) {
-                return module;
-            }
-        }
-        throw new IllegalArgumentException("No module with name " + name + " found");
-    }
-
-    private int getModuleIndexByName(SwerveModule[] moduleList, String name) {
+    private ModuleInfo getModuleByName(SwerveModule[] moduleList, String name) {
         int index = 0;
 
         for (SwerveModule module : moduleList) {
             if (module.configuration.name.equals(name)) {
-                return index;
+                return new ModuleInfo(index, module);
             }
             index++;
         }
@@ -104,7 +108,7 @@ public class TestTurnWheel extends Command {
 
     @Override
     public boolean isFinished() {
-        if (m_moduleIndex == -1) {
+        if (m_moduleInfo == null) {
             // End command if there isnt a module named appropriately
             return true;
         }
@@ -113,7 +117,8 @@ public class TestTurnWheel extends Command {
 
         // Safety check of N seconds
         if (totalTime > TestSwerveConstants.maxTimeSeconds) {
-            throw new IllegalStateException("Total time exceeds maximum allowed time. Total time: " + totalTime + ", Max allowed time: " + TestSwerveConstants.maxTimeSeconds);
+            throw new IllegalStateException("Total time: " + totalTime
+                + ", Max allowed time: " + TestSwerveConstants.maxTimeSeconds);
         }
         if (m_timer.get() > TestSwerveConstants.maxTimeSeconds) {
             return true;
@@ -124,6 +129,6 @@ public class TestTurnWheel extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        m_swerveDrive.stopSystem();
+        m_swerveDriveSubsystem.stopSystem();
     }
 }
