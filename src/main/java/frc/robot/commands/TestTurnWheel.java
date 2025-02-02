@@ -13,6 +13,8 @@ public class TestTurnWheel extends Command {
     private static final double TURN_TIME_SECONDS = 1.0;
     private static final int CYCLES = 2; // Number of full back and forth cycles
     private SwerveModule m_module = null;
+    private SwerveDrive m_swerve = null;
+    private int m_moduleIndex = -1;
 
     // Constructor
     public TestTurnWheel(SwerveSubsystem swerveDrive) {
@@ -27,13 +29,14 @@ public class TestTurnWheel extends Command {
 
         System.out.println("TestTurnWheel: initialize");
 
-        SwerveModule[] moduleList = m_swerveDrive.getSwerveDrive().getModules();
-        m_module = getSingleModuleByName(moduleList, "frontleft");
+        m_swerve = m_swerveDrive.getSwerveDrive();
+        m_moduleIndex = getModuleIndexByName(m_swerve.getModules(), "frontleft");
+        m_module = getModuleByName(m_swerve.getModules(), "frontleft");
     }
 
     @Override
     public void execute() {
-        if (m_module == null) {
+        if (m_moduleIndex == -1) {
             return;
         }
 
@@ -54,9 +57,31 @@ public class TestTurnWheel extends Command {
         
         System.out.println("Elapsed time: " + elapsed + "s, Angle: " + angleDegrees + " degrees");
         m_module.setAngle(angleDegrees);
+        setAngleOnModules(angleDegrees);
     }
 
-    private SwerveModule getSingleModuleByName(SwerveModule[] moduleList, String name) {
+    // Set the angles by calling setModuleStates.  Not sure if this works.
+    private void setAngleOnModules(double angleDegrees) {
+        // Retrieve current module states
+        var currentStates = m_swerve.getStates();
+        
+        // Ensure the index is valid
+        if (m_moduleIndex < 0 || m_moduleIndex >= currentStates.length) {
+            throw new IllegalArgumentException("Invalid module index: " + m_moduleIndex);
+        }
+        
+        // Preserve the current drive speed, update the angle
+        var oldState = currentStates[m_moduleIndex];
+        currentStates[m_moduleIndex] = new edu.wpi.first.math.kinematics.SwerveModuleState(
+                oldState.speedMetersPerSecond,
+                edu.wpi.first.math.geometry.Rotation2d.fromDegrees(angleDegrees)
+        );
+        
+        // Update module states (using open-loop control as false)
+        m_swerve.setModuleStates(currentStates, true);
+    }
+
+    private SwerveModule getModuleByName(SwerveModule[] moduleList, String name) {
         for (SwerveModule module : moduleList) {
             if (module.configuration.name.equals(name)) {
                 return module;
@@ -65,9 +90,21 @@ public class TestTurnWheel extends Command {
         throw new IllegalArgumentException("No module with name " + name + " found");
     }
 
+    private int getModuleIndexByName(SwerveModule[] moduleList, String name) {
+        int index = 0;
+
+        for (SwerveModule module : moduleList) {
+            if (module.configuration.name.equals(name)) {
+                return index;
+            }
+            index++;
+        }
+        throw new IllegalArgumentException("No module with name " + name + " found");
+    }
+
     @Override
     public boolean isFinished() {
-        if (m_module == null) {
+        if (m_moduleIndex == -1) {
             // End command if there isnt a module named appropriately
             return true;
         }
