@@ -10,8 +10,8 @@ import swervelib.SwerveModule;
 public class TestTurnWheel extends Command {
     private SwerveSubsystem m_swerveDrive;
     private Timer m_timer = new Timer();
-    private static final double TURN_TIME_SECONDS = 4.0;
-    private static final int CYCLES = 4; // Number of full back and forth cycles
+    private static final double TURN_TIME_SECONDS = 1.0;
+    private static final int CYCLES = 2; // Number of full back and forth cycles
     private SwerveModule m_module = null;
 
     // Constructor
@@ -43,13 +43,13 @@ public class TestTurnWheel extends Command {
         double angleDegrees = 0.0;
         
         if (phaseTime < TURN_TIME_SECONDS) {
-            // Forward phase: 0 -> 90 using sinusoidal interpolation
+            // Forward phase: 0 -> 90 with ease-in/ease-out via cosine easing:
             double fraction = phaseTime / TURN_TIME_SECONDS;
-            angleDegrees = 90.0 * Math.sin((Math.PI / 2.0) * fraction);
+            angleDegrees = 90.0 * (1 - Math.cos(Math.PI * fraction)) / 2.0;
         } else {
-            // Backward phase: 90 -> 0 using sinusoidal interpolation
+            // Backward phase: 90 -> 0 with ease-in/ease-out:
             double fraction = (phaseTime - TURN_TIME_SECONDS) / TURN_TIME_SECONDS;
-            angleDegrees = 90.0 * Math.cos((Math.PI / 2.0) * fraction);
+            angleDegrees = 90.0 * (1 + Math.cos(Math.PI * fraction)) / 2.0;
         }
         
         System.out.println("Elapsed time: " + elapsed + "s, Angle: " + angleDegrees + " degrees");
