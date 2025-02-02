@@ -129,14 +129,10 @@ public class RobotContainer
 
 
     // this is field relative, right stick controls rotation around z axis
-    if (!TestSwerveConstants.kIsTestMode) {
-      // Real robot has drive controlled by joystick
-      m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
-    } else {
-      // Test mode has (b) button triggering a test sequence
-      m_driverController.b().onTrue(new TestTurnWheel(m_swerveDrive));
-    }
+    m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
 
+    // Test mode has (b) button triggering a test sequence
+    m_driverController.b().onTrue(new TestTurnWheel(m_swerveDrive));
   
     //D-pad drives straight (no gyro) for tests
     m_driverController.povUp().onTrue((m_swerveDrive.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
@@ -148,7 +144,7 @@ public class RobotContainer
     m_driverController.start().onTrue((Commands.runOnce(m_swerveDrive::zeroGyro)));
     
     // A button aligns the robot using the AprilTag
-    // m_driverController.a().onTrue(new AlignRobot(m_swerveDrive)); $TODO - Restore this
+    // $TODO - Removed m_driverController.a().onTrue(new AlignRobot(m_swerveDrive)); $TODO - Restore this
   }
 
   /**

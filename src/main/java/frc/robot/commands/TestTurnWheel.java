@@ -25,6 +25,8 @@ public class TestTurnWheel extends Command {
     public void initialize() {
         m_timer.restart();
 
+        System.out.println("TestTurnWheel: initialize");
+
         SwerveModule[] moduleList = m_swerveDrive.getSwerveDrive().getModules();
         m_module = getSingleModuleByName(moduleList, "frontleft");
     }
@@ -60,7 +62,7 @@ public class TestTurnWheel extends Command {
                 return module;
             }
         }
-        return null;
+        throw new IllegalArgumentException("No module with name " + name + " found");
     }
 
     @Override
