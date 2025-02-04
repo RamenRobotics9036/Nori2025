@@ -36,7 +36,9 @@ public final class Constants
    */
   public static class SwerveConstants
   {
-    public static final String  kJsonDirectory = "swerve";
+    // USe the directory matching the robot
+    public static final String  kJsonDirectory = "pancake";
+    //public static final String  kJsonDirectory = "nori";
     public static final double kMaxSpeedMetersPerSecond = 5.06;
     public static final double kRobotMass = Units.lbsToKilograms(120); // TODO: update
     public static final Matter kChassisMatter = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), kRobotMass); // TODO: update
@@ -57,6 +59,44 @@ public final class Constants
     public static final PIDConstants kTranslationpid = new PIDConstants(0.7, 0, 0); // try 0.7,0,0 from YAGSL-Example
     public static final PIDConstants kAnglePID = new PIDConstants(0.4, 0, 0.01); // try 0.4,0,0.01 from YAGSL-Example
     public static final double kMaxSpeedMetersPerSecond = 5.06; // try 4.5 from YAGSL-Example
+  }
+
+  public static final class VisionConstants {
+    public static final String limelightName = "limelight";
+    public static final double allowedAngleUncertaintyDegrees = 0.5;
+    public static final double allowedAngleUncertaintyMetersDrive = 0.05;
+    public static final double allowedAngleUncertaintyMetersStrafe = 0.025;
+  }
+
+  public static final class CommandConstants {
+    public static final class AimAtLimeLightConstants {
+      public static final double maxTimeSeconds = 10;
+      public static final double kP = 0.01;
+      public static final double kI = 0.0;
+      public static final double kD = 0.0;
+      public static final double maxSpeed = 0.02;
+    }
+
+    public static final class AlignRobotConstants {
+      public static final double maxTimeSeconds = 10;
+      public static final double maxSpeed = 0.4;
+      public static final double maxSpeedRot = 0.2;
+
+      /**
+       * How much the robot should be offset from the April tag pose rotation.
+      */
+      public static final double transformRot = 0.0;
+
+      /**
+       * How much the robot should be offset from the April tag pose x direction.
+      */
+      public static final double transformDrive = 0.4;
+
+      /**
+       * How much the robot should be offset from the April tag pose y direction.
+      */
+      public static final double transformStrafe = 0;
+    }
   }
   public static final class IntakeConstants{
     public static final int kPullMotorID = 20;

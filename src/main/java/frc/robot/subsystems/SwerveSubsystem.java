@@ -17,8 +17,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -30,13 +28,17 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.vision.VisionSystem;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -48,6 +50,7 @@ import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
 import swervelib.math.SwerveMath;
+import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -63,20 +66,21 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * AprilTag field layout.
    */
-  private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
   /**
    * Enable vision odometry updates while driving.
    */
-  private final boolean             visionDriveTest     = false;
-  
+  private final boolean trackOdometry = true;
+
+  private Field2d m_field = new Field2d();
+
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
    * @param directory Directory of swerve drive config files.
    */
-  public SwerveSubsystem()
+  public SwerveSubsystem(File directory)
   {
-    // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
+      // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
     //  In this case the gear ratio is 12.8 motor revolutions per wheel rotation.
     //  The encoder resolution per motor revolution is 1 per motor revolution.
     double angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(12.8);
@@ -89,13 +93,11 @@ public class SwerveSubsystem extends SubsystemBase
     System.out.println("\t\"angle\": {\"factor\": " + angleConversionFactor + " },");
     System.out.println("\t\"drive\": {\"factor\": " + driveConversionFactor + " }");
     System.out.println("}");
-
+ 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try
     {
-      File directory = new File(Filesystem.getDeployDirectory(),SwerveConstants.kJsonDirectory);
-
       swerveDrive = new SwerveParser(directory).createSwerveDrive(SwerveConstants.kMaxSpeedMetersPerSecond,
                                                                   new Pose2d(new Translation2d(Meter.of(1),
                                                                                                Meter.of(4)),
@@ -111,8 +113,8 @@ public class SwerveSubsystem extends SubsystemBase
                                                0.1); //Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
     swerveDrive.setModuleEncoderAutoSynchronize(false,
                                                 1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
-    swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
-    if (visionDriveTest)
+//    swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
+    if (trackOdometry)
     {
       // Stop the odometry thread if we are using vision that way we can synchronize updates better.
       swerveDrive.stopOdometryThread();
@@ -120,13 +122,22 @@ public class SwerveSubsystem extends SubsystemBase
     setupPathPlanner();
   }
 
+  public void initShuffleboad() {
+    ShuffleboardTab tab = Shuffleboard.getTab("Field");
+    tab.add("Robot Position on Field", m_field);
+  }
+
   @Override
   public void periodic()
   {
     // When vision is enabled we must manually update odometry in SwerveDrive
-    if (visionDriveTest)
+    if (trackOdometry)
     {
       swerveDrive.updateOdometry();
+      if (VisionSystem.isDetecting()) {
+        swerveDrive.addVisionMeasurement(VisionSystem.getRobotPose(), DriverStation.getMatchTime());
+      }
+      m_field.setRobotPose(getPose());
     }
   }
 
@@ -206,51 +217,51 @@ public class SwerveSubsystem extends SubsystemBase
     PathfindingCommand.warmupCommand().schedule();
   }
 
-  /**
-   * Get the distance to the speaker.
-   *
-   * @return Distance to speaker in meters.
-   */
-  public double getDistanceToSpeaker()
-  {
-    int allianceAprilTag = DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4;
-    // Taken from PhotonUtils.getDistanceToPose
-    Pose3d speakerAprilTagPose = aprilTagFieldLayout.getTagPose(allianceAprilTag).get();
-    return getPose().getTranslation().getDistance(speakerAprilTagPose.toPose2d().getTranslation());
-  }
+  // /**
+  //  * Get the distance to the speaker.
+  //  *
+  //  * @return Distance to speaker in meters.
+  //  */
+  // public double getDistanceToSpeaker()
+  // {
+  //   int allianceAprilTag = DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4;
+  //   // Taken from PhotonUtils.getDistanceToPose
+  //   Pose3d speakerAprilTagPose = aprilTagFieldLayout.getTagPose(allianceAprilTag).get();
+  //   return getPose().getTranslation().getDistance(speakerAprilTagPose.toPose2d().getTranslation());
+  // }
 
-  /**
-   * Get the yaw to aim at the speaker.
-   *
-   * @return {@link Rotation2d} of which you need to achieve.
-   */
-  public Rotation2d getSpeakerYaw()
-  {
-    int allianceAprilTag = DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4;
-    // Taken from PhotonUtils.getYawToPose()
-    Pose3d        speakerAprilTagPose = aprilTagFieldLayout.getTagPose(allianceAprilTag).get();
-    Translation2d relativeTrl         = speakerAprilTagPose.toPose2d().relativeTo(getPose()).getTranslation();
-    return new Rotation2d(relativeTrl.getX(), relativeTrl.getY()).plus(swerveDrive.getOdometryHeading());
-  }
+  // /**
+  //  * Get the yaw to aim at the speaker.
+  //  *
+  //  * @return {@link Rotation2d} of which you need to achieve.
+  //  */
+  // public Rotation2d getSpeakerYaw()
+  // {
+  //   int allianceAprilTag = DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4;
+  //   // Taken from PhotonUtils.getYawToPose()
+  //   Pose3d        speakerAprilTagPose = aprilTagFieldLayout.getTagPose(allianceAprilTag).get();
+  //   Translation2d relativeTrl         = speakerAprilTagPose.toPose2d().relativeTo(getPose()).getTranslation();
+  //   return new Rotation2d(relativeTrl.getX(), relativeTrl.getY()).plus(swerveDrive.getOdometryHeading());
+  // }
 
-  /**
-   * Aim the robot at the speaker.
-   *
-   * @param tolerance Tolerance in degrees.
-   * @return Command to turn the robot to the speaker.
-   */
-  public Command aimAtSpeaker(double tolerance)
-  {
-    SwerveController controller = swerveDrive.getSwerveController();
-    return run(
-        () -> {
-          ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0,
-                                                   controller.headingCalculate(getHeading().getRadians(),
-                                                                               getSpeakerYaw().getRadians()),
-                                                                       getHeading());
-          drive(speeds);
-        }).until(() -> Math.abs(getSpeakerYaw().minus(getHeading()).getDegrees()) < tolerance);
-  }
+  // /**
+  //  * Aim the robot at the speaker.
+  //  *
+  //  * @param tolerance Tolerance in degrees.
+  //  * @return Command to turn the robot to the speaker.
+  //  */
+  // public Command aimAtSpeaker(double tolerance)
+  // {
+  //   SwerveController controller = swerveDrive.getSwerveController();
+  //   return run(
+  //       () -> {
+  //         ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0,
+  //                                                  controller.headingCalculate(getHeading().getRadians(),
+  //                                                                              getSpeakerYaw().getRadians()),
+  //                                                                      getHeading());
+  //         drive(speeds);
+  //       }).until(() -> Math.abs(getSpeakerYaw().minus(getHeading()).getDegrees()) < tolerance);
+  // }
 
   /**
    * Get the path follower with events.
@@ -269,7 +280,7 @@ public class SwerveSubsystem extends SubsystemBase
    *
    * @param pose Target {@link Pose2d} to go to.
    * @return PathFinding command
-   */ 
+   */
   public Command driveToPose(Pose2d pose)
   {
 // Create the constraints to use while pathfinding
@@ -342,19 +353,19 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
 
-  /**
-   * Command to characterize the robot drive motors using SysId
-   *
-   * @return SysId Drive Command
-   */
-  public Command sysIdDriveMotorCommand()
-  {
-    return SwerveDriveTest.generateSysIdCommand(
-        SwerveDriveTest.setDriveSysIdRoutine(
-            new Config(),
-            this, swerveDrive, 12),
-        3.0, 5.0, 3.0);
-  }
+  // /**
+  //  * Command to characterize the robot drive motors using SysId
+  //  *
+  //  * @return SysId Drive Command
+  //  */
+  // public Command sysIdDriveMotorCommand()
+  // {
+  //   return SwerveDriveTest.generateSysIdCommand(
+  //       SwerveDriveTest.setDriveSysIdRoutine(
+  //           new Config(),
+  //           this, swerveDrive, 12),
+  //       3.0, 5.0, 3.0);
+  // }
 
   /**
    * Command to characterize the robot angle motors using SysId
@@ -735,5 +746,8 @@ public class SwerveSubsystem extends SubsystemBase
   public SwerveDrive getSwerveDrive()
   {
     return swerveDrive;
+  }
+
+  public void stopSystem() {
   }
 }
