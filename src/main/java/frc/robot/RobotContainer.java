@@ -4,6 +4,48 @@
 
 package frc.robot;
 
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AbsoluteDrive;
+import frc.robot.commands.AlignRobot;
+import frc.robot.Constants.SwerveConstants;
+import frc.robot.commands.AbsoluteDrive;
+import frc.robot.commands.Autos;
+import frc.robot.commands.IntakeTestCommand;
+import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.IntakeSystem;
+import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.CommandAppliedController;
+import frc.robot.vision.VisionSystem;
+import swervelib.SwerveInputStream;
+
+import java.io.File;
+
+import org.ironmaple.simulation.IntakeSimulation.IntakeSide;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import swervelib.SwerveInputStream;
+
+import java.io.File;
+
+import org.ironmaple.simulation.IntakeSimulation.IntakeSide;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+/*
+import edu.wpi.first.math.estimator.ExtendedKalmanFilter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -77,6 +119,7 @@ public class RobotContainer
   // right stick controls the angular velocity of the robot
   Command m_driveFieldOrientedAngularVelocity = m_swerveDrive.driveFieldOriented(driveAngularVelocity);
 
+private final IntakeSystem m_intakeSystem = new IntakeSystem();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -129,6 +172,8 @@ public class RobotContainer
     // this is field relative, right stick controls rotation around z axis
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
   
+     m_intakeSystem.setDefaultCommand(new IntakeTestCommand(m_intakeSystem));
+
     //D-pad drives straight (no gyro) for tests
     m_driverController.povUp().onTrue((m_swerveDrive.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
     m_driverController.povDown().onTrue((m_swerveDrive.driveCommand(() -> -0.3, () -> 0, () -> 0, false)));
