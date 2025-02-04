@@ -10,6 +10,8 @@ import frc.robot.commands.AlignRobot;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.AbsoluteDrive;
 import frc.robot.commands.Autos;
+import frc.robot.commands.IntakeDefaultCommand;
+import frc.robot.commands.IntakeSpitCommand;
 import frc.robot.commands.IntakeTestCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeSystem;
@@ -75,6 +77,8 @@ public class RobotContainer
 
   private final CommandAppliedController m_driverController =
       new CommandAppliedController(OperatorConstants.kDriverPort);
+    private final CommandAppliedController m_armController =
+      new CommandAppliedController(OperatorConstants.kArmPort);
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       m_swerveDrive  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
@@ -171,9 +175,7 @@ private final IntakeSystem m_intakeSystem = new IntakeSystem();
 
     // this is field relative, right stick controls rotation around z axis
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
-  
-     m_intakeSystem.setDefaultCommand(new IntakeTestCommand(m_intakeSystem));
-
+    m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
     //D-pad drives straight (no gyro) for tests
     m_driverController.povUp().onTrue((m_swerveDrive.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
     m_driverController.povDown().onTrue((m_swerveDrive.driveCommand(() -> -0.3, () -> 0, () -> 0, false)));
@@ -185,6 +187,9 @@ private final IntakeSystem m_intakeSystem = new IntakeSystem();
     
     // A button aligns the robot using the AprilTag
     m_driverController.a().onTrue(new AlignRobot(m_swerveDrive));
+
+    // Command to spit out game pieces
+    m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem));
   }
 
   /**

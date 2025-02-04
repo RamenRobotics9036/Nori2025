@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -19,6 +20,8 @@ public class IntakeSystem extends SubsystemBase{
     private SparkMaxConfig m_loadConfig = new SparkMaxConfig();
 
     private double maxOutput = IntakeConstants.kMaxOutputPercentage;
+    private RelativeEncoder m_pullMotorRelativeEncoder = m_pullMotor.getEncoder();
+    private RelativeEncoder m_loadMotorRelativeEncoder = m_loadMotor.getEncoder();
 
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit
     public IntakeSystem(){
@@ -26,9 +29,11 @@ public class IntakeSystem extends SubsystemBase{
         m_pullConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
         m_pullConfig.smartCurrentLimit(IntakeConstants.kStallLimit);
         m_pullConfig.inverted(true);
+
         m_pullMotor.configure(m_pullConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
+
         m_loadConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
         m_loadConfig.smartCurrentLimit(IntakeConstants.kStallLimit);
         m_loadMotor.configure(m_loadConfig, 
@@ -54,6 +59,16 @@ public class IntakeSystem extends SubsystemBase{
     //gets the speed of m_loadMotor
     public double getLoadMotorSpeed(){
         return m_loadMotor.get();
+    }
+
+    //gets position from RELATIVE encoder
+    public double getPullMotorPosition() {
+        return m_pullMotorRelativeEncoder.getPosition();
+    }
+
+    //gets position from RELATIVE encoder
+    public double getLoadMotorPosition() {
+        return m_loadMotorRelativeEncoder.getPosition();
     }
 
     //stops everything
