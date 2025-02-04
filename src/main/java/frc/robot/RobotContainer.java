@@ -93,13 +93,10 @@ public class RobotContainer
   Command m_driveFieldOrientedAngularVelocity = m_swerveDrive.driveFieldOriented(driveAngularVelocity);
 
 
-  private final IntakeSystem m_intakeSystem = new IntakeSystem();
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    
   }
 
   /**
@@ -137,6 +134,8 @@ public class RobotContainer
 
 
 //this is field relative, right stick controls rotation around z axis
+  drivebase.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
+  m_intakeSystem.setDefaultCommand(new IntakeTestCommand(m_intakeSystem));
 drivebase.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
 
     // this is field relative, right stick controls rotation around z axis
