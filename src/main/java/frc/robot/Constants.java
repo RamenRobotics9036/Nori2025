@@ -101,6 +101,8 @@ public final class Constants
   public static final class IntakeConstants{
     public static final int kPullMotorID = 20;
     public static final int kLoadMotorID = 21;
+    public static final int kArmMotorID = 22;
+    public static final int kArmEncoderID = 0;
     public static final int kStallLimit = 20;
     public static final double kMaxOutputPercentage = 0.4;
   }

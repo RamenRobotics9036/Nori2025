@@ -7,11 +7,13 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AbsoluteDrive;
 import frc.robot.commands.AlignRobot;
+import frc.robot.commands.ArmTestCommand;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.AbsoluteDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeTestCommand;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.IntakeArmSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.CommandAppliedController;
@@ -120,7 +122,7 @@ public class RobotContainer
   Command m_driveFieldOrientedAngularVelocity = m_swerveDrive.driveFieldOriented(driveAngularVelocity);
 
 private final IntakeSystem m_intakeSystem = new IntakeSystem();
-
+private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -133,6 +135,8 @@ private final IntakeSystem m_intakeSystem = new IntakeSystem();
     VisionSystem.initShuffleboad();
     m_swerveDrive.initShuffleboad();
   }
+
+
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -155,36 +159,30 @@ private final IntakeSystem m_intakeSystem = new IntakeSystem();
         m_driverController.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
         m_driverController.rightBumper().onTrue(Commands.none());
     */
-    /*
-    //d-pad and X, B test controls:
-    m_driverController.povUp().onTrue((drivebase.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
-    m_driverController.povDown().onTrue((drivebase.driveCommand(() -> -0.3, () -> 0, () -> 0, false)));
-    m_driverController.povLeft().onTrue((drivebase.driveCommand(() -> 0, () -> 0.3, () -> 0, false)));
-    m_driverController.povRight().onTrue((drivebase.driveCommand(() -> 0, () -> -0.3, () -> 0, false)));
-    m_driverController.x().onTrue(drivebase.driveCommand(() -> 0, () -> 0, () -> 0.5, false));
-    m_driverController.b().onTrue(drivebase.driveCommand(() -> 0, () -> 0, () -> -0.5, false));
-    */
     //this is field relative, right stick controls orientation relative to the field
     //drivebase.setDefaultCommand(m_driveFieldOrientedDirectAngle);
 
 
 
     // this is field relative, right stick controls rotation around z axis
+    
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
   
-     m_intakeSystem.setDefaultCommand(new IntakeTestCommand(m_intakeSystem));
+    // m_intakeSystem.setDefaultCommand(new IntakeTestCommand(m_intakeSystem));
 
     //D-pad drives straight (no gyro) for tests
+    /*
     m_driverController.povUp().onTrue((m_swerveDrive.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
     m_driverController.povDown().onTrue((m_swerveDrive.driveCommand(() -> -0.3, () -> 0, () -> 0, false)));
     m_driverController.povLeft().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> 0.3, () -> 0, false)));
     m_driverController.povRight().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> -0.3, () -> 0, false)));
-  
+    */
     // Start button resets the gyro
     m_driverController.start().onTrue((Commands.runOnce(m_swerveDrive::zeroGyro)));
     
     // A button aligns the robot using the AprilTag
     m_driverController.a().onTrue(new AlignRobot(m_swerveDrive));
+    m_driverController.x().onTrue(new ArmTestCommand(m_armSystem));
   }
 
   /**
