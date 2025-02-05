@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.commands.testcommands.WheelTestContext;
 import frc.robot.vision.VisionSystem;
 
 import java.io.File;
@@ -72,6 +73,8 @@ public class SwerveSubsystem extends SubsystemBase
   private final boolean trackOdometry = true;
 
   private Field2d m_field = new Field2d();
+
+  private WheelTestContext m_wheelTestContext = new WheelTestContext();
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -125,6 +128,14 @@ public class SwerveSubsystem extends SubsystemBase
   public void initShuffleboad() {
     ShuffleboardTab tab = Shuffleboard.getTab("Field");
     tab.add("Robot Position on Field", m_field);
+  }
+
+  public WheelTestContext getWheelTestContext() {
+    return m_wheelTestContext;
+  }
+
+  public void cancelWheelTest() {
+    m_wheelTestContext.cancellableCommand.cancel();
   }
 
   @Override

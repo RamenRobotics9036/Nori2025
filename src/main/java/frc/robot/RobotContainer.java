@@ -8,11 +8,14 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AbsoluteDrive;
 import frc.robot.commands.AlignRobot;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.TestSwerveConstants;
 import frc.robot.commands.AbsoluteDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeDefaultCommand;
 import frc.robot.commands.IntakeSpitCommand;
 import frc.robot.commands.IntakeTestCommand;
+import frc.robot.commands.testcommands.TestTurnWheel;
+import frc.robot.commands.testcommands.WheelTestContext;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -28,7 +31,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import swervelib.SwerveInputStream;
@@ -43,29 +48,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-/*
-import edu.wpi.first.math.estimator.ExtendedKalmanFilter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.SwerveConstants;
-import frc.robot.commands.AlignRobot;
-import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.util.CommandAppliedController;
-import frc.robot.vision.VisionSystem;
-
-import java.io.File;
-
-import swervelib.SwerveInputStream;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -176,6 +158,7 @@ private final IntakeSystem m_intakeSystem = new IntakeSystem();
     // this is field relative, right stick controls rotation around z axis
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
     m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
+
     //D-pad drives straight (no gyro) for tests
     m_driverController.povUp().onTrue((m_swerveDrive.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
     m_driverController.povDown().onTrue((m_swerveDrive.driveCommand(() -> -0.3, () -> 0, () -> 0, false)));
@@ -184,12 +167,41 @@ private final IntakeSystem m_intakeSystem = new IntakeSystem();
   
     // Start button resets the gyro
     m_driverController.start().onTrue((Commands.runOnce(m_swerveDrive::zeroGyro)));
-    
+
     // A button aligns the robot using the AprilTag
     m_driverController.a().onTrue(new AlignRobot(m_swerveDrive));
 
     // Command to spit out game pieces
     m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem));
+
+    // Test mode has (b) button triggering a test sequence
+    if (TestSwerveConstants.kIsTestMode) {
+      m_driverController.b().onTrue(createTestWheelsCommand());
+    }
+  }
+
+  private Command testSequence() {
+    return new SequentialCommandGroup(
+        new InstantCommand(() -> m_swerveDrive.getWheelTestContext().reset()),
+        new TestTurnWheel(m_swerveDrive, "frontleft"),
+        new TestTurnWheel(m_swerveDrive, "frontright"),
+        new TestTurnWheel(m_swerveDrive, "backleft"),
+        new TestTurnWheel(m_swerveDrive, "backright")
+    );
+  }
+
+  private Command createTestWheelsCommand() {
+    WheelTestContext wheelTestContext = m_swerveDrive.getWheelTestContext();
+
+    Command scheduledComand = new ConditionalCommand(
+        testSequence(),
+        new InstantCommand(),
+        () -> DriverStation.isTest());
+
+    // Save the sequence handle into subsystem, in case we later need to cancel it.
+    wheelTestContext.cancellableCommand = scheduledComand;
+
+    return scheduledComand;
   }
 
   /**
