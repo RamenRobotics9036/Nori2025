@@ -116,7 +116,6 @@ private final IntakeSystem m_intakeSystem = new IntakeSystem();
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    VisionSystem.initShuffleboad();
     m_swerveDrive.initShuffleboad();
   }
 
@@ -221,6 +220,6 @@ private final IntakeSystem m_intakeSystem = new IntakeSystem();
   }
 
   public void updateVisionPose() {
-    VisionSystem.updatePose();
+    m_swerveDrive.updateVisionPose();
   }
 }

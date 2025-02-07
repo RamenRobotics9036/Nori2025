@@ -81,6 +81,8 @@ public class SwerveSubsystem extends SubsystemBase
 
   private WheelTestContext m_wheelTestContext = new WheelTestContext();
 
+  private VisionSystem m_vision = null;
+
   //
   // Simulated Vision
   //
@@ -135,6 +137,8 @@ public class SwerveSubsystem extends SubsystemBase
     }
     setupPathPlanner();
 
+    m_vision = new VisionSystem();
+
     if (Robot.isSimulation()) {
       initVisionSim();
     }
@@ -146,6 +150,8 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
   public void initShuffleboad() {
+    m_vision.initShuffleboad(Shuffleboard.getTab("Vision"));
+
     ShuffleboardTab tab = Shuffleboard.getTab("Field");
     tab.add("Robot Position on Field", m_field);
   }
@@ -165,11 +171,19 @@ public class SwerveSubsystem extends SubsystemBase
     if (trackOdometry)
     {
       swerveDrive.updateOdometry();
-      if (VisionSystem.isDetecting()) {
-        swerveDrive.addVisionMeasurement(VisionSystem.getRobotPose(), DriverStation.getMatchTime());
+      if (m_vision.isDetecting()) {
+        swerveDrive.addVisionMeasurement(m_vision.getRobotPose(), DriverStation.getMatchTime());
       }
       m_field.setRobotPose(getPose());
     }
+  }
+
+  public VisionSystem getVisionSystem() {
+    return m_vision;
+  }
+
+  public void updateVisionPose() {
+    m_vision.updatePose();
   }
 
   @Override

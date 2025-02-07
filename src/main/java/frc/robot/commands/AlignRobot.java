@@ -40,11 +40,11 @@ public class AlignRobot extends Command {
 
     @Override
     public void execute() {
-        Pose3d targetPose = VisionSystem.getTargetPose();
+        Pose3d targetPose = m_swerveDrive.getVisionSystem().getTargetPose();
 
         double drive = m_drivePIDController.calculate(targetPose.getZ());
         double strafe = m_strafePIDController.calculate(targetPose.getX());
-        double rotate = m_rotatePIDController.calculate(VisionSystem.getTX());
+        double rotate = m_rotatePIDController.calculate(m_swerveDrive.getVisionSystem().getTX());
 
         drive = MathUtil.clamp(drive, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed);
         strafe = MathUtil.clamp(strafe, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed);
@@ -59,7 +59,7 @@ public class AlignRobot extends Command {
         if (m_timer.get() > AlignRobotConstants.maxTimeSeconds) {
             return true;
         }
-        if (!VisionSystem.isDetecting()) {
+        if (!m_swerveDrive.getVisionSystem().isDetecting()) {
             return true;
         }
         return (m_drivePIDController.atSetpoint() && m_strafePIDController.atSetpoint()) && m_rotatePIDController.atSetpoint();
