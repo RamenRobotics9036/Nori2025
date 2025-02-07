@@ -37,7 +37,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.VisionSimConstants;
+import frc.robot.Robot;
 import frc.robot.commands.testcommands.WheelTestContext;
+import frc.robot.vision.VisionSim;
 import frc.robot.vision.VisionSystem;
 
 import java.io.File;
@@ -47,6 +50,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
+import org.photonvision.PhotonCamera;
+
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
@@ -75,6 +80,12 @@ public class SwerveSubsystem extends SubsystemBase
   private Field2d m_field = new Field2d();
 
   private WheelTestContext m_wheelTestContext = new WheelTestContext();
+
+  //
+  // Simulated Vision
+  //
+  private VisionSim m_visionSim = null;
+  private PhotonCamera m_camera = null;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -123,6 +134,15 @@ public class SwerveSubsystem extends SubsystemBase
       swerveDrive.stopOdometryThread();
     }
     setupPathPlanner();
+
+    if (Robot.isSimulation()) {
+      initVisionSim();
+    }
+  }
+
+  private void initVisionSim() {
+    m_camera = new PhotonCamera(VisionSimConstants.kCameraName);
+    m_visionSim = new VisionSim(m_camera);
   }
 
   public void initShuffleboad() {
@@ -155,6 +175,10 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void simulationPeriodic()
   {
+    m_visionSim.simulationPeriodic(getPose());
+
+    var debugField = m_visionSim.getSimDebugField();
+    debugField.getObject("EstimatedRobot").setPose(getPose());
   }
 
   /**
