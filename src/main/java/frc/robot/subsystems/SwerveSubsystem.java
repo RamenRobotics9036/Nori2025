@@ -179,6 +179,7 @@ public class SwerveSubsystem extends SubsystemBase
 
     var debugField = m_visionSim.getSimDebugField();
     debugField.getObject("EstimatedRobot").setPose(getPose());
+    debugField.getObject("EstimatedRobotModules").setPoses(swerveDrive.getSwerveModulePoses(getPose()));
   }
 
   /**
