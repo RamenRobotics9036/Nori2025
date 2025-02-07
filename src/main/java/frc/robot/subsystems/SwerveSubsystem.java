@@ -42,6 +42,8 @@ import frc.robot.Robot;
 import frc.robot.commands.testcommands.WheelTestContext;
 import frc.robot.vision.VisionSim;
 import frc.robot.vision.VisionSystem;
+import frc.robot.vision.VisionSystemInterface;
+import frc.robot.vision.VisionSystemSim;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,7 +83,7 @@ public class SwerveSubsystem extends SubsystemBase
 
   private WheelTestContext m_wheelTestContext = new WheelTestContext();
 
-  private VisionSystem m_vision = null;
+  private VisionSystemInterface m_vision = null;
 
   //
   // Simulated Vision
@@ -137,10 +139,12 @@ public class SwerveSubsystem extends SubsystemBase
     }
     setupPathPlanner();
 
-    m_vision = new VisionSystem();
-
-    if (Robot.isSimulation()) {
+    if (!Robot.isSimulation()) {
+      m_vision = new VisionSystem();
+    }
+    else {
       initVisionSim();
+      m_vision = new VisionSystemSim();
     }
   }
 
@@ -178,7 +182,7 @@ public class SwerveSubsystem extends SubsystemBase
     }
   }
 
-  public VisionSystem getVisionSystem() {
+  public VisionSystemInterface getVisionSystem() {
     return m_vision;
   }
 
