@@ -89,7 +89,6 @@ public class SwerveSubsystem extends SubsystemBase
   // Simulated Vision
   //
   private VisionSim m_visionSim = null;
-  private PhotonCamera m_camera = null;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -149,8 +148,7 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
   private void initVisionSim() {
-    m_camera = new PhotonCamera(VisionSimConstants.kCameraName);
-    m_visionSim = new VisionSim(m_camera);
+    m_visionSim = new VisionSim();
   }
 
   public void initShuffleboad() {
