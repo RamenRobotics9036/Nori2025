@@ -33,7 +33,10 @@ public class VisionSystem {
         tab.addDouble("April Tag Relative Y", () -> m_targetPose.getY());
         tab.addDouble("April Tag Relative Z", () -> m_targetPose.getZ());
         tab.addDouble("April Tag Relative Rot", () -> m_targetPose.getRotation().getAngle());
+    }
 
+    public static void setRobotPose(Pose2d newPose) {
+        m_robotPose = newPose;
     }
 
     public static void changeRobotPose(Transform2d deltaPose) {

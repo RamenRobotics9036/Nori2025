@@ -88,8 +88,8 @@ public class RobotContainer
   // right stick controls the angular velocity of the robot
   Command m_driveFieldOrientedAngularVelocity = m_swerveDrive.driveFieldOriented(driveAngularVelocity);
 
-private final IntakeSystem m_intakeSystem = new IntakeSystem();
-private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
+  // private final IntakeSystem m_intakeSystem = new IntakeSystem();
+  // private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -134,8 +134,8 @@ private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
     // this is field relative, right stick controls rotation around z axis
     
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
-    m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
-    m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
+    // m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
+    // m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
   
     //D-pad drives straight (no gyro) for tests
     /*
@@ -151,7 +151,7 @@ private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
     m_driverController.a().onTrue(m_swerveDrive.alignWithAprilTag());
 
     // Command to spit out game pieces
-    m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem));
+    // m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem));
 
     // Test mode has (b) button triggering a test sequence
     if (TestSwerveConstants.kIsTestMode) {

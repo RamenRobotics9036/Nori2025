@@ -161,10 +161,11 @@ public class SwerveSubsystem extends SubsystemBase
   public Command alignWithAprilTag() {
     Pose2d targetPose = VisionSystem.getRobotPose();
     targetPose = targetPose.plus(new Transform2d(AlignRobotConstants.transformDrive, AlignRobotConstants.transformStrafe, Rotation2d.fromDegrees(AlignRobotConstants.transformRot)));
+    resetOdometry(VisionSystem.getRobotPose());
 
     PathConstraints constraints = new PathConstraints(
-        swerveDrive.getMaximumChassisVelocity(), 4.0,
-        swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
+        0.1, 0.05,
+        0.1, 0.1);
     return AutoBuilder.pathfindToPose(targetPose, constraints, 0);
   }
 
