@@ -5,15 +5,9 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AbsoluteDrive;
 import frc.robot.commands.AlignRobot;
 import frc.robot.commands.ArmDefaultCommand;
-import frc.robot.commands.ArmTestCommand;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.commands.AbsoluteDrive;
-import frc.robot.commands.Autos;
-import frc.robot.commands.IntakeTestCommand;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeArmSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -23,24 +17,10 @@ import swervelib.SwerveInputStream;
 
 import java.io.File;
 
-import org.ironmaple.simulation.IntakeSimulation.IntakeSide;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import swervelib.SwerveInputStream;
-
-import java.io.File;
-
-import org.ironmaple.simulation.IntakeSimulation.IntakeSide;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;

@@ -123,9 +123,9 @@ public final class Constants
     public static final double maxOutput = 1.0;
     public static final int kArmEncoderID = 0;
     public static final double kArmGearBoxRatio = 125 * (44/30);
-    public static final double kMaxArmRotation = 3.2;
-    public static final double kMinArmRotation = 0.15;
-    public static final double kAbsoluteEncoderOffset = -0.05;
+    public static final double kMaxArmRotation = 2.6;
+    public static final double kMinArmRotation = 0.1;
+    public static final double kAbsoluteEncoderOffset = 0;
     public static final int kcurrentLimit = 20;
   }
 

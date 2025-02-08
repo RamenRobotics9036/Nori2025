@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.IntakeConstants;
 
 
 public class IntakeArmSystem extends SubsystemBase{
@@ -33,7 +32,7 @@ public class IntakeArmSystem extends SubsystemBase{
 
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit
     public IntakeArmSystem(){
-        m_armEncoder.setInverted(true);
+        m_armEncoder.setInverted(false);
         m_armEncoder.setDutyCycleRange(0, 1);
 
         ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig();
@@ -42,8 +41,8 @@ public class IntakeArmSystem extends SubsystemBase{
             .i(0)
             .d(0);
         closedLoopConfig.positionWrappingEnabled(true);
-        closedLoopConfig.positionWrappingMinInput(ArmConstants.kMinArmRotation);
-        closedLoopConfig.positionWrappingMaxInput(ArmConstants.kMaxArmRotation);
+        closedLoopConfig.positionWrappingMinInput(0);
+        closedLoopConfig.positionWrappingMaxInput(Math.PI * 2);
 
         EncoderConfig encoderConfig = new EncoderConfig();
         encoderConfig.positionConversionFactor((Math.PI * 2) / ArmConstants.kArmGearBoxRatio);
@@ -76,6 +75,13 @@ public class IntakeArmSystem extends SubsystemBase{
         initShuffleboad();
     }
 
+    @Override
+    public void periodic() {
+        if (m_armEncoder.isConnected()) {
+            m_armRelativeEncoder.setPosition(getArmAngle());
+        }
+    }
+
     public void initShuffleboad() {
         ShuffleboardTab tab = Shuffleboard.getTab("Arm");
         tab.addDouble("Arm Relative Encoder", () -> getArmAngleRelative());
@@ -103,7 +109,7 @@ public class IntakeArmSystem extends SubsystemBase{
 
     // get encoder value
     private double getArmAngle() {
-        return((m_armEncoder.get() * 2 * Math.PI) + ArmConstants.kAbsoluteEncoderOffset) % (2 * Math.PI);
+        return Math.max(0, (m_armEncoder.get() * 2 * Math.PI) + ArmConstants.kAbsoluteEncoderOffset) % (Math.PI * 2);
     }
 
     public double getArmAngleRelative() {
