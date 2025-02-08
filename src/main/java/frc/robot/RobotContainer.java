@@ -5,18 +5,15 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AbsoluteDrive;
 import frc.robot.commands.AlignRobot;
+import frc.robot.commands.ArmDefaultCommand;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TestSwerveConstants;
-import frc.robot.commands.AbsoluteDrive;
-import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeDefaultCommand;
 import frc.robot.commands.IntakeSpitCommand;
-import frc.robot.commands.IntakeTestCommand;
 import frc.robot.commands.testcommands.TestTurnWheel;
 import frc.robot.commands.testcommands.WheelTestContext;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.IntakeArmSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.CommandAppliedController;
@@ -25,8 +22,6 @@ import swervelib.SwerveInputStream;
 
 import java.io.File;
 
-import org.ironmaple.simulation.IntakeSimulation.IntakeSide;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,18 +29,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import swervelib.SwerveInputStream;
-
-import java.io.File;
-
-import org.ironmaple.simulation.IntakeSimulation.IntakeSide;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -106,7 +89,7 @@ public class RobotContainer
   Command m_driveFieldOrientedAngularVelocity = m_swerveDrive.driveFieldOriented(driveAngularVelocity);
 
 private final IntakeSystem m_intakeSystem = new IntakeSystem();
-
+private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -119,6 +102,8 @@ private final IntakeSystem m_intakeSystem = new IntakeSystem();
     VisionSystem.initShuffleboad();
     m_swerveDrive.initShuffleboad();
   }
+
+
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -141,30 +126,24 @@ private final IntakeSystem m_intakeSystem = new IntakeSystem();
         m_driverController.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
         m_driverController.rightBumper().onTrue(Commands.none());
     */
-    /*
-    //d-pad and X, B test controls:
-    m_driverController.povUp().onTrue((drivebase.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
-    m_driverController.povDown().onTrue((drivebase.driveCommand(() -> -0.3, () -> 0, () -> 0, false)));
-    m_driverController.povLeft().onTrue((drivebase.driveCommand(() -> 0, () -> 0.3, () -> 0, false)));
-    m_driverController.povRight().onTrue((drivebase.driveCommand(() -> 0, () -> -0.3, () -> 0, false)));
-    m_driverController.x().onTrue(drivebase.driveCommand(() -> 0, () -> 0, () -> 0.5, false));
-    m_driverController.b().onTrue(drivebase.driveCommand(() -> 0, () -> 0, () -> -0.5, false));
-    */
     //this is field relative, right stick controls orientation relative to the field
     //drivebase.setDefaultCommand(m_driveFieldOrientedDirectAngle);
 
 
 
     // this is field relative, right stick controls rotation around z axis
+    
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
     m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
-
+    m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
+  
     //D-pad drives straight (no gyro) for tests
+    /*
     m_driverController.povUp().onTrue((m_swerveDrive.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
     m_driverController.povDown().onTrue((m_swerveDrive.driveCommand(() -> -0.3, () -> 0, () -> 0, false)));
     m_driverController.povLeft().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> 0.3, () -> 0, false)));
     m_driverController.povRight().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> -0.3, () -> 0, false)));
-  
+    */
     // Start button resets the gyro
     m_driverController.start().onTrue((Commands.runOnce(m_swerveDrive::zeroGyro)));
 

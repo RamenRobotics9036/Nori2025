@@ -103,6 +103,7 @@ public final class Constants
       public static final double transformStrafe = 0;
     }
   }
+
   public static final class IntakeConstants{
     public static final int kPullMotorID = 20;
     public static final int kLoadMotorID = 21;
@@ -120,5 +121,20 @@ public final class Constants
     public static final int maxTime = 3;
     public static final double speed = 1.0;
     public static final double numRotations = 10;
+  }
+
+  public static final class ArmConstants {
+    public static final int kArmMotorID = 22;
+    public static final double maxOutput = 1.0;
+    public static final int kArmEncoderID = 0;
+    public static final double kArmGearBoxRatio = 125 * (44/30);
+    public static final double kMaxArmRotation = 2.6;
+    public static final double kMinArmRotation = 0.1;
+    public static final double kAbsoluteEncoderOffset = 0;
+    public static final int kcurrentLimit = 20;
+  }
+
+  public static final class ArmDefaultCommandConstants {
+    public static final double armAngleChangeRate = 5;
   }
 }
