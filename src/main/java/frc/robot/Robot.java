@@ -108,7 +108,7 @@ m_AutoLogic = new AutoLogic(m_robotContainer);
    */
   @Override
   public void autonomousInit() {
-    m_AutoLogic.s.setupPathPlanner();
+    m_AutoLogic.m_robotContainer.m_swerveDrive.setupPathPlanner();
     Command autoCommand = AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
 
     if (autoCommand != null) {

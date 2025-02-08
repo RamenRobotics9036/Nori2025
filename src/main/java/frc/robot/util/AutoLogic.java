@@ -29,7 +29,7 @@ import java.util.List;
 import org.json.simple.parser.ParseException;
 
 public class AutoLogic {
-    private RobotContainer m_robotContainer;
+    public RobotContainer m_robotContainer;
 public AutoLogic(RobotContainer robotContainer) {
     m_robotContainer = robotContainer;
 }
