@@ -125,9 +125,9 @@ public final class Constants
   }
 
   public static final class ElevatorContants {
-    //24 and 25 are FILLER VALUES! Change once built.
-    public static final int kLeaderMotorID = 24;
-    public static final int kFollowMotorID = 25;
+    public static final int kLeaderMotorID = 30;
+    public static final int kFollowMotorID = 31;
+    public static final int DIOIndex = 0;
     public static final int kStallLimit = 20;
     public static final double kMaxOutputPercentage = 0.4;
   }
