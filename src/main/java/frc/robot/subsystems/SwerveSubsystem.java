@@ -54,6 +54,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import swervelib.SwerveController;
@@ -156,11 +157,9 @@ public class SwerveSubsystem extends SubsystemBase
     tabVision.addBoolean("Is Detecting", () -> m_vision.isDetecting());
     tabVision.addDouble("ID", () -> m_vision.getID());
 
-    // $TODO
-    // tabVision.addDouble("April Tag Relative X", () -> m_targetPose.getX());
-    // tabVision.addDouble("April Tag Relative Y", () -> m_targetPose.getY());
-    // tabVision.addDouble("April Tag Relative Z", () -> m_targetPose.getZ());
-    // tabVision.addDouble("April Tag Relative Rot", () -> m_targetPose.getRotation().getAngle());
+    tabVision.addDouble("Distance to target", () -> PhotonUtils.getDistanceToPose(
+      m_vision.getRobotPose(),
+      m_vision.getTargetPose().toPose2d()));
 
     ShuffleboardTab tab = Shuffleboard.getTab("Field");
     tab.add("Robot Position on Field", m_field);
@@ -204,15 +203,6 @@ public class SwerveSubsystem extends SubsystemBase
     var debugField = m_visionSim.getSimDebugField();
     debugField.getObject("EstimatedRobot").setPose(getPose());
     debugField.getObject("EstimatedRobotModules").setPoses(swerveDrive.getSwerveModulePoses(getPose()));
-  
-    Optional<PhotonTrackedTarget> bestTarget = m_visionSim.getBestTarget();
-    if (bestTarget.isPresent()) {
-      System.out.println("Best Target: " + bestTarget.get().fiducialId);
-    }
-    else {
-      System.out.println("No target");
-    }
-  
   }
 
   /**

@@ -72,7 +72,8 @@ public class VisionSim {
         // Add the simulated camera to view the targets on this simulated field.
         m_visionSim.addCamera(m_cameraSim, kRobotToCam);
 
-        m_cameraSim.enableDrawWireframe(true); // $TODO - This can probably be false
+        // We disable the wire frame since we never open the PhotonVision local webview
+        m_cameraSim.enableDrawWireframe(false);
     }
  
     public void simulationPeriodic(Pose2d robotSimPose) {
