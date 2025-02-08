@@ -98,12 +98,33 @@ public final class Constants
       public static final double transformStrafe = 0;
     }
   }
+
   public static final class IntakeConstants{
     public static final int kPullMotorID = 20;
     public static final int kLoadMotorID = 21;
-    public static final int kArmMotorID = 22;
-    public static final int kArmEncoderID = 0;
     public static final int kStallLimit = 20;
     public static final double kMaxOutputPercentage = 0.4;
+    public static final int pullMotorGearBoxFactor= 4;
+    public static final int loadMotorGearBoxFactor = 4;
+  }
+
+  public static final class IntakeDefaultCommandConstants {
+    public static final double speed = 0.3;
+  }
+
+  public static final class IntakeSpitCommandConstants {
+    public static final int maxTime = 3;
+    public static final double speed = 1.0;
+    public static final double numRotations = 10;
+  }
+
+  public static final class ArmConstants {
+    public static final int kArmMotorID = 22;
+    public static final double maxOutput = 1.0;
+    public static final int kArmEncoderID = 0;
+    public static final double kArmGearBoxRatio = 125;
+    public static final double kMaxArmRotation = Math.PI;
+    public static final double kMinArmRotation = 0;
+
   }
 }

@@ -182,7 +182,7 @@ private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
     
     // A button aligns the robot using the AprilTag
     m_driverController.a().onTrue(new AlignRobot(m_swerveDrive));
-    m_driverController.x().onTrue(new ArmTestCommand(m_armSystem));
+    // m_driverController.x().onTrue(new ArmTestCommand(m_armSystem));
   }
 
   /**
