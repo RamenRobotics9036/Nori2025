@@ -77,6 +77,7 @@ public class VisionSim {
  
     public void simulationPeriodic(Pose2d robotSimPose) {
         m_visionSim.update(robotSimPose);
+        calcNewBestTarget();
     }
 
     /** Reset pose history of the robot in the vision system simulation. */
@@ -90,14 +91,18 @@ public class VisionSim {
         return m_visionSim.getDebugField();
     }
 
+    public Optional<PhotonTrackedTarget> getBestTarget() {
+        return m_bestTarget;
+    }
+
     // If there's new information from the camera, we process it, and SAVE the best
     // target.  That way, we still see that target even if there's no new camera info
     // to read.
-    public Optional<PhotonTrackedTarget> getBestTarget() {
+    private void calcNewBestTarget() {
         // Read in relevant data from the Camera
         List<PhotonPipelineResult> pipeline_result_list = m_camera.getAllUnreadResults();
         if (pipeline_result_list.isEmpty()) {
-            return m_bestTarget;
+            return;
         }
 
         // Camera processed a new frame since last
@@ -106,11 +111,10 @@ public class VisionSim {
         if (!most_recent.hasTargets()) {
             // Save that we saw NO targets
             m_bestTarget = Optional.empty();
-            return m_bestTarget;
+            return;
         }
 
         PhotonTrackedTarget bestTarget = most_recent.getBestTarget();
         m_bestTarget = Optional.of(bestTarget);
-        return m_bestTarget;
     }
 }
