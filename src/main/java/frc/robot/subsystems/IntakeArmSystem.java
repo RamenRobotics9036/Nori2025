@@ -34,6 +34,7 @@ public class IntakeArmSystem extends SubsystemBase{
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit
     public IntakeArmSystem(){
         m_armEncoder.setInverted(true);
+        m_armEncoder.setDutyCycleRange(0, 1);
 
         ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig();
         closedLoopConfig
@@ -61,12 +62,13 @@ public class IntakeArmSystem extends SubsystemBase{
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
 
-        // m_armRelativeEncoder.setPosition(
-        //         ((m_armEncoder.get() * 2 * Math.PI)
-        //                 % (2 * Math.PI)) + ArmConstants.kAbsoluteEncoderOffset);
-        m_armRelativeEncoder.setPosition(0.0);
+        if (!m_armEncoder.isConnected()) {
+            m_armRelativeEncoder.setPosition(0.0);
+        } else {
+            m_armRelativeEncoder.setPosition(getArmAngle());
+        }
 
-        if (m_armEncoder.get() == Math.PI * 2) {
+        if (!m_armEncoder.isConnected()) {
             throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get());
         }
         desiredAngle = getArmAngleRelative();
@@ -76,8 +78,8 @@ public class IntakeArmSystem extends SubsystemBase{
 
     public void initShuffleboad() {
         ShuffleboardTab tab = Shuffleboard.getTab("Arm");
-        tab.addDouble("Arm Relative Encoder", () -> m_armRelativeEncoder.getPosition());
-        tab.addDouble("Arm Encoder", () -> m_armEncoder.get());
+        tab.addDouble("Arm Relative Encoder", () -> getArmAngleRelative());
+        tab.addDouble("Arm Encoder", () -> getArmAngle());
         tab.addDouble("Desired Angle", () -> desiredAngle);
   }
 
@@ -101,7 +103,7 @@ public class IntakeArmSystem extends SubsystemBase{
 
     // get encoder value
     private double getArmAngle() {
-        return m_armEncoder.get();
+        return((m_armEncoder.get() * 2 * Math.PI) + ArmConstants.kAbsoluteEncoderOffset) % (2 * Math.PI);
     }
 
     public double getArmAngleRelative() {
