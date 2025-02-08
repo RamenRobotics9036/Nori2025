@@ -144,13 +144,9 @@ public class SwerveSubsystem extends SubsystemBase
       m_vision = new VisionSystem();
     }
     else {
-      initVisionSim();
-      m_vision = new VisionSystemSim();
+      m_visionSim = new VisionSim();
+      m_vision = new VisionSystemSim(m_visionSim);
     }
-  }
-
-  private void initVisionSim() {
-    m_visionSim = new VisionSim();
   }
 
   public void initShuffleboad() {

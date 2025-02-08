@@ -5,6 +5,12 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class VisionSystemSim implements VisionSystemInterface {
+    VisionSim m_visionSim;
+
+    // Constructor
+    public VisionSystemSim(VisionSim visionSim) {
+        m_visionSim = visionSim;
+    }
 
     @Override
     public void initShuffleboad(ShuffleboardTab tab) {
