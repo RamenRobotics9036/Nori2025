@@ -8,7 +8,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import frc.robot.Constants.VisionSimConstants;
 
@@ -20,21 +19,6 @@ public class VisionSystemSim implements VisionSystemInterface {
     // Constructor
     public VisionSystemSim(VisionSim visionSim) {
         m_visionSim = visionSim;
-    }
-
-    @Override
-    public void initShuffleboad(ShuffleboardTab tab) {
-        // $TODO - Move this out of this class
-        tab.addDouble("TX", () -> getTX());
-        tab.addDouble("TY", () -> getTY());
-        tab.addBoolean("Is Detecting", () -> isDetecting());
-        tab.addDouble("ID", () -> getID());
-
-        // $TODO - This seems wrong
-        tab.addDouble("April Tag Relative X", () -> m_targetPose.getX());
-        tab.addDouble("April Tag Relative Y", () -> m_targetPose.getY());
-        tab.addDouble("April Tag Relative Z", () -> m_targetPose.getZ());
-        tab.addDouble("April Tag Relative Rot", () -> m_targetPose.getRotation().getAngle());
     }
 
     @Override

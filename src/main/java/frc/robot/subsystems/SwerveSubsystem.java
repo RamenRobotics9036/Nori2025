@@ -150,7 +150,17 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
   public void initShuffleboad() {
-    m_vision.initShuffleboad(Shuffleboard.getTab("Vision"));
+    ShuffleboardTab tabVision = Shuffleboard.getTab("Vision");
+    tabVision.addDouble("TX", () -> m_vision.getTX());
+    tabVision.addDouble("TY", () -> m_vision.getTY());
+    tabVision.addBoolean("Is Detecting", () -> m_vision.isDetecting());
+    tabVision.addDouble("ID", () -> m_vision.getID());
+
+    // $TODO
+    // tabVision.addDouble("April Tag Relative X", () -> m_targetPose.getX());
+    // tabVision.addDouble("April Tag Relative Y", () -> m_targetPose.getY());
+    // tabVision.addDouble("April Tag Relative Z", () -> m_targetPose.getZ());
+    // tabVision.addDouble("April Tag Relative Rot", () -> m_targetPose.getRotation().getAngle());
 
     ShuffleboardTab tab = Shuffleboard.getTab("Field");
     tab.add("Robot Position on Field", m_field);

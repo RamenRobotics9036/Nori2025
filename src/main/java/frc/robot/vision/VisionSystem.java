@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.VisionConstants;
 
 public class VisionSystem implements VisionSystemInterface {
@@ -22,21 +21,7 @@ public class VisionSystem implements VisionSystemInterface {
 
     // Constructor
     public VisionSystem() {
- 
-    }
-
-    @Override
-    public void initShuffleboad(ShuffleboardTab tab) {
-        tab.addDouble("TX", () -> getTX());
-        tab.addDouble("TY", () -> getTY());
-        tab.addBoolean("Is Detecting", () -> isDetecting());
-        tab.addDouble("ID", () -> getID());
-
-        tab.addDouble("April Tag Relative X", () -> m_targetPose.getX());
-        tab.addDouble("April Tag Relative Y", () -> m_targetPose.getY());
-        tab.addDouble("April Tag Relative Z", () -> m_targetPose.getZ());
-        tab.addDouble("April Tag Relative Rot", () -> m_targetPose.getRotation().getAngle());
-
+        // Empty
     }
 
     @Override
