@@ -63,7 +63,7 @@ public class RobotContainer
       new CommandAppliedController(OperatorConstants.kArmPort);
 
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem       m_swerveDrive  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+  public final SwerveSubsystem       m_swerveDrive  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 SwerveConstants.kJsonDirectory));
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot

@@ -221,6 +221,7 @@ public class SwerveSubsystem extends SubsystemBase
     {
       // Handle exception as needed
       e.printStackTrace();
+      System.out.println(("THIS HAPPENED"));
     }
 
     //Preload PathPlanner Path finding
