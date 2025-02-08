@@ -43,21 +43,22 @@ import org.photonvision.targeting.PhotonTrackedTarget;
  
 public class VisionSim {
     // Simulation
-    private PhotonCamera camera;
-    private PhotonCameraSim cameraSim;
-    private VisionSystemSim visionSim;
+    private PhotonCamera m_camera;
+    private PhotonCameraSim m_cameraSim;
+    private VisionSystemSim m_visionSim;
+    private Optional<PhotonTrackedTarget> m_bestTarget = Optional.empty();
  
     public VisionSim() {
         if (!Robot.isSimulation()) {
             throw new RuntimeException("VisionSim should only be used in simulation");
         }
 
-        camera = new PhotonCamera(VisionSimConstants.kCameraName);
+        m_camera = new PhotonCamera(VisionSimConstants.kCameraName);
 
         // Create the vision system simulation which handles cameras and targets on the field.
-        visionSim = new VisionSystemSim("main");
+        m_visionSim = new VisionSystemSim("main");
         // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
-        visionSim.addAprilTags(kTagLayout);
+        m_visionSim.addAprilTags(kTagLayout);
         // Create simulated camera properties. These can be set to mimic your actual camera.
         var cameraProp = new SimCameraProperties();
         cameraProp.setCalibration(320, 240, Rotation2d.fromDegrees(90));
@@ -67,43 +68,49 @@ public class VisionSim {
         cameraProp.setLatencyStdDevMs(10);
         // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
         // targets.
-        cameraSim = new PhotonCameraSim(camera, cameraProp);
+        m_cameraSim = new PhotonCameraSim(m_camera, cameraProp);
         // Add the simulated camera to view the targets on this simulated field.
-        visionSim.addCamera(cameraSim, kRobotToCam);
+        m_visionSim.addCamera(m_cameraSim, kRobotToCam);
 
-        cameraSim.enableDrawWireframe(true); // $TODO - This can probably be false
+        m_cameraSim.enableDrawWireframe(true); // $TODO - This can probably be false
     }
  
     public void simulationPeriodic(Pose2d robotSimPose) {
-        visionSim.update(robotSimPose);
+        m_visionSim.update(robotSimPose);
     }
 
     /** Reset pose history of the robot in the vision system simulation. */
     public void resetSimPose(Pose2d pose) {
-        if (Robot.isSimulation()) visionSim.resetRobotPose(pose);
+        if (Robot.isSimulation()) m_visionSim.resetRobotPose(pose);
     }
  
     /** A Field2d for visualizing our robot and objects on the field. */
     public Field2d getSimDebugField() {
         if (!Robot.isSimulation()) return null;
-        return visionSim.getDebugField();
+        return m_visionSim.getDebugField();
     }
 
+    // If there's new information from the camera, we process it, and SAVE the best
+    // target.  That way, we still see that target even if there's no new camera info
+    // to read.
     public Optional<PhotonTrackedTarget> getBestTarget() {
         // Read in relevant data from the Camera
-        List<PhotonPipelineResult> pipeline_result_list = camera.getAllUnreadResults();
+        List<PhotonPipelineResult> pipeline_result_list = m_camera.getAllUnreadResults();
         if (pipeline_result_list.isEmpty()) {
-            return Optional.empty();
+            return m_bestTarget;
         }
 
         // Camera processed a new frame since last
         // Get the last one in the list.
         PhotonPipelineResult most_recent = pipeline_result_list.get(pipeline_result_list.size() - 1);
         if (!most_recent.hasTargets()) {
-            return Optional.empty();
+            // Save that we saw NO targets
+            m_bestTarget = Optional.empty();
+            return m_bestTarget;
         }
 
         PhotonTrackedTarget bestTarget = most_recent.getBestTarget();
-        return Optional.of(bestTarget);
+        m_bestTarget = Optional.of(bestTarget);
+        return m_bestTarget;
     }
 }

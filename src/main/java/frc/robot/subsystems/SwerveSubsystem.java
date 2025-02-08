@@ -48,11 +48,13 @@ import frc.robot.vision.VisionSystemSim;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
 import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
@@ -196,6 +198,15 @@ public class SwerveSubsystem extends SubsystemBase
     var debugField = m_visionSim.getSimDebugField();
     debugField.getObject("EstimatedRobot").setPose(getPose());
     debugField.getObject("EstimatedRobotModules").setPoses(swerveDrive.getSwerveModulePoses(getPose()));
+  
+    Optional<PhotonTrackedTarget> bestTarget = m_visionSim.getBestTarget();
+    if (bestTarget.isPresent()) {
+      System.out.println("Best Target: " + bestTarget.get().fiducialId);
+    }
+    else {
+      System.out.println("No target");
+    }
+  
   }
 
   /**
