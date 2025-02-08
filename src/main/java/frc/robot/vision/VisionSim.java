@@ -22,31 +22,35 @@
  * SOFTWARE.
  */
 
- package frc.robot.vision;
+package frc.robot.vision;
 
- import static frc.robot.Constants.VisionSimConstants.*;
- 
- import edu.wpi.first.math.geometry.Pose2d;
- import edu.wpi.first.math.geometry.Rotation2d;
- import edu.wpi.first.wpilibj.smartdashboard.Field2d;
- import frc.robot.Constants.VisionSimConstants;
+import static frc.robot.Constants.VisionSimConstants.*;
+import java.util.List;
+import java.util.Optional;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import frc.robot.Constants.VisionSimConstants;
 import frc.robot.Robot;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
  
- public class VisionSim {
-     // Simulation
-     private PhotonCamera camera;
-     private PhotonCameraSim cameraSim;
-     private VisionSystemSim visionSim;
+public class VisionSim {
+    // Simulation
+    private PhotonCamera camera;
+    private PhotonCameraSim cameraSim;
+    private VisionSystemSim visionSim;
  
-     public VisionSim() {
-         if (!Robot.isSimulation()) {
+    public VisionSim() {
+        if (!Robot.isSimulation()) {
             throw new RuntimeException("VisionSim should only be used in simulation");
-         }
+        }
 
         camera = new PhotonCamera(VisionSimConstants.kCameraName);
 
@@ -70,41 +74,36 @@ import org.photonvision.simulation.VisionSystemSim;
         cameraSim.enableDrawWireframe(true); // $TODO - This can probably be false
     }
  
-      public void simulationPeriodic(Pose2d robotSimPose) {
-         visionSim.update(robotSimPose);
-     }
- 
-     /** Reset pose history of the robot in the vision system simulation. */
-     public void resetSimPose(Pose2d pose) {
-         if (Robot.isSimulation()) visionSim.resetRobotPose(pose);
-     }
- 
-     /** A Field2d for visualizing our robot and objects on the field. */
-     public Field2d getSimDebugField() {
-         if (!Robot.isSimulation()) return null;
-         return visionSim.getDebugField();
-     }
-
-     public void getTargetList() {
-        // Read in relevant data from the Camera
-        boolean targetVisible = false;
-        double targetYaw = 0.0;
-        var results = camera.getAllUnreadResults();
-        if (!results.isEmpty()) {
-            // Camera processed a new frame since last
-            // Get the last one in the list.
-            var result = results.get(results.size() - 1);
-            if (result.hasTargets()) {
-                // At least one AprilTag was seen by the camera
-                for (var target : result.getTargets()) {
-                    if (target.getFiducialId() == 7) {
-                        // Found Tag 7, record its information
-                        targetYaw = target.getYaw();
-                        targetVisible = true;
-                    }
-                }
-            }
-        }
+    public void simulationPeriodic(Pose2d robotSimPose) {
+        visionSim.update(robotSimPose);
     }
- }
+
+    /** Reset pose history of the robot in the vision system simulation. */
+    public void resetSimPose(Pose2d pose) {
+        if (Robot.isSimulation()) visionSim.resetRobotPose(pose);
+    }
  
+    /** A Field2d for visualizing our robot and objects on the field. */
+    public Field2d getSimDebugField() {
+        if (!Robot.isSimulation()) return null;
+        return visionSim.getDebugField();
+    }
+
+    public Optional<PhotonTrackedTarget> getBestTarget() {
+        // Read in relevant data from the Camera
+        List<PhotonPipelineResult> pipeline_result_list = camera.getAllUnreadResults();
+        if (pipeline_result_list.isEmpty()) {
+            return Optional.empty();
+        }
+
+        // Camera processed a new frame since last
+        // Get the last one in the list.
+        PhotonPipelineResult most_recent = pipeline_result_list.get(pipeline_result_list.size() - 1);
+        if (!most_recent.hasTargets()) {
+            return Optional.empty();
+        }
+
+        PhotonTrackedTarget bestTarget = most_recent.getBestTarget();
+        return Optional.of(bestTarget);
+    }
+}
