@@ -33,6 +33,8 @@ public class IntakeArmSystem extends SubsystemBase{
 
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit
     public IntakeArmSystem(){
+        m_armEncoder.setInverted(true);
+
         ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig();
         closedLoopConfig
             .p(1)
@@ -50,7 +52,7 @@ public class IntakeArmSystem extends SubsystemBase{
         // m_armConfig.inverted(true);
 
         m_armConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
-        m_armConfig.smartCurrentLimit(IntakeConstants.kStallLimit);
+        m_armConfig.smartCurrentLimit(5);
 
         m_armConfig.apply(closedLoopConfig);
         m_armConfig.apply(encoderConfig);
@@ -59,14 +61,14 @@ public class IntakeArmSystem extends SubsystemBase{
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
 
-        
         m_armRelativeEncoder.setPosition(
-            (m_armEncoder.get() * 2 * Math.PI)
-                    % (2 * Math.PI));
+                ((m_armEncoder.get() * 2 * Math.PI)
+                        % (2 * Math.PI)) + ArmConstants.kAbsoluteEncoderOffset);
 
         if (m_armEncoder.get() == Math.PI * 2) {
             throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get());
         }
+        initShuffleboad();
     }
 
     public void initShuffleboad() {
