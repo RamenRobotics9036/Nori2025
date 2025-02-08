@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test2"
+            "pathName": "CoralTest3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CoralL1"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

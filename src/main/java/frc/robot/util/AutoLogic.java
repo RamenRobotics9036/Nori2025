@@ -90,15 +90,14 @@ public AutoLogic(RobotContainer robotContainer) {
     if (RobotState.isAutonomous()) {
       getAutoCommand(autoPicker.getSelected());
     }
-    PathPlannerPath plannerPath = getPathData(autoPicker.getSelected());
+   
 
-    tab.addStringArray("Path Poses: ", () -> toStringArray(plannerPath.getPathPoses()));
-
-    tab.addStringArray("Path Waypoints: ", () -> toStringArray(plannerPath.getWaypoints()));
+   
   }
 
   public static <T> String[] toStringArray(List<T> dataList) {
-    System.out.println("SIZE" + dataList.size());
+   
+    
     String[] data = new String[dataList.size()]; // TODO FIX INFINTELY REPEATING LIST
 
     for (int i = 0; i < dataList.size(); i++) {
@@ -124,8 +123,10 @@ public AutoLogic(RobotContainer robotContainer) {
   }
 
   public static void addAutoOptions() {
-    autoPicker.setDefaultOption("DEFAULT PATH", "Test Path");
-    autoPicker.setDefaultOption("Test2 PATH", "Test2");
+    autoPicker.setDefaultOption(" 1 DEFAULT PATH", "Test Path");
+    //Call autoPicker.addOption() with the name being name in shuffleboard and object being the pathplanner path name
+    autoPicker.addOption(" 2 Test2", "Test2at");
+   
  
   }
 }
