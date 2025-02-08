@@ -1,5 +1,9 @@
 package frc.robot.vision;
 
+import java.util.Optional;
+
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -14,7 +18,10 @@ public class VisionSystemSim implements VisionSystemInterface {
 
     @Override
     public void initShuffleboad(ShuffleboardTab tab) {
-        // Empty implementation for simulation
+        tab.addDouble("TX", () -> getTX());
+        tab.addDouble("TY", () -> getTY());
+        tab.addBoolean("Is Detecting", () -> isDetecting());
+        tab.addDouble("ID", () -> getID());
     }
 
     @Override
@@ -24,27 +31,57 @@ public class VisionSystemSim implements VisionSystemInterface {
 
     @Override
     public double getTX() {
-        return 0.0;
+        Optional<PhotonTrackedTarget> result = m_visionSim.getBestTarget();
+        if (result.isEmpty()) {
+            return 0.0;
+        }
+
+        return result.get().getYaw();
     }
 
     @Override
     public double getTY() {
-        return 0.0;
+        Optional<PhotonTrackedTarget> result = m_visionSim.getBestTarget();
+        if (result.isEmpty()) {
+            return 0.0;
+        }
+
+        return result.get().getPitch();
     }
 
     @Override
     public double getTA() {
-        return 0.0;
+        Optional<PhotonTrackedTarget> result = m_visionSim.getBestTarget();
+        if (result.isEmpty()) {
+            return 0.0;
+        }
+
+        return result.get().getArea();
     }
 
     @Override
     public boolean isDetecting() {
-        return false;
+        Optional<PhotonTrackedTarget> result = m_visionSim.getBestTarget();
+        if (result.isEmpty()) {
+            return false;
+        }
+
+        return true;
     }
 
+    // Returns 0 if no ID
     @Override
     public double getID() {
-        return 0.0;
+        Optional<PhotonTrackedTarget> result = m_visionSim.getBestTarget();
+        if (result.isEmpty()) {
+            return 0.0;
+        }
+
+        int fiducialId = result.get().getFiducialId();
+        if (fiducialId == -1) {
+            return 0.0;
+        }
+        return (double)fiducialId;
     }
 
     @Override
