@@ -17,6 +17,7 @@ import frc.robot.subsystems.IntakeArmSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.CommandAppliedController;
+import frc.robot.util.IAppliedController;
 import frc.robot.vision.VisionSystem;
 import swervelib.SwerveInputStream;
 
@@ -29,7 +30,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -40,10 +40,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer
 {
 
-  private final CommandAppliedController m_driverController =
-      new CommandAppliedController(OperatorConstants.kDriverPort);
-    private final CommandAppliedController m_armController =
-      new CommandAppliedController(OperatorConstants.kArmPort);
+  private final IAppliedController m_driverController = CommandAppliedController.createInstance(
+      OperatorConstants.kDriverPort);
+    private final IAppliedController m_armController = CommandAppliedController.createInstance(
+      OperatorConstants.kArmPort);
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       m_swerveDrive  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),

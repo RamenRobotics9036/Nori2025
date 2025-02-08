@@ -2,32 +2,32 @@ package frc.robot.util;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.CommandConstants;
 import frc.robot.Constants.OperatorConstants;
 
 /**
  * AppliedController.
  */
-public class CommandAppliedController extends CommandXboxController {
-
-    private double m_controllerExponent; //expo factor for the analog axises
+public class CommandAppliedController extends CommandXboxController
+    implements IAppliedController {
 
     /**
      * Constructor.
      */
     public CommandAppliedController(int port) {
         super(port);
-        this.m_controllerExponent = Math.pow(OperatorConstants.kExpo, OperatorConstants.kExpoRatio);
     }
 
-    private double expo(double input, double exponent) {
-        if (input == 0.0) return 0.0;
-        double expo = Math.pow(Math.abs(input), exponent);
-        return input < 0 ? -expo : expo;
-    }
-
-    private double adjust(double rawInput)
-    {
-        return expo(MathUtil.applyDeadband(rawInput, OperatorConstants.kDeadband), m_controllerExponent);
+    /**
+     * Factory.
+     */
+    public static IAppliedController createInstance(int port) {
+        if (OperatorConstants.kIsXbox) {
+            return new CommandAppliedController(port);
+        } else {
+            return new Ps4AppliedController(port);
+        }
     }
 
     /**
@@ -36,22 +36,22 @@ public class CommandAppliedController extends CommandXboxController {
 
     @Override
     public double getLeftY() {
-        return adjust(super.getLeftY());
+        return ControllerUtilities.adjust(super.getLeftY());
     }
 
     @Override
     public double getRightY() {
-        return adjust(super.getRightY());
+        return ControllerUtilities.adjust(super.getRightY());
     }
 
     @Override
     public double getLeftX() {
-        return adjust(super.getLeftX());
+        return ControllerUtilities.adjust(super.getLeftX());
     }
 
     @Override
     public double getRightX() {
-        return adjust(super.getRightX());
+        return ControllerUtilities.adjust(super.getRightX());
     }
 
     @Override
@@ -62,5 +62,20 @@ public class CommandAppliedController extends CommandXboxController {
     @Override
     public double getRightTriggerAxis() {
         return MathUtil.applyDeadband(super.getRightTriggerAxis(), OperatorConstants.kDeadband);
+    }
+
+    @Override
+    public Trigger start() {
+        return super.start();
+    }
+
+    @Override
+    public Trigger a() {
+        return super.a();
+    }
+
+    @Override
+    public Trigger b() {
+        return super.b();
     }
 }

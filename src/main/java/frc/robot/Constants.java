@@ -30,6 +30,7 @@ public final class Constants
     public static final double kExpo = 4; //do not change this value
     public static final double kExpoRatio = 0.8; // change this 0..1 to add more exponential, 0 = no expo (linear)
     public static final double kDeadband = 0.07;
+    public static final boolean kIsXbox = true;
   }
   /**
    * Constants for the swerve system.
