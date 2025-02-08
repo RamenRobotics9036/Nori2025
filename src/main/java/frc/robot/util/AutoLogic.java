@@ -29,10 +29,9 @@ import java.util.List;
 import org.json.simple.parser.ParseException;
 
 public class AutoLogic {
-    public static   SwerveSubsystem s;
     private RobotContainer m_robotContainer;
-public AutoLogic(SwerveSubsystem swerveSubsystem) {
-    this.s = m_robotContainer.m_swerveDrive;
+public AutoLogic(RobotContainer robotContainer) {
+    m_robotContainer = robotContainer;
 }
   public static SendableChooser<String> autoPicker = new SendableChooser<String>();
 
@@ -77,10 +76,9 @@ public AutoLogic(SwerveSubsystem swerveSubsystem) {
     return null;
   }
 
-  public static void initShuffleBoard() {
+  public void initShuffleBoard() {
+    m_robotContainer.m_swerveDrive.setupPathPlanner();
 
-  
-s.setupPathPlanner();
     addAutoOptions();
 
     tab.add("Auto Selector", autoPicker)
@@ -127,7 +125,7 @@ s.setupPathPlanner();
 
   public static void addAutoOptions() {
     autoPicker.setDefaultOption("DEFAULT PATH", "Test Path");
-
+    autoPicker.setDefaultOption("Test2 PATH", "Test2");
  
   }
 }

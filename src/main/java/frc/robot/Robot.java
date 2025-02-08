@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-
+private AutoLogic m_AutoLogic;
   private DoubleLogEntry m_voltageLog;
   private DoubleLogEntry m_canBusUtilizationLog;
 
@@ -41,9 +41,9 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-
+m_AutoLogic = new AutoLogic(m_robotContainer);
     enableLogging();
-    AutoLogic.initShuffleBoard();
+    m_AutoLogic.initShuffleBoard();
   }
 
   private void enableLogging() {
@@ -108,7 +108,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_robotContainer.m_swerveDrive.setupPathPlanner();
+    m_AutoLogic.s.setupPathPlanner();
     Command autoCommand = AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
 
     if (autoCommand != null) {
