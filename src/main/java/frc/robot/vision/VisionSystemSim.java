@@ -13,8 +13,9 @@ import frc.robot.Constants.VisionSimConstants;
 
 public class VisionSystemSim implements VisionSystemInterface {
     private VisionSim m_visionSim;
-    private Pose3d m_targetPose = new Pose3d();
-    private Pose2d m_robotPose = new Pose2d();
+    private Pose3d m_targetPose3d = new Pose3d();
+    private Pose2d m_robotPose2d = new Pose2d();
+    private Pose3d m_targetPoseInCameraSpace3d = new Pose3d();
 
     // Constructor
     public VisionSystemSim(VisionSim visionSim) {
@@ -23,8 +24,14 @@ public class VisionSystemSim implements VisionSystemInterface {
 
     @Override
     public void updatePose() {
-        m_targetPose = calcTargetPose();
-        m_robotPose = calcRobotPose();
+        m_targetPose3d = calcTargetPose3d();
+
+        Pose3d robotPose3d = calcRobotPose3d();
+        m_robotPose2d = robotPose3d.toPose2d();
+
+        m_targetPoseInCameraSpace3d = calcTargetPoseInCameraSpace3d(
+            robotPose3d,
+            m_targetPose3d);
     }
 
     @Override
@@ -82,7 +89,7 @@ public class VisionSystemSim implements VisionSystemInterface {
         return (double)fiducialId;
     }
 
-    private Pose3d calcTargetPose() {
+    private Pose3d calcTargetPose3d() {
         Optional<PhotonTrackedTarget> result = m_visionSim.getBestTarget();
         if (result.isEmpty()) {
             return new Pose3d();
@@ -96,15 +103,15 @@ public class VisionSystemSim implements VisionSystemInterface {
         return VisionSimConstants.kTagLayout.getTagPose(target.getFiducialId()).get();
     }
 
-    private Pose2d calcRobotPose() {
+    private Pose3d calcRobotPose3d() {
         Optional<PhotonTrackedTarget> result = m_visionSim.getBestTarget();
         if (result.isEmpty()) {
-            return new Pose2d();
+            return new Pose3d();
         }
 
         PhotonTrackedTarget target = result.get();
         if (!VisionSimConstants.kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
-            return new Pose2d();
+            return new Pose3d();
         }
 
         Transform3d cameraToRobot = Constants.VisionSimConstants.kRobotToCam.inverse();
@@ -113,17 +120,25 @@ public class VisionSystemSim implements VisionSystemInterface {
             VisionSimConstants.kTagLayout.getTagPose(target.getFiducialId()).get(),
             cameraToRobot);
 
-        // Convert the 3d pose to a 2d pose
-        return robotPose.toPose2d();
+        return robotPose;
     }
 
+    private Pose3d calcTargetPoseInCameraSpace3d(Pose3d robotPose, Pose3d targetPose) {
+        // Get the camera's pose in field coordinates
+        Pose3d cameraPose = robotPose.transformBy(Constants.VisionSimConstants.kRobotToCam);
+
+        // Transform the target's field pose into the camera's coordinate system
+        return targetPose.relativeTo(cameraPose);
+    }
+
+    // NOTE: This is expected in camera space
     @Override
     public Pose3d getTargetPose() {
-        return m_targetPose;
+        return m_targetPoseInCameraSpace3d;
     }
 
     @Override
     public Pose2d getRobotPose() {
-        return m_robotPose;
+        return m_robotPose2d;
     }
 }
