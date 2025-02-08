@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import org.dyn4j.exception.ValueOutOfRangeException;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.IntakeConstants;
 
+
 public class IntakeArmSystem extends SubsystemBase{
     private SparkMax m_armMotor = new SparkMax(ArmConstants.kArmMotorID, MotorType.kBrushless);
     private RelativeEncoder m_armRelativeEncoder = m_armMotor.getEncoder();
@@ -26,6 +29,7 @@ public class IntakeArmSystem extends SubsystemBase{
     private double maxOutput = ArmConstants.maxOutput;
     private SparkClosedLoopController m_armPIDController = m_armMotor.getClosedLoopController();
     private final DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(ArmConstants.kArmEncoderID);
+    private double desiredAngle = 0;
 
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit
     public IntakeArmSystem(){
@@ -35,12 +39,12 @@ public class IntakeArmSystem extends SubsystemBase{
             .i(0)
             .d(0);
         closedLoopConfig.positionWrappingEnabled(true);
-        closedLoopConfig.positionWrappingMinInput(0);
-        closedLoopConfig.positionWrappingMaxInput(Math.PI * 2);
+        closedLoopConfig.positionWrappingMinInput(ArmConstants.kMinArmRotation);
+        closedLoopConfig.positionWrappingMaxInput(ArmConstants.kMaxArmRotation);
 
         EncoderConfig encoderConfig = new EncoderConfig();
-        encoderConfig.apply(encoderConfig.positionConversionFactor((Math.PI * 2) / ArmConstants.kArmGearBoxRatio));
-        encoderConfig.apply(encoderConfig.velocityConversionFactor(((Math.PI * 2) / ArmConstants.kArmGearBoxRatio) / 60));
+        encoderConfig.positionConversionFactor((Math.PI * 2) / ArmConstants.kArmGearBoxRatio);
+        encoderConfig.velocityConversionFactor(((Math.PI * 2) / ArmConstants.kArmGearBoxRatio) / 60);
         // Did not set distance per rotation
 
         // m_armConfig.inverted(true);
@@ -59,16 +63,21 @@ public class IntakeArmSystem extends SubsystemBase{
         m_armRelativeEncoder.setPosition(
             (m_armEncoder.get() * 2 * Math.PI)
                     % (2 * Math.PI));
+
+        if (m_armEncoder.get() == Math.PI * 2) {
+            throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get());
+        }
     }
 
     public void initShuffleboad() {
         ShuffleboardTab tab = Shuffleboard.getTab("Arm");
         tab.addDouble("Arm Relative Encoder", () -> m_armRelativeEncoder.getPosition());
         tab.addDouble("Arm Encoder", () -> m_armEncoder.get());
-
+        tab.addDouble("Desired Angle", () -> desiredAngle);
   }
 
     public void setReference(double position) {
+        desiredAngle = position;
         m_armPIDController.setReference(position, ControlType.kPosition);
     }
 

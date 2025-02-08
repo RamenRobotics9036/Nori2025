@@ -123,8 +123,12 @@ public final class Constants
     public static final double maxOutput = 1.0;
     public static final int kArmEncoderID = 0;
     public static final double kArmGearBoxRatio = 125;
-    public static final double kMaxArmRotation = Math.PI;
-    public static final double kMinArmRotation = 0;
+    public static final double kMaxArmRotation = 1;
+    public static final double kMinArmRotation = 0.5;
 
+  }
+
+  public static final class ArmDefaultCommandConstants {
+    public static final double armAngleChangeRate = 1;
   }
 }
