@@ -19,7 +19,7 @@ public class ArmTestCommand extends Command{
     @Override
     public void execute(){
         //0.3 is a filler value. Probably fine for a random test command.
-        System.out.println(m_arm.getArmAngle());
+        System.out.println(m_arm.getArmAngleRelative());
         m_isFinished = true;
     }
 

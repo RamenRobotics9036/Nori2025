@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AbsoluteDrive;
 import frc.robot.commands.AlignRobot;
+import frc.robot.commands.ArmDefaultCommand;
 import frc.robot.commands.ArmTestCommand;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.AbsoluteDrive;
@@ -121,6 +122,8 @@ public class RobotContainer
   // right stick controls the angular velocity of the robot
   Command m_driveFieldOrientedAngularVelocity = m_swerveDrive.driveFieldOriented(driveAngularVelocity);
 
+  private CommandAppliedController m_armController = new CommandAppliedController(OperatorConstants.kArmPort);
+
 private final IntakeSystem m_intakeSystem = new IntakeSystem();
 private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
   /**
@@ -167,6 +170,7 @@ private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
     // this is field relative, right stick controls rotation around z axis
     
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
+    m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
   
     // m_intakeSystem.setDefaultCommand(new IntakeTestCommand(m_intakeSystem));
 
@@ -182,7 +186,7 @@ private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
     
     // A button aligns the robot using the AprilTag
     m_driverController.a().onTrue(new AlignRobot(m_swerveDrive));
-    m_driverController.x().onTrue(new ArmTestCommand(m_armSystem));
+    // m_driverController.x().onTrue(new ArmTestCommand(m_armSystem));
   }
 
   /**

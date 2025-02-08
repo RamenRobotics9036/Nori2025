@@ -29,7 +29,7 @@ public class IntakeArmSystem extends SubsystemBase{
     private double maxOutput = ArmConstants.maxOutput;
     private SparkClosedLoopController m_armPIDController = m_armMotor.getClosedLoopController();
     private final DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(ArmConstants.kArmEncoderID);
-    private double desiredAngle = 0;
+    private double desiredAngle;
 
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit
     public IntakeArmSystem(){
@@ -52,7 +52,7 @@ public class IntakeArmSystem extends SubsystemBase{
         // m_armConfig.inverted(true);
 
         m_armConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
-        m_armConfig.smartCurrentLimit(5);
+        m_armConfig.smartCurrentLimit(ArmConstants.kcurrentLimit);
 
         m_armConfig.apply(closedLoopConfig);
         m_armConfig.apply(encoderConfig);
@@ -61,13 +61,16 @@ public class IntakeArmSystem extends SubsystemBase{
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
 
-        m_armRelativeEncoder.setPosition(
-                ((m_armEncoder.get() * 2 * Math.PI)
-                        % (2 * Math.PI)) + ArmConstants.kAbsoluteEncoderOffset);
+        // m_armRelativeEncoder.setPosition(
+        //         ((m_armEncoder.get() * 2 * Math.PI)
+        //                 % (2 * Math.PI)) + ArmConstants.kAbsoluteEncoderOffset);
+        m_armRelativeEncoder.setPosition(0.0);
 
         if (m_armEncoder.get() == Math.PI * 2) {
             throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get());
         }
+        desiredAngle = getArmAngleRelative();
+
         initShuffleboad();
     }
 
@@ -97,8 +100,12 @@ public class IntakeArmSystem extends SubsystemBase{
 
 
     // get encoder value
-    public double getArmAngle() {
+    private double getArmAngle() {
         return m_armEncoder.get();
+    }
+
+    public double getArmAngleRelative() {
+        return m_armRelativeEncoder.getPosition();
     }
 
     // public double getAbsoluteArmAngle() {
