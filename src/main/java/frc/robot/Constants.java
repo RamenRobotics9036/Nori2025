@@ -122,7 +122,7 @@ public final class Constants
     public static final int kArmMotorID = 22;
     public static final double maxOutput = 1.0;
     public static final int kArmEncoderID = 0;
-    public static final double kArmGearBoxRatio = 125 * (44/30) * 2;
+    public static final double kArmGearBoxRatio = 125 * (44/30);
     public static final double kMaxArmRotation = -0.0757;
     public static final double kMinArmRotation = 2.715;
     public static final double kAbsoluteEncoderOffset = -0.027 * 2 - 0.1218;
