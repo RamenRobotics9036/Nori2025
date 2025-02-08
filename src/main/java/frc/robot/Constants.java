@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.config.PIDConstants;
+import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
@@ -120,5 +122,13 @@ public final class Constants
     public static final int maxTime = 3;
     public static final double speed = 1.0;
     public static final double numRotations = 10;
+  }
+
+  public static final class ElevatorContants {
+    //24 and 25 are FILLER VALUES! Change once built.
+    public static final int kLeaderMotorID = 24;
+    public static final int kFollowMotorID = 25;
+    public static final int kStallLimit = 20;
+    public static final double kMaxOutputPercentage = 0.4;
   }
 }
