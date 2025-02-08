@@ -2,6 +2,7 @@ package frc.robot.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -18,8 +19,8 @@ public class VisionSystem {
     private static NetworkTableEntry m_tableArea = m_limelightTable.getEntry("ta");
     private static NetworkTableEntry m_tableID = m_limelightTable.getEntry("tid");
 
-    private static Pose3d m_targetPose;
-    private static Pose2d m_robotPose;
+    private static Pose3d m_targetPose = new Pose3d();
+    private static Pose2d m_robotPose = new Pose2d();
 
     public static void initShuffleboad() {
         ShuffleboardTab tab = Shuffleboard.getTab("Vision");
@@ -33,6 +34,10 @@ public class VisionSystem {
         tab.addDouble("April Tag Relative Z", () -> m_targetPose.getZ());
         tab.addDouble("April Tag Relative Rot", () -> m_targetPose.getRotation().getAngle());
 
+    }
+
+    public static void changeRobotPose(Transform2d deltaPose) {
+        m_robotPose = m_robotPose.plus(deltaPose);
     }
 
     public static void updatePose() {
@@ -64,14 +69,14 @@ public class VisionSystem {
         if (isDetecting()) {
             return LimelightHelpers.getTargetPose3d_CameraSpace(VisionConstants.limelightName);
         }
-        return new Pose3d();
+        return m_targetPose;
     }
 
     private static Pose2d getRobotPoseCall() {
         if (isDetecting()) {
             return LimelightHelpers.getBotPose2d_wpiBlue(VisionConstants.limelightName);
         }
-        return new Pose2d();
+        return m_robotPose;
     }
 
     public static Pose3d getTargetPose() {

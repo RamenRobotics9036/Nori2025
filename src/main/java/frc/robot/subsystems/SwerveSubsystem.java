@@ -19,15 +19,14 @@ import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -37,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.CommandConstants.AlignRobotConstants;
 import frc.robot.commands.testcommands.WheelTestContext;
 import frc.robot.vision.VisionSystem;
 
@@ -51,7 +51,6 @@ import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
 import swervelib.math.SwerveMath;
-import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -75,6 +74,7 @@ public class SwerveSubsystem extends SubsystemBase
   private Field2d m_field = new Field2d();
 
   private WheelTestContext m_wheelTestContext = new WheelTestContext();
+  private Pose2d m_lastPose;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -122,6 +122,8 @@ public class SwerveSubsystem extends SubsystemBase
       // Stop the odometry thread if we are using vision that way we can synchronize updates better.
       swerveDrive.stopOdometryThread();
     }
+    m_lastPose = 
+    getPose();
     setupPathPlanner();
   }
 
@@ -148,8 +150,22 @@ public class SwerveSubsystem extends SubsystemBase
       if (VisionSystem.isDetecting()) {
         swerveDrive.addVisionMeasurement(VisionSystem.getRobotPose(), DriverStation.getMatchTime());
       }
-      m_field.setRobotPose(getPose());
+      Transform2d deltaPose = m_lastPose.minus(getPose());
+      VisionSystem.changeRobotPose(deltaPose);
+
+      m_lastPose = getPose();
+      m_field.setRobotPose(VisionSystem.getRobotPose());
     }
+  }
+
+  public Command alignWithAprilTag() {
+    Pose2d targetPose = VisionSystem.getRobotPose();
+    targetPose = targetPose.plus(new Transform2d(AlignRobotConstants.transformDrive, AlignRobotConstants.transformStrafe, Rotation2d.fromDegrees(AlignRobotConstants.transformRot)));
+
+    PathConstraints constraints = new PathConstraints(
+        swerveDrive.getMaximumChassisVelocity(), 4.0,
+        swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
+    return AutoBuilder.pathfindToPose(targetPose, constraints, 0);
   }
 
   @Override
@@ -172,7 +188,7 @@ public class SwerveSubsystem extends SubsystemBase
       final boolean enableFeedforward = true;
       // Configure AutoBuilder last
       AutoBuilder.configure(
-          this::getPose,
+          VisionSystem::getRobotPose,
           // Robot pose supplier
           this::resetOdometry,
           // Method to reset odometry (will be called if your auto has a starting pose)
