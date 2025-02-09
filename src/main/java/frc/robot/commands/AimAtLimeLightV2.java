@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CommandConstants.AimAtLimeLightV2Constants;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.vision.VisionSystem;
 
 public class AimAtLimeLightV2 extends Command {
     private SwerveSubsystem m_swerveDrive;
@@ -29,14 +28,14 @@ public class AimAtLimeLightV2 extends Command {
         m_timer.restart();
 
         // Dont do anything if target not detected during INITIAL button press
-        m_shouldRun = VisionSystem.isDetecting();
+        m_shouldRun = m_swerveDrive.getVisionSystem().isDetecting();
         if (!m_shouldRun) {
             System.out.println("No target detected.");
             return;
         }
 
         // Find the angle we want to move the robot to
-        m_initialTX = VisionSystem.getTX();
+        m_initialTX = m_swerveDrive.getVisionSystem().getTX();
 
         // NOTE: If tolerance is set on PIDController to 1 degree, that means
         // we'll often end-up near the edge of the tolerance - i.e. about 1 degree
