@@ -102,6 +102,24 @@ public final class Constants
       */
       public static final double transformStrafe = 0;
     }
+
+    public static final class AlignV2RobotConstants {
+      // 5 seconds should be plenty of time to just turn
+      public static final double maxTimeSeconds = 5;
+      public static final double maxSpeed = 0.4;
+      public static final double kMaxRotateRadsPerSecond = 2 * Math.PI;
+
+      public static final double kP = 0.01;
+      public static final double kI = 0.0;
+      public static final double kD = 0.0;
+      public static final double allowedAngleUncertaintyDegrees = 0.5;
+      public static final int dontRotateIfSmallDegrees = 5;
+
+      /**
+       * How much the robot should be offset from the April tag pose rotation.
+      */
+      public static final double transformRot = 0.0;
+    }
   }
 
   public static final class IntakeConstants{
