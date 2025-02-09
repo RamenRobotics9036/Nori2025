@@ -103,7 +103,7 @@ public final class Constants
       public static final double transformStrafe = 0;
     }
 
-    public static final class AlignV2RobotConstants {
+    public static final class AimAtLimeLightV2Constants {
       // 5 seconds should be plenty of time to just turn
       public static final double maxTimeSeconds = 5;
       public static final double maxSpeed = 0.4;
