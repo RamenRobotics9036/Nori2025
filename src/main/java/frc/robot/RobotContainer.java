@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AimAtLimeLightV2;
 import frc.robot.commands.AlignRobot;
 import frc.robot.commands.ArmDefaultCommand;
 import frc.robot.Constants.SwerveConstants;
@@ -147,7 +148,7 @@ private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
     m_driverController.start().onTrue((Commands.runOnce(m_swerveDrive::zeroGyro)));
 
     // A button aligns the robot using the AprilTag
-    m_driverController.a().onTrue(new AlignRobot(m_swerveDrive));
+    m_driverController.a().onTrue(new AimAtLimeLightV2(m_swerveDrive));
 
     // Command to spit out game pieces
     m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem));

@@ -78,7 +78,6 @@ public final class Constants
   public static final class VisionConstants {
     public static final String limelightName = "limelight";
     public static final double allowedAngleUncertaintyDegrees = 0.5;
-    public static final int dontRotateIfSmallDegrees = 5;
     public static final double allowedAngleUncertaintyMetersDrive = 0.05;
     public static final double allowedAngleUncertaintyMetersStrafe = 0.025;
   }
@@ -111,10 +110,9 @@ public final class Constants
     }
 
     public static final class AlignRobotConstants {
-      // 5 seconds should be plenty of time to just turn
-      public static final double maxTimeSeconds = 5;
+      public static final double maxTimeSeconds = 10;
       public static final double maxSpeed = 0.4;
-      public static final double kMaxRotateRadsPerSecond = 2 * Math.PI;
+      public static final double maxSpeedRot = 0.2;
 
       /**
        * How much the robot should be offset from the April tag pose rotation.
@@ -132,7 +130,7 @@ public final class Constants
       public static final double transformStrafe = 0;
     }
 
-    public static final class AlignV2RobotConstants {
+    public static final class AimAtLimeLightV2Constants {
       // 5 seconds should be plenty of time to just turn
       public static final double maxTimeSeconds = 5;
       public static final double maxSpeed = 0.4;
