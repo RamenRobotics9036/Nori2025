@@ -1,5 +1,7 @@
 package frc.robot.vision;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -19,8 +21,10 @@ public class VisionSystem {
     private static NetworkTableEntry m_tableArea = m_limelightTable.getEntry("ta");
     private static NetworkTableEntry m_tableID = m_limelightTable.getEntry("tid");
 
-    private static Pose3d m_targetPose = new Pose3d();
+    private static Pose3d m_relativeTargetPose = new Pose3d();
     private static Pose2d m_robotPose = new Pose2d();
+
+    private static AprilTagFieldLayout m_aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
     public static void initShuffleboad() {
         ShuffleboardTab tab = Shuffleboard.getTab("Vision");
@@ -29,10 +33,10 @@ public class VisionSystem {
         tab.addBoolean("Is Detecting", () -> isDetecting());
         tab.addDouble("ID", () -> getID());
 
-        tab.addDouble("April Tag Relative X", () -> m_targetPose.getX());
-        tab.addDouble("April Tag Relative Y", () -> m_targetPose.getY());
-        tab.addDouble("April Tag Relative Z", () -> m_targetPose.getZ());
-        tab.addDouble("April Tag Relative Rot", () -> m_targetPose.getRotation().getAngle());
+        tab.addDouble("April Tag Relative X", () -> m_relativeTargetPose.getX());
+        tab.addDouble("April Tag Relative Y", () -> m_relativeTargetPose.getY());
+        tab.addDouble("April Tag Relative Z", () -> m_relativeTargetPose.getZ());
+        tab.addDouble("April Tag Relative Rot", () -> m_relativeTargetPose.getRotation().getAngle());
     }
 
     public static void setRobotPose(Pose2d newPose) {
@@ -44,7 +48,7 @@ public class VisionSystem {
     }
 
     public static void updatePose() {
-        m_targetPose = getTargetPoseCall();
+        m_relativeTargetPose = getRelativeTargetPoseCall();
         m_robotPose = getRobotPoseCall();
     }
 
@@ -64,15 +68,15 @@ public class VisionSystem {
         return (getTX() + getTY() + getTA()) != 0;
     }
 
-    public static double getID() {
-        return m_tableID.getDouble(0.0);
+    public static int getID() {
+        return (int) m_tableID.getInteger(0);
     }
 
-    private static Pose3d getTargetPoseCall() {
+    private static Pose3d getRelativeTargetPoseCall() {
         if (isDetecting()) {
             return LimelightHelpers.getTargetPose3d_CameraSpace(VisionConstants.limelightName);
         }
-        return m_targetPose;
+        return m_relativeTargetPose;
     }
 
     private static Pose2d getRobotPoseCall() {
@@ -82,11 +86,18 @@ public class VisionSystem {
         return m_robotPose;
     }
 
-    public static Pose3d getTargetPose() {
-        return m_targetPose;
+    public static Pose3d getRelativeTargetPose() {
+        return m_relativeTargetPose;
     }
 
     public static Pose2d getRobotPose() {
         return m_robotPose;
+    }
+
+    public static Pose3d getAbsoluteTargetPose() {
+        if (VisionSystem.isDetecting()) {
+            return m_aprilTagLayout.getTagPose(getID()).get();
+        }
+        return new Pose3d();
     }
 }

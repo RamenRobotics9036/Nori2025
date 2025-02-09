@@ -19,6 +19,7 @@ import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -72,6 +73,7 @@ public class SwerveSubsystem extends SubsystemBase
   private final boolean trackOdometry = true;
 
   private Field2d m_field = new Field2d();
+  private Field2d m_fieldTarget = new Field2d();
 
   private WheelTestContext m_wheelTestContext = new WheelTestContext();
   private Pose2d m_lastPose;
@@ -122,14 +124,14 @@ public class SwerveSubsystem extends SubsystemBase
       // Stop the odometry thread if we are using vision that way we can synchronize updates better.
       swerveDrive.stopOdometryThread();
     }
-    m_lastPose = 
-    getPose();
+    m_lastPose = getPose();
     setupPathPlanner();
   }
 
   public void initShuffleboad() {
     ShuffleboardTab tab = Shuffleboard.getTab("Field");
     tab.add("Robot Position on Field", m_field);
+    tab.add("Target Position on Field", m_fieldTarget);
   }
 
   public WheelTestContext getWheelTestContext() {
@@ -154,19 +156,24 @@ public class SwerveSubsystem extends SubsystemBase
       VisionSystem.changeRobotPose(deltaPose);
 
       m_lastPose = getPose();
-      m_field.setRobotPose(VisionSystem.getRobotPose());
+      m_field.setRobotPose(getPose());
     }
   }
 
   public Command alignWithAprilTag() {
-    Pose2d targetPose = VisionSystem.getRobotPose();
-    targetPose = targetPose.plus(new Transform2d(AlignRobotConstants.transformDrive, AlignRobotConstants.transformStrafe, Rotation2d.fromDegrees(AlignRobotConstants.transformRot)));
-    resetOdometry(VisionSystem.getRobotPose());
-
-    PathConstraints constraints = new PathConstraints(
-        0.1, 0.05,
-        0.1, 0.1);
-    return AutoBuilder.pathfindToPose(targetPose, constraints, 0);
+    return runOnce(
+      () -> {
+        resetOdometry(VisionSystem.getRobotPose());
+        Pose2d targetPose = VisionSystem.getAbsoluteTargetPose().toPose2d();
+        // targetPose = targetPose.rotateBy(Rotation2d.fromDegrees(180));
+        m_fieldTarget.setRobotPose(targetPose);
+        
+        PathConstraints constraints = new PathConstraints(
+            0.1, 0.05,
+            0.1, 0.1);
+        // AutoBuilder.pathfindToPose(targetPose, constraints, 0).schedule();
+      }
+    );
   }
 
   @Override
