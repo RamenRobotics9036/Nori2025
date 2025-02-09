@@ -5,7 +5,16 @@
 package frc.robot;
 
 import com.pathplanner.lib.config.PIDConstants;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
@@ -69,8 +78,27 @@ public final class Constants
   public static final class VisionConstants {
     public static final String limelightName = "limelight";
     public static final double allowedAngleUncertaintyDegrees = 0.5;
+    public static final int dontRotateIfSmallDegrees = 5;
     public static final double allowedAngleUncertaintyMetersDrive = 0.05;
     public static final double allowedAngleUncertaintyMetersStrafe = 0.025;
+  }
+
+  public static class VisionSimConstants {
+      public static final String kCameraName = "RAMEN SIM CAMERA";
+      // Cam mounted facing forward, half a meter forward of center, half a meter up from center,
+      // pitched upward.
+      private static final double camPitch = Units.degreesToRadians(30.0);
+      public static final Transform3d kRobotToCam =
+              new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, -camPitch, 0));
+
+      // The layout of the AprilTags on the field
+      public static final AprilTagFieldLayout kTagLayout =
+              AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+
+      // The standard deviations of our vision estimated poses, which affect correction rate
+      // (Fake values. Experiment and determine estimation noise on an actual robot.)
+      public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+      public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
   }
 
   public static final class CommandConstants {
@@ -83,9 +111,10 @@ public final class Constants
     }
 
     public static final class AlignRobotConstants {
-      public static final double maxTimeSeconds = 10;
+      // 5 seconds should be plenty of time to just turn
+      public static final double maxTimeSeconds = 5;
       public static final double maxSpeed = 0.4;
-      public static final double maxSpeedRot = 0.2;
+      public static final double kMaxRotateRadsPerSecond = 2 * Math.PI;
 
       /**
        * How much the robot should be offset from the April tag pose rotation.

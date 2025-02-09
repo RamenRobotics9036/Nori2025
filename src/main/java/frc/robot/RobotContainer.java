@@ -99,7 +99,6 @@ private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    VisionSystem.initShuffleboad();
     m_swerveDrive.initShuffleboad();
   }
 
@@ -200,6 +199,6 @@ private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
   }
 
   public void updateVisionPose() {
-    VisionSystem.updatePose();
+    m_swerveDrive.updateVisionPose();
   }
 }
