@@ -165,7 +165,11 @@ public class SwerveSubsystem extends SubsystemBase
       () -> {
         resetOdometry(VisionSystem.getRobotPose());
         Pose2d targetPose = VisionSystem.getAbsoluteTargetPose().toPose2d();
-        // targetPose = targetPose.rotateBy(Rotation2d.fromDegrees(180));
+        targetPose = targetPose.transformBy(new Transform2d(
+          AlignRobotConstants.transformDrive,
+          AlignRobotConstants.transformStrafe,
+          Rotation2d.fromDegrees(AlignRobotConstants.transformRot + 180)
+        ));
         m_fieldTarget.setRobotPose(targetPose);
         
         PathConstraints constraints = new PathConstraints(
