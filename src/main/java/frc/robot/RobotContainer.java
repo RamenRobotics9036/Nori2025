@@ -90,12 +90,20 @@ public class RobotContainer
   Command m_driveFieldOrientedAngularVelocity = m_swerveDrive.driveFieldOriented(driveAngularVelocity);
 
 private final IntakeSystem m_intakeSystem = new IntakeSystem();
-private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
+private IntakeArmSystem m_armSystem = null;
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer()
   {
+    // $TODO - Pancake robot doesnt have an arm intake system.  If we instantiate this on the 
+    // pancake robot, the code will crash on startup, preventing code deployment from
+    // succeeding.  Note that this fix is TEMPORARY to unblock pancake bot code deployment!
+    // A better fix would be not to throw in IntakeArmSystem, at least not on pancakebot.
+    if (SwerveConstants.kJsonDirectory != "pancake") {
+      m_armSystem = new IntakeArmSystem();
+    }
+
     // Configure the trigger bindings
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -135,7 +143,9 @@ private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
     
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
     m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
-    m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
+    if (m_armSystem != null) {
+      m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
+    }
   
     //D-pad drives straight (no gyro) for tests
     /*
