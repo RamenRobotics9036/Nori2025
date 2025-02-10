@@ -9,13 +9,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.Constants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.VisionSimConstants;
 
 public class VisionSystemSim implements VisionSystemInterface {
     private VisionSim m_visionSim;
-    private Pose3d m_targetPose3d = new Pose3d();
-    private Pose2d m_robotPose2d = new Pose2d();
-    private Pose3d m_targetPoseInCameraSpace3d = new Pose3d();
+    private Pose3d m_absoluteTargetPose = new Pose3d();
+    private Pose3d m_relativeTargetPose = new Pose3d();
+    private Pose2d m_robotPose = new Pose2d();
 
     // Constructor
     public VisionSystemSim(VisionSim visionSim) {
@@ -23,15 +24,15 @@ public class VisionSystemSim implements VisionSystemInterface {
     }
 
     @Override
-    public void updatePose() {
-        m_targetPose3d = calcTargetPose3d();
+    public void updatePoses() {
+        m_absoluteTargetPose = calcAbsoluteTargetPoseHelper();
 
-        Pose3d robotPose3d = calcRobotPose3d();
-        m_robotPose2d = robotPose3d.toPose2d();
+        Pose3d robotPose3d = calcRobotPoseHelper();
+        m_robotPose = robotPose3d.toPose2d();
 
-        m_targetPoseInCameraSpace3d = calcTargetPoseInCameraSpace3d(
+        m_relativeTargetPose = calcRelativeTargetPoseHelper(
             robotPose3d,
-            m_targetPose3d);
+            m_absoluteTargetPose);
     }
 
     @Override
@@ -76,54 +77,34 @@ public class VisionSystemSim implements VisionSystemInterface {
 
     // Returns 0 if no ID
     @Override
-    public double getID() {
+    public int getID() {
         Optional<PhotonTrackedTarget> result = m_visionSim.getBestTarget();
         if (result.isEmpty()) {
-            return 0.0;
+            return 0;
         }
 
         int fiducialId = result.get().getFiducialId();
         if (fiducialId == -1) {
-            return 0.0;
+            return 0;
         }
-        return (double)fiducialId;
+        return fiducialId;
     }
 
-    private Pose3d calcTargetPose3d() {
+    private Pose3d calcAbsoluteTargetPoseHelper() {
         Optional<PhotonTrackedTarget> result = m_visionSim.getBestTarget();
         if (result.isEmpty()) {
             return new Pose3d();
         }
 
         PhotonTrackedTarget target = result.get();
-        if (!VisionSimConstants.kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
+        if (!VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
             return new Pose3d();
         }
 
-        return VisionSimConstants.kTagLayout.getTagPose(target.getFiducialId()).get();
+        return VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).get();
     }
 
-    private Pose3d calcRobotPose3d() {
-        Optional<PhotonTrackedTarget> result = m_visionSim.getBestTarget();
-        if (result.isEmpty()) {
-            return new Pose3d();
-        }
-
-        PhotonTrackedTarget target = result.get();
-        if (!VisionSimConstants.kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
-            return new Pose3d();
-        }
-
-        Transform3d cameraToRobot = Constants.VisionSimConstants.kRobotToCam.inverse();
-        Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
-            target.getBestCameraToTarget(),
-            VisionSimConstants.kTagLayout.getTagPose(target.getFiducialId()).get(),
-            cameraToRobot);
-
-        return robotPose;
-    }
-
-    private Pose3d calcTargetPoseInCameraSpace3d(Pose3d robotPose, Pose3d targetPose) {
+    private Pose3d calcRelativeTargetPoseHelper(Pose3d robotPose, Pose3d targetPose) {
         // Get the camera's pose in field coordinates
         Pose3d cameraPose = robotPose.transformBy(Constants.VisionSimConstants.kRobotToCam);
 
@@ -131,14 +112,39 @@ public class VisionSystemSim implements VisionSystemInterface {
         return targetPose.relativeTo(cameraPose);
     }
 
-    // NOTE: This is expected in camera space
+    private Pose3d calcRobotPoseHelper() {
+        Optional<PhotonTrackedTarget> result = m_visionSim.getBestTarget();
+        if (result.isEmpty()) {
+            return new Pose3d();
+        }
+
+        PhotonTrackedTarget target = result.get();
+        if (!VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
+            return new Pose3d();
+        }
+
+        Transform3d cameraToRobot = Constants.VisionSimConstants.kRobotToCam.inverse();
+        Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
+            target.getBestCameraToTarget(),
+            VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).get(),
+            cameraToRobot);
+
+        return robotPose;
+    }
+
     @Override
-    public Pose3d getTargetPose() {
-        return m_targetPoseInCameraSpace3d;
+    public Pose3d getAbsoluteTargetPose() {
+        return m_absoluteTargetPose;
+    }
+
+    // NOTE: This is in camera space coordinates
+    @Override
+    public Pose3d getRelativeTargetPose() {
+        return m_relativeTargetPose;
     }
 
     @Override
     public Pose2d getRobotPose() {
-        return m_robotPose2d;
+        return m_robotPose;
     }
 }

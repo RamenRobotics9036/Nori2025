@@ -80,6 +80,10 @@ public final class Constants
     public static final double allowedAngleUncertaintyDegrees = 0.5;
     public static final double allowedAngleUncertaintyMetersDrive = 0.05;
     public static final double allowedAngleUncertaintyMetersStrafe = 0.025;
+
+    // The layout of the AprilTags on the field
+    public static final AprilTagFieldLayout kTagLayout =
+            AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
   }
 
   public static class VisionSimConstants {
@@ -89,10 +93,6 @@ public final class Constants
       private static final double camPitch = Units.degreesToRadians(30.0);
       public static final Transform3d kRobotToCam =
               new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, -camPitch, 0));
-
-      // The layout of the AprilTags on the field
-      public static final AprilTagFieldLayout kTagLayout =
-              AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
       // The standard deviations of our vision estimated poses, which affect correction rate
       // (Fake values. Experiment and determine estimation noise on an actual robot.)
@@ -122,7 +122,7 @@ public final class Constants
       /**
        * How much the robot should be offset from the April tag pose x direction.
       */
-      public static final double transformDrive = 0.4;
+      public static final double transformDrive = 1.1;
 
       /**
        * How much the robot should be offset from the April tag pose y direction.

@@ -21,6 +21,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -36,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
+import frc.robot.Constants.CommandConstants.AlignRobotConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.VisionSimConstants;
 import frc.robot.Robot;
@@ -159,7 +161,7 @@ public class SwerveSubsystem extends SubsystemBase
 
     tabVision.addDouble("Distance to target", () -> PhotonUtils.getDistanceToPose(
       m_vision.getRobotPose(),
-      m_vision.getTargetPose().toPose2d()));
+      m_vision.getRelativeTargetPose().toPose2d()));
 
     ShuffleboardTab tab = Shuffleboard.getTab("Field");
     tab.add("Robot Position on Field", m_field);
@@ -192,7 +194,7 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
   public void updateVisionPose() {
-    m_vision.updatePose();
+    m_vision.updatePoses();
   }
 
   @Override
@@ -203,6 +205,28 @@ public class SwerveSubsystem extends SubsystemBase
     var debugField = m_visionSim.getSimDebugField();
     debugField.getObject("EstimatedRobot").setPose(getPose());
     debugField.getObject("EstimatedRobotModules").setPoses(swerveDrive.getSwerveModulePoses(getPose()));
+  }
+
+  public Command alignWithAprilTagCommand() {
+    return runOnce(
+      () -> {
+        if (!m_vision.isDetecting()) {
+          System.out.println("No vision target detected");
+          return;
+        }
+    
+        Pose2d targetPose = m_vision.getAbsoluteTargetPose().toPose2d();
+        targetPose = targetPose.transformBy(new Transform2d(
+          AlignRobotConstants.transformDrive,
+          AlignRobotConstants.transformStrafe,
+          Rotation2d.fromDegrees(AlignRobotConstants.transformRot + 180)
+        ));
+
+        System.out.println("Driving to alignment with AprilTag");
+
+        driveToPose(targetPose).schedule();
+      }
+    );
   }
 
   /**
@@ -342,17 +366,16 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Command driveToPose(Pose2d pose)
   {
-// Create the constraints to use while pathfinding
+    // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
         swerveDrive.getMaximumChassisVelocity(), 4.0,
         swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
-// Since AutoBuilder is configured, we can use it to build pathfinding commands
+    // Since AutoBuilder is configured, we can use it to build pathfinding commands
     return AutoBuilder.pathfindToPose(
         pose,
         constraints,
-        edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
-                                     );
+        edu.wpi.first.units.Units.MetersPerSecond.of(0)); // Goal end velocity in meters/sec
   }
 
   /**

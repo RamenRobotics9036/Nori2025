@@ -40,7 +40,7 @@ public class AlignRobot extends Command {
  
     @Override 
     public void execute() { 
-        Pose3d targetPose = m_swerveDrive.getVisionSystem().getTargetPose(); 
+        Pose3d targetPose = m_swerveDrive.getVisionSystem().getRelativeTargetPose(); 
  
         double drive = m_drivePIDController.calculate(targetPose.getZ()); 
         double strafe = m_strafePIDController.calculate(targetPose.getX()); 
