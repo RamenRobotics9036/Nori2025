@@ -90,7 +90,7 @@ public class RobotContainer
   Command m_driveFieldOrientedAngularVelocity = m_swerveDrive.driveFieldOriented(driveAngularVelocity);
 
 private final IntakeSystem m_intakeSystem = new IntakeSystem();
-private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
+//private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -135,7 +135,7 @@ private final IntakeArmSystem m_armSystem = new IntakeArmSystem();
     
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
     m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
-    m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
+    //m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
   
     //D-pad drives straight (no gyro) for tests
     /*
