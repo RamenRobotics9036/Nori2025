@@ -31,6 +31,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.VisionSimConstants;
 import frc.robot.Robot;
 
@@ -58,7 +59,7 @@ public class VisionSim {
         // Create the vision system simulation which handles cameras and targets on the field.
         m_visionSim = new VisionSystemSim("main");
         // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
-        m_visionSim.addAprilTags(kTagLayout);
+        m_visionSim.addAprilTags(VisionConstants.kTagLayout);
         // Create simulated camera properties. These can be set to mimic your actual camera.
         var cameraProp = new SimCameraProperties();
         cameraProp.setCalibration(320, 240, Rotation2d.fromDegrees(90));

@@ -16,7 +16,8 @@ public class VisionSystem implements VisionSystemInterface {
     private NetworkTableEntry m_tableArea = m_limelightTable.getEntry("ta");
     private NetworkTableEntry m_tableID = m_limelightTable.getEntry("tid");
 
-    private Pose3d m_targetPose = null;
+    private Pose3d m_absoluteTargetPose = null;
+    private Pose3d m_relativeTargetPose = null;
     private Pose2d m_robotPose = null;
 
     // Constructor
@@ -25,9 +26,10 @@ public class VisionSystem implements VisionSystemInterface {
     }
 
     @Override
-    public void updatePose() {
-        m_targetPose = getTargetPoseCall();
-        m_robotPose = getRobotPoseCall();
+    public void updatePoses() {
+        m_absoluteTargetPose = calcAbsoluteTargetPoseHelper();
+        m_relativeTargetPose = calcRelativeTargetPoseHelper();
+        m_robotPose = calcRobotPoseHelper();
     }
 
     @Override
@@ -51,18 +53,25 @@ public class VisionSystem implements VisionSystemInterface {
     }
 
     @Override
-    public double getID() {
-        return m_tableID.getDouble(0.0);
+    public int getID() {
+        return (int)m_tableID.getDouble(0.0);
     }
 
-    private Pose3d getTargetPoseCall() {
+    private Pose3d calcAbsoluteTargetPoseHelper() {
+        if (isDetecting()) {
+            return VisionConstants.kTagLayout.getTagPose(getID()).get();
+        }
+        return new Pose3d();
+    }
+
+    private Pose3d calcRelativeTargetPoseHelper() {
         if (isDetecting()) {
             return LimelightHelpers.getTargetPose3d_CameraSpace(VisionConstants.limelightName);
         }
         return new Pose3d();
     }
 
-    private Pose2d getRobotPoseCall() {
+    private Pose2d calcRobotPoseHelper() {
         if (isDetecting()) {
             return LimelightHelpers.getBotPose2d_wpiBlue(VisionConstants.limelightName);
         }
@@ -70,8 +79,13 @@ public class VisionSystem implements VisionSystemInterface {
     }
 
     @Override
-    public Pose3d getTargetPose() {
-        return m_targetPose;
+    public Pose3d getAbsoluteTargetPose() {
+        return m_absoluteTargetPose;
+    }
+
+    @Override
+    public Pose3d getRelativeTargetPose() {
+        return m_relativeTargetPose;
     }
 
     @Override

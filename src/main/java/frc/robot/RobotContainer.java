@@ -158,7 +158,8 @@ private IntakeArmSystem m_armSystem = null;
     m_driverController.start().onTrue((Commands.runOnce(m_swerveDrive::zeroGyro)));
 
     // A button aligns the robot using the AprilTag
-    m_driverController.a().onTrue(new AimAtLimeLightV2(m_swerveDrive));
+    //m_driverController.a().onTrue(new AimAtLimeLightV2(m_swerveDrive));
+    m_driverController.a().onTrue(m_swerveDrive.alignWithAprilTagCommand());
 
     // Command to spit out game pieces
     m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem));
