@@ -188,8 +188,9 @@ public final class Constants
   public static final class ElevatorContants {
     public static final int kLeaderMotorID = 30;
     public static final int kFollowMotorID = 31;
-    public static final int DIOIndex = 0;
+    public static final int kDIOIndex = 1; // TODO: placeholder
     public static final int kStallLimit = 20;
     public static final double kMaxOutputPercentage = 0.4;
+    public static final double kRotationToElevatorRatio = 1.0; // TODO: placeholder
   }
 }
