@@ -75,6 +75,7 @@ public class ElevatorSystem extends SubsystemBase{
     private void initShuffleboad(){
         ShuffleboardTab tab = Shuffleboard.getTab("Elevator");
         tab.addNumber("DesiredPosition", ()-> {return m_desiredPosition;});
+        tab.addNumber("Position", this::getPosition);
         tab.addBoolean("Initialized", ()-> {return m_positionInitialized;});
     }
 
@@ -125,7 +126,7 @@ public class ElevatorSystem extends SubsystemBase{
         if (m_positionInitialized){
             return m_encoder.getPosition() * ElevatorContants.kRotationToElevatorRatio; // TODO: placeholder, change this to the correct ratio
         } else {
-            throw new RuntimeException("Elevator position not initialized. Please manually lower it fully.");
+            return -1;
         }
 
     }
