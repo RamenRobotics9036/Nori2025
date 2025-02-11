@@ -7,7 +7,16 @@ package frc.robot;
 import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.spark.SparkMax;
 
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
@@ -73,6 +82,24 @@ public final class Constants
     public static final double allowedAngleUncertaintyDegrees = 0.5;
     public static final double allowedAngleUncertaintyMetersDrive = 0.05;
     public static final double allowedAngleUncertaintyMetersStrafe = 0.025;
+
+    // The layout of the AprilTags on the field
+    public static final AprilTagFieldLayout kTagLayout =
+            AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+  }
+
+  public static class VisionSimConstants {
+      public static final String kCameraName = "RAMEN SIM CAMERA";
+      // Cam mounted facing forward, half a meter forward of center, half a meter up from center,
+      // pitched upward.
+      private static final double camPitch = Units.degreesToRadians(30.0);
+      public static final Transform3d kRobotToCam =
+              new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, -camPitch, 0));
+
+      // The standard deviations of our vision estimated poses, which affect correction rate
+      // (Fake values. Experiment and determine estimation noise on an actual robot.)
+      public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+      public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
   }
 
   public static final class CommandConstants {
@@ -97,14 +124,33 @@ public final class Constants
       /**
        * How much the robot should be offset from the April tag pose x direction.
       */
-      public static final double transformDrive = 0.4;
+      public static final double transformDrive = 1.1;
 
       /**
        * How much the robot should be offset from the April tag pose y direction.
       */
       public static final double transformStrafe = 0;
     }
+
+    public static final class AimAtLimeLightV2Constants {
+      // 5 seconds should be plenty of time to just turn
+      public static final double maxTimeSeconds = 5;
+      public static final double maxSpeed = 0.4;
+      public static final double kMaxRotateRadsPerSecond = 2 * Math.PI;
+
+      public static final double kP = 0.01;
+      public static final double kI = 0.0;
+      public static final double kD = 0.0;
+      public static final double allowedAngleUncertaintyDegrees = 0.5;
+      public static final int dontRotateIfSmallDegrees = 5;
+
+      /**
+       * How much the robot should be offset from the April tag pose rotation.
+      */
+      public static final double transformRot = 0.0;
+    }
   }
+
   public static final class IntakeConstants{
     public static final int kPullMotorID = 20;
     public static final int kLoadMotorID = 21;
@@ -122,6 +168,21 @@ public final class Constants
     public static final int maxTime = 3;
     public static final double speed = 1.0;
     public static final double numRotations = 10;
+  }
+
+  public static final class ArmConstants {
+    public static final int kArmMotorID = 22;
+    public static final double maxOutput = 1.0;
+    public static final int kArmEncoderID = 0;
+    public static final double kArmGearBoxRatio = 125 * (44/30);
+    public static final double kMaxArmRotation = 2.6;
+    public static final double kMinArmRotation = 0.1;
+    public static final double kAbsoluteEncoderOffset = 0;
+    public static final int kcurrentLimit = 20;
+  }
+
+  public static final class ArmDefaultCommandConstants {
+    public static final double armAngleChangeRate = 5;
   }
 
   public static final class ElevatorContants {

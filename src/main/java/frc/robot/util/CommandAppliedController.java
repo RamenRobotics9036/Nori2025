@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OperatorConstants;
 
@@ -36,6 +37,11 @@ public class CommandAppliedController extends CommandXboxController {
 
     @Override
     public double getLeftY() {
+        // For simulation, we change the orientation by 90 degrees
+        if (RobotBase.isSimulation()) {
+            return -1.0 * adjust(super.getLeftX());
+        }
+
         return adjust(super.getLeftY());
     }
 
@@ -46,6 +52,10 @@ public class CommandAppliedController extends CommandXboxController {
 
     @Override
     public double getLeftX() {
+        if (RobotBase.isSimulation()) {
+            return -1.0 * adjust(-super.getLeftY());
+        }
+
         return adjust(super.getLeftX());
     }
 

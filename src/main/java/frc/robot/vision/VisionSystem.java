@@ -5,80 +5,91 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.VisionConstants;
 
-public class VisionSystem {
+public class VisionSystem implements VisionSystemInterface {
 
-    private static NetworkTable m_limelightTable = NetworkTableInstance.getDefault()
+    private NetworkTable m_limelightTable = NetworkTableInstance.getDefault()
             .getTable(VisionConstants.limelightName);
-    private static  NetworkTableEntry m_tableX = m_limelightTable.getEntry("tx");
-    private static NetworkTableEntry m_tableY = m_limelightTable.getEntry("ty");
-    private static NetworkTableEntry m_tableArea = m_limelightTable.getEntry("ta");
-    private static NetworkTableEntry m_tableID = m_limelightTable.getEntry("tid");
+    private NetworkTableEntry m_tableX = m_limelightTable.getEntry("tx");
+    private NetworkTableEntry m_tableY = m_limelightTable.getEntry("ty");
+    private NetworkTableEntry m_tableArea = m_limelightTable.getEntry("ta");
+    private NetworkTableEntry m_tableID = m_limelightTable.getEntry("tid");
 
-    private static Pose3d m_targetPose;
-    private static Pose2d m_robotPose;
+    private Pose3d m_absoluteTargetPose = null;
+    private Pose3d m_relativeTargetPose = null;
+    private Pose2d m_robotPose = null;
 
-    public static void initShuffleboad() {
-        ShuffleboardTab tab = Shuffleboard.getTab("Vision");
-        tab.addDouble("TX", () -> getTX());
-        tab.addDouble("TY", () -> getTY());
-        tab.addBoolean("Is Detecting", () -> isDetecting());
-        tab.addDouble("ID", () -> getID());
-
-        tab.addDouble("April Tag Relative X", () -> m_targetPose.getX());
-        tab.addDouble("April Tag Relative Y", () -> m_targetPose.getY());
-        tab.addDouble("April Tag Relative Z", () -> m_targetPose.getZ());
-        tab.addDouble("April Tag Relative Rot", () -> m_targetPose.getRotation().getAngle());
-
+    // Constructor
+    public VisionSystem() {
+        // Empty
     }
 
-    public static void updatePose() {
-        m_targetPose = getTargetPoseCall();
-        m_robotPose = getRobotPoseCall();
+    @Override
+    public void updatePoses() {
+        m_absoluteTargetPose = calcAbsoluteTargetPoseHelper();
+        m_relativeTargetPose = calcRelativeTargetPoseHelper();
+        m_robotPose = calcRobotPoseHelper();
     }
 
-    public static double getTX() {
+    @Override
+    public double getTX() {
         return m_tableX.getDouble(0.0);
     }
 
-    public static double getTY() {
+    @Override
+    public double getTY() {
         return m_tableY.getDouble(0.0);
     }
 
-    public static double getTA() {
+    @Override
+    public double getTA() {
         return m_tableArea.getDouble(0.0);
     }
 
-    public static boolean isDetecting() {
+    @Override
+    public boolean isDetecting() {
         return (getTX() + getTY() + getTA()) != 0;
     }
 
-    public static double getID() {
-        return m_tableID.getDouble(0.0);
+    @Override
+    public int getID() {
+        return (int)m_tableID.getDouble(0.0);
     }
 
-    private static Pose3d getTargetPoseCall() {
+    private Pose3d calcAbsoluteTargetPoseHelper() {
+        if (isDetecting()) {
+            return VisionConstants.kTagLayout.getTagPose(getID()).get();
+        }
+        return new Pose3d();
+    }
+
+    private Pose3d calcRelativeTargetPoseHelper() {
         if (isDetecting()) {
             return LimelightHelpers.getTargetPose3d_CameraSpace(VisionConstants.limelightName);
         }
         return new Pose3d();
     }
 
-    private static Pose2d getRobotPoseCall() {
+    private Pose2d calcRobotPoseHelper() {
         if (isDetecting()) {
             return LimelightHelpers.getBotPose2d_wpiBlue(VisionConstants.limelightName);
         }
         return new Pose2d();
     }
 
-    public static Pose3d getTargetPose() {
-        return m_targetPose;
+    @Override
+    public Pose3d getAbsoluteTargetPose() {
+        return m_absoluteTargetPose;
     }
 
-    public static Pose2d getRobotPose() {
+    @Override
+    public Pose3d getRelativeTargetPose() {
+        return m_relativeTargetPose;
+    }
+
+    @Override
+    public Pose2d getRobotPose() {
         return m_robotPose;
     }
 }

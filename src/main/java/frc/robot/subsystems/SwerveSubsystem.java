@@ -21,6 +21,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -36,17 +37,28 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
+import frc.robot.Constants.CommandConstants.AlignRobotConstants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.VisionSimConstants;
+import frc.robot.Robot;
 import frc.robot.commands.testcommands.WheelTestContext;
+import frc.robot.vision.VisionSim;
 import frc.robot.vision.VisionSystem;
+import frc.robot.vision.VisionSystemInterface;
+import frc.robot.vision.VisionSystemSim;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
@@ -75,6 +87,13 @@ public class SwerveSubsystem extends SubsystemBase
   private Field2d m_field = new Field2d();
 
   private WheelTestContext m_wheelTestContext = new WheelTestContext();
+
+  private VisionSystemInterface m_vision = null;
+
+  //
+  // Simulated Vision
+  //
+  private VisionSim m_visionSim = null;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -123,9 +142,27 @@ public class SwerveSubsystem extends SubsystemBase
       swerveDrive.stopOdometryThread();
     }
     setupPathPlanner();
+
+    if (!Robot.isSimulation()) {
+      m_vision = new VisionSystem();
+    }
+    else {
+      m_visionSim = new VisionSim();
+      m_vision = new VisionSystemSim(m_visionSim);
+    }
   }
 
   public void initShuffleboad() {
+    ShuffleboardTab tabVision = Shuffleboard.getTab("Vision");
+    tabVision.addDouble("TX", () -> m_vision.getTX());
+    tabVision.addDouble("TY", () -> m_vision.getTY());
+    tabVision.addBoolean("Is Detecting", () -> m_vision.isDetecting());
+    tabVision.addDouble("ID", () -> m_vision.getID());
+
+    tabVision.addDouble("Distance to target", () -> PhotonUtils.getDistanceToPose(
+      m_vision.getRobotPose(),
+      m_vision.getRelativeTargetPose().toPose2d()));
+
     ShuffleboardTab tab = Shuffleboard.getTab("Field");
     tab.add("Robot Position on Field", m_field);
   }
@@ -145,16 +182,51 @@ public class SwerveSubsystem extends SubsystemBase
     if (trackOdometry)
     {
       swerveDrive.updateOdometry();
-      if (VisionSystem.isDetecting()) {
-        swerveDrive.addVisionMeasurement(VisionSystem.getRobotPose(), DriverStation.getMatchTime());
+      if (m_vision.isDetecting()) {
+        swerveDrive.addVisionMeasurement(m_vision.getRobotPose(), DriverStation.getMatchTime());
       }
       m_field.setRobotPose(getPose());
     }
   }
 
+  public VisionSystemInterface getVisionSystem() {
+    return m_vision;
+  }
+
+  public void updateVisionPose() {
+    m_vision.updatePoses();
+  }
+
   @Override
   public void simulationPeriodic()
   {
+    m_visionSim.simulationPeriodic(getPose());
+
+    var debugField = m_visionSim.getSimDebugField();
+    debugField.getObject("EstimatedRobot").setPose(getPose());
+    debugField.getObject("EstimatedRobotModules").setPoses(swerveDrive.getSwerveModulePoses(getPose()));
+  }
+
+  public Command alignWithAprilTagCommand() {
+    return runOnce(
+      () -> {
+        if (!m_vision.isDetecting()) {
+          System.out.println("No vision target detected");
+          return;
+        }
+    
+        Pose2d targetPose = m_vision.getAbsoluteTargetPose().toPose2d();
+        targetPose = targetPose.transformBy(new Transform2d(
+          AlignRobotConstants.transformDrive,
+          AlignRobotConstants.transformStrafe,
+          Rotation2d.fromDegrees(AlignRobotConstants.transformRot + 180)
+        ));
+
+        System.out.println("Driving to alignment with AprilTag");
+
+        driveToPose(targetPose).schedule();
+      }
+    );
   }
 
   /**
@@ -294,17 +366,16 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Command driveToPose(Pose2d pose)
   {
-// Create the constraints to use while pathfinding
+    // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
         swerveDrive.getMaximumChassisVelocity(), 4.0,
         swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
-// Since AutoBuilder is configured, we can use it to build pathfinding commands
+    // Since AutoBuilder is configured, we can use it to build pathfinding commands
     return AutoBuilder.pathfindToPose(
         pose,
         constraints,
-        edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
-                                     );
+        edu.wpi.first.units.Units.MetersPerSecond.of(0)); // Goal end velocity in meters/sec
   }
 
   /**

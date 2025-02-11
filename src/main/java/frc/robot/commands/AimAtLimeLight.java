@@ -31,7 +31,7 @@ public class AimAtLimeLight extends Command {
     @Override
     public void execute() {
         Translation2d translation = new Translation2d(0, 0);
-        double rotation = m_pidController.calculate(VisionSystem.getTX());
+        double rotation = m_pidController.calculate(m_swerveDrive.getVisionSystem().getTX());
         rotation = MathUtil.clamp(rotation, -AimAtLimeLightConstants.maxSpeed, AimAtLimeLightConstants.maxSpeed);
         m_swerveDrive.drive(translation, rotation, true);
     }
@@ -41,7 +41,7 @@ public class AimAtLimeLight extends Command {
         if (m_timer.get() > AimAtLimeLightConstants.maxTimeSeconds) {
             return true;
         }
-        if (!VisionSystem.isDetecting()) {
+        if (!m_swerveDrive.getVisionSystem().isDetecting()) {
             return true;
         }
         return m_pidController.atSetpoint();
