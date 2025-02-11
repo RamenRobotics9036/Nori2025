@@ -1,15 +1,21 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import frc.robot.Constants.ElevatorContants;
@@ -22,6 +28,8 @@ public class ElevatorSystem extends SubsystemBase{
     private SparkMaxConfig m_leaderConfig = new SparkMaxConfig();
     private SparkMaxConfig m_followConfig = new SparkMaxConfig();
     private RelativeEncoder m_encoder = m_leaderMotor.getEncoder();
+    private SparkClosedLoopController m_PIDController = m_leaderMotor.getClosedLoopController();
+    private double m_desiredPosition;
 
     private DigitalInput m_limitSwitch= new DigitalInput(ElevatorContants.kDIOIndex);
     /* Sensor will reset a relative encoder when the elevator lowers fully
@@ -31,9 +39,23 @@ public class ElevatorSystem extends SubsystemBase{
     private boolean m_positionInitialized = false;
     
     public ElevatorSystem() {
+        ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig();
+        closedLoopConfig
+            .p(1)
+            .i(0)
+            .d(0);
+        closedLoopConfig.positionWrappingEnabled(false);
+        //closedLoopConfig.minOutput();
+        //closedLoopConfig.maxOutput();
+        EncoderConfig encoderConfig = new EncoderConfig();
+        encoderConfig.positionConversionFactor(ElevatorContants.kRotationToElevatorRatio);
+        //encoderConfig.velocityConversionFactor(ElevatorContants.kRotationToElevatorRatio / 60);
+
         m_leaderConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
         m_leaderConfig.smartCurrentLimit(IntakeConstants.kStallLimit);
         m_leaderConfig.inverted(false);
+        m_leaderConfig.apply(closedLoopConfig);
+        m_leaderConfig.apply(encoderConfig);
         m_leaderMotor.configure(m_leaderConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
@@ -47,12 +69,24 @@ public class ElevatorSystem extends SubsystemBase{
             SparkBase.PersistMode.kPersistParameters);
 
         testResetPosition();
+        initShuffleboad();
+    }
+
+    private void initShuffleboad(){
+        ShuffleboardTab tab = Shuffleboard.getTab("Elevator");
+        tab.addNumber("DesiredPosition", ()-> {return m_desiredPosition;});
+        tab.addBoolean("Initialized", ()-> {return m_positionInitialized;});
     }
 
     @Override
     public void periodic(){
         testResetPosition();
 
+    }
+
+    public void setReference(double position){
+        m_desiredPosition = position;
+        m_PIDController.setReference(position, ControlType.kPosition);
     }
 
     public void setSpeed(double speed){
@@ -94,5 +128,10 @@ public class ElevatorSystem extends SubsystemBase{
             throw new RuntimeException("Elevator position not initialized. Please manually lower it fully.");
         }
 
+    }
+
+    public void stopSystem(){
+        m_leaderMotor.stopMotor();
+        m_followMotor.stopMotor();
     }
 }
