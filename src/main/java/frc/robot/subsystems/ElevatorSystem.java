@@ -86,6 +86,8 @@ public class ElevatorSystem extends SubsystemBase{
     }
 
     public void setReference(double position){
+        // set desired position
+        // measured in rotations of motor * a constant
         m_desiredPosition = position;
         m_PIDController.setReference(position, ControlType.kPosition);
     }
@@ -128,11 +130,10 @@ public class ElevatorSystem extends SubsystemBase{
         } else {
             return -1;
         }
-
     }
 
     public void stopSystem(){
         m_leaderMotor.stopMotor();
-        m_followMotor.stopMotor();
+        m_followMotor.stopMotor(); // just in case
     }
 }

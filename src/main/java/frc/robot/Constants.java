@@ -192,5 +192,6 @@ public final class Constants
     public static final int kStallLimit = 20;
     public static final double kMaxOutputPercentage = 0.4;
     public static final double kRotationToElevatorRatio = 1.0; // TODO: placeholder
+    public static final double kMarginOfError = 0.05; // TODO: placeholder 
   }
 }
