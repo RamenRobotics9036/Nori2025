@@ -117,7 +117,7 @@ public class RobotContainer
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    m_swerveDrive.initShuffleboad();
+    m_swerveDrive.initShuffleboard();
     AutoLogic.initShuffleBoard();
 
     NamedCommands.registerCommand("Set Arm Position To Bottom",  new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation));
@@ -232,7 +232,8 @@ public class RobotContainer
         new TestTurnWheel(m_swerveDrive, "frontleft"),
         new TestTurnWheel(m_swerveDrive, "frontright"),
         new TestTurnWheel(m_swerveDrive, "backleft"),
-        new TestTurnWheel(m_swerveDrive, "backright")
+        new TestTurnWheel(m_swerveDrive, "backright"),
+        new InstantCommand(() -> m_swerveDrive.getWheelTestContext().testSucceeded())
     );
   }
 
@@ -245,7 +246,7 @@ public class RobotContainer
         () -> DriverStation.isTest());
 
     // Save the sequence handle into subsystem, in case we later need to cancel it.
-    wheelTestContext.cancellableCommand = scheduledComand;
+    wheelTestContext.setCancellableCommand(scheduledComand);
 
     return scheduledComand;
   }

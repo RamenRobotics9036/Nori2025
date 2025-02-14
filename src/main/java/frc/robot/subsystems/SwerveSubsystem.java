@@ -148,7 +148,7 @@ public class SwerveSubsystem extends SubsystemBase
     }
   }
 
-  public void initShuffleboad() {
+  public void initShuffleboard() {
     ShuffleboardTab tabVision = Shuffleboard.getTab("Vision");
     tabVision.addDouble("TX", () -> m_vision.getTX());
     tabVision.addDouble("TY", () -> m_vision.getTY());
@@ -162,14 +162,12 @@ public class SwerveSubsystem extends SubsystemBase
     ShuffleboardTab tab = Shuffleboard.getTab("Field");
     tab.add("Robot Position on Field", m_field);
     tab.add("Target Position on Field", m_targetField);
+
+    m_wheelTestContext.initShuffleboard();
   }
 
   public WheelTestContext getWheelTestContext() {
     return m_wheelTestContext;
-  }
-
-  public void cancelWheelTest() {
-    m_wheelTestContext.cancellableCommand.cancel();
   }
 
   @Override
