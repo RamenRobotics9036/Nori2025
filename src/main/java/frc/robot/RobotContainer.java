@@ -17,6 +17,7 @@ import frc.robot.commands.testcommands.WheelTestContext;
 import frc.robot.subsystems.IntakeArmSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.AutoLogic;
 import frc.robot.util.CommandAppliedController;
 import frc.robot.vision.VisionSystem;
 import swervelib.SwerveInputStream;
@@ -40,11 +41,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer
 {
-
   private final CommandAppliedController m_driverController =
-      new CommandAppliedController(OperatorConstants.kDriverPort);
-    private final CommandAppliedController m_armController =
-      new CommandAppliedController(OperatorConstants.kArmPort);
+    new CommandAppliedController(OperatorConstants.kDriverPort);
+  private final CommandAppliedController m_armController =
+    new CommandAppliedController(OperatorConstants.kArmPort);
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       m_swerveDrive  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
@@ -89,8 +89,9 @@ public class RobotContainer
   // right stick controls the angular velocity of the robot
   Command m_driveFieldOrientedAngularVelocity = m_swerveDrive.driveFieldOriented(driveAngularVelocity);
 
-private final IntakeSystem m_intakeSystem = new IntakeSystem();
-private IntakeArmSystem m_armSystem = null;
+  private final IntakeSystem m_intakeSystem = new IntakeSystem();
+  private IntakeArmSystem m_armSystem = null;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -109,10 +110,9 @@ private IntakeArmSystem m_armSystem = null;
     DriverStation.silenceJoystickConnectionWarning(true);
 
     m_swerveDrive.initShuffleboad();
+    AutoLogic.initShuffleBoard();
   }
-
-
-
+  
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary predicate, or via the
@@ -201,8 +201,7 @@ private IntakeArmSystem m_armSystem = null;
    */
   public Command getAutonomousCommand()
   {
-    // An example command will be run in autonomous
-    return new InstantCommand();
+    return AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
   }
 
   public void setMotorBrake(boolean brake)
