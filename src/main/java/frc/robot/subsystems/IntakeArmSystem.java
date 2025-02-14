@@ -72,7 +72,7 @@ public class IntakeArmSystem extends SubsystemBase{
         }
         desiredAngle = getArmAngleRelative();
 
-        initShuffleboad();
+        initShuffleboard();
     }
 
     @Override
@@ -82,7 +82,7 @@ public class IntakeArmSystem extends SubsystemBase{
         }
     }
 
-    public void initShuffleboad() {
+    public void initShuffleboard() {
         ShuffleboardTab tab = Shuffleboard.getTab("Arm");
         tab.addDouble("Arm Relative Encoder", () -> getArmAngleRelative());
         tab.addDouble("Arm Encoder", () -> getArmAngle());
