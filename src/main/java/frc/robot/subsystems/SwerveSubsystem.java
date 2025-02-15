@@ -19,7 +19,6 @@ import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -28,7 +27,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -39,7 +37,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.CommandConstants.AlignRobotConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Constants.VisionSimConstants;
 import frc.robot.Robot;
 import frc.robot.commands.testcommands.WheelTestContext;
 import frc.robot.vision.VisionSim;
@@ -50,20 +47,15 @@ import frc.robot.vision.VisionSystemSim;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
-import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
 import swervelib.math.SwerveMath;
-import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -85,6 +77,7 @@ public class SwerveSubsystem extends SubsystemBase
   private final boolean trackOdometry = true;
 
   private Field2d m_field = new Field2d();
+  private Field2d m_targetField = new Field2d();
 
   private WheelTestContext m_wheelTestContext = new WheelTestContext();
 
@@ -165,6 +158,7 @@ public class SwerveSubsystem extends SubsystemBase
 
     ShuffleboardTab tab = Shuffleboard.getTab("Field");
     tab.add("Robot Position on Field", m_field);
+    tab.add("Target Position on Field", m_targetField);
   }
 
   public WheelTestContext getWheelTestContext() {
@@ -214,17 +208,20 @@ public class SwerveSubsystem extends SubsystemBase
           System.out.println("No vision target detected");
           return;
         }
-    
+        
         Pose2d targetPose = m_vision.getAbsoluteTargetPose().toPose2d();
         targetPose = targetPose.transformBy(new Transform2d(
           AlignRobotConstants.transformDrive,
           AlignRobotConstants.transformStrafe,
           Rotation2d.fromDegrees(AlignRobotConstants.transformRot + 180)
         ));
+        swerveDrive.resetOdometry(m_vision.getRobotPose());
+
+        m_targetField.setRobotPose(targetPose);
 
         System.out.println("Driving to alignment with AprilTag");
 
-        driveToPose(targetPose).schedule();
+        driveToPose(targetPose).withTimeout(AlignRobotConstants.maxTimeSeconds).schedule();
       }
     );
   }
@@ -368,7 +365,7 @@ public class SwerveSubsystem extends SubsystemBase
   {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        swerveDrive.getMaximumChassisVelocity(), 4.0,
+        1, 0.1,
         swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
