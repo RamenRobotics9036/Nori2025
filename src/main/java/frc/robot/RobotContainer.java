@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AimAtLimeLightV2;
 import frc.robot.commands.AlignRobot;
@@ -144,8 +145,12 @@ public class RobotContainer
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
     m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
     if (m_armSystem != null) {
-      m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
+      ArmDefaultCommand armDefaultCommand = new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY());
+      m_armSystem.setDefaultCommand(armDefaultCommand);
+      m_armController.povUp().onTrue(Commands.run(() -> armDefaultCommand.setArmAngle(ArmConstants.kMaxArmRotation)));
+      m_armController.povDown().onTrue(Commands.run(() -> armDefaultCommand.setArmAngle(ArmConstants.kMinArmRotation)));
     }
+  
   
     //D-pad drives straight (no gyro) for tests
     /*
