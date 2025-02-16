@@ -180,6 +180,11 @@ public class SwerveSubsystem extends SubsystemBase
     {
       swerveDrive.updateOdometry();
       if (m_vision.isDetecting()) {
+        // $TODO - We originally thought that this call would update the swerve's location and
+        // pose estimation whenever vision is detecting an apriltag.  We thought this would
+        // help the swerve system adjust its own view of where the robot is on the field.
+        // However, it doesnt seem to do that (otherwise when vision isdetecting, the robot
+        // would slightly jump on the field).  So we should investigate this further.
         swerveDrive.addVisionMeasurement(m_vision.getRobotPose(), DriverStation.getMatchTime());
       }
       m_field.setRobotPose(getPose());
@@ -218,6 +223,12 @@ public class SwerveSubsystem extends SubsystemBase
           AlignRobotConstants.transformStrafe,
           Rotation2d.fromDegrees(AlignRobotConstants.transformRot + 180)
         ));
+
+        // Note: The idea here is that when we are aligning the robot based off of vision,
+        // there's the possibility that the swerve pose on the field is innacurate, and
+        // instead the vision system's estimation of robot location and pose on the field
+        // is much better.  So we reset the robot position on the field to the vision
+        // systems estimation.
         swerveDrive.resetOdometry(m_vision.getRobotPose());
 
         m_targetField.setRobotPose(targetPose);
@@ -817,10 +828,10 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Add a fake vision reading for testing purposes.
    */
-  public void addFakeVisionReading()
-  {
-    swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
-  }
+  // public void addFakeVisionReading()
+  // {
+  //   swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
+  // }
 
   /**
    * Gets the swerve drive object.
