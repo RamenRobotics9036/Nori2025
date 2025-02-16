@@ -77,6 +77,9 @@ public class SwerveSubsystem extends SubsystemBase
   private final boolean trackOdometry = true;
 
   private Field2d m_field = new Field2d();
+  
+  // $TODO - We should see if we can achieve showing the target location on m_field, so
+  // all the info is in one place.
   private Field2d m_targetField = new Field2d();
 
   private WheelTestContext m_wheelTestContext = new WheelTestContext();
@@ -221,6 +224,8 @@ public class SwerveSubsystem extends SubsystemBase
 
         System.out.println("Driving to alignment with AprilTag");
 
+        // $TODO - We should double-check if this is necessary, or is it covering-up
+        // any issue? 
         driveToPose(targetPose).withTimeout(AlignRobotConstants.maxTimeSeconds).schedule();
       }
     );
