@@ -8,12 +8,14 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AimAtLimeLightV2;
 import frc.robot.commands.AlignRobot;
 import frc.robot.commands.ArmDefaultCommand;
+import frc.robot.commands.ElevatorToPositionCommand;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TestSwerveConstants;
 import frc.robot.commands.IntakeDefaultCommand;
 import frc.robot.commands.IntakeSpitCommand;
 import frc.robot.commands.testcommands.TestTurnWheel;
 import frc.robot.commands.testcommands.WheelTestContext;
+import frc.robot.subsystems.ElevatorSystem;
 import frc.robot.subsystems.IntakeArmSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -24,6 +26,8 @@ import swervelib.SwerveInputStream;
 
 import java.io.File;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -92,6 +97,8 @@ public class RobotContainer
   private final IntakeSystem m_intakeSystem = new IntakeSystem();
   private IntakeArmSystem m_armSystem = null;
 
+  
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -146,6 +153,7 @@ public class RobotContainer
     if (m_armSystem != null) {
       m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
     }
+   
   
     //D-pad drives straight (no gyro) for tests
     /*
@@ -201,7 +209,14 @@ public class RobotContainer
    */
   public Command getAutonomousCommand()
   {
+    
+    NamedCommands.registerCommand("AutoAlign", m_swerveDrive.alignWithAprilTagCommand());
+  NamedCommands.registerCommand("IntakeSpitCommand", new IntakeSpitCommand(m_intakeSystem));
+  NamedCommands.registerCommand("MoveArm", new ArmDefaultCommand(m_armSystem, () -> 0.5));
+  NamedCommands.registerCommand("MoveArm", new ArmDefaultCommand(m_armSystem, () -> 0.5));
     return AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
+   
+
   }
 
   public void setMotorBrake(boolean brake)

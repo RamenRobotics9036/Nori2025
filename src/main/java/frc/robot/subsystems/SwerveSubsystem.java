@@ -207,7 +207,7 @@ public class SwerveSubsystem extends SubsystemBase
     debugField.getObject("EstimatedRobotModules").setPoses(swerveDrive.getSwerveModulePoses(getPose()));
   }
 
-  public Command alignWithAprilTagCommand() {
+  public  Command alignWithAprilTagCommand() {
     return runOnce(
       () -> {
         if (!m_vision.isDetecting()) {
@@ -298,6 +298,7 @@ public class SwerveSubsystem extends SubsystemBase
     //Preload PathPlanner Path finding
     // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
     PathfindingCommand.warmupCommand().schedule();
+   
   }
 
   // /**

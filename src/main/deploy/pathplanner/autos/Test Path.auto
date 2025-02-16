@@ -7,7 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BarelyMovePath"
+            "pathName": "New New Path"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAlign"
           }
         }
       ]
