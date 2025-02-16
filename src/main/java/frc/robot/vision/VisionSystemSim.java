@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.Constants.VisionSimConstants;
 
 public class VisionSystemSim implements VisionSystemInterface {
     private VisionSim m_visionSim;

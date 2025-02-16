@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.VisionConstants; 
 import frc.robot.Constants.CommandConstants.AlignRobotConstants; 
 import frc.robot.subsystems.SwerveSubsystem; 
-import frc.robot.vision.VisionSystem; 
  
 public class AlignRobot extends Command { 
     private SwerveSubsystem m_swerveDrive; 

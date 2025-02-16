@@ -16,6 +16,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import swervelib.math.Matter;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
@@ -39,6 +41,7 @@ public final class Constants
     public static final double kExpo = 4; //do not change this value
     public static final double kExpoRatio = 0.8; // change this 0..1 to add more exponential, 0 = no expo (linear)
     public static final double kDeadband = 0.07;
+    public static final Alliance kAlliance = (DriverStation.getAlliance().isPresent()) ? DriverStation.getAlliance().get() : Alliance.Red;
   }
   /**
    * Constants for the swerve system.
@@ -46,8 +49,8 @@ public final class Constants
   public static class SwerveConstants
   {
     // USe the directory matching the robot
-    //public static final String  kJsonDirectory = "pancake";
-    public static final String  kJsonDirectory = "nori";
+    public static final String  kJsonDirectory = "pancake";
+    // public static final String  kJsonDirectory = "nori";
     public static final double kMaxSpeedMetersPerSecond = 5.06;
     public static final double kRobotMass = Units.lbsToKilograms(120); // TODO: update
     public static final Matter kChassisMatter = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), kRobotMass); // TODO: update
@@ -124,7 +127,7 @@ public final class Constants
       /**
        * How much the robot should be offset from the April tag pose x direction.
       */
-      public static final double transformDrive = 1.1;
+      public static final double transformDrive = (OperatorConstants.kAlliance == Alliance.Red) ? 0.5 : 0.5;
 
       /**
        * How much the robot should be offset from the April tag pose y direction.
