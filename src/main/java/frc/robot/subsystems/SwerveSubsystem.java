@@ -165,6 +165,12 @@ public class SwerveSubsystem extends SubsystemBase
     ShuffleboardTab tab = Shuffleboard.getTab("Field");
     tab.add("Robot Position on Field", m_field);
     tab.add("Target Position on Field", m_targetField);
+
+    // Show current command on shuffleboard
+    tab.addString(
+      "Current Swerve Command",
+      () -> (this.getCurrentCommand() == null) ? "None"
+              : this.getCurrentCommand().getName());
   }
 
   public WheelTestContext getWheelTestContext() {
@@ -249,9 +255,11 @@ public class SwerveSubsystem extends SubsystemBase
 
         System.out.println("Driving to alignment with AprilTag");
 
-        // $TODO - We should double-check if this is necessary, or is it covering-up
-        // any issue? 
-        driveToPose(targetPose).withTimeout(AlignRobotConstants.maxTimeSeconds).schedule();
+        Command alignCmd = driveToPose(targetPose)
+          .withTimeout(AlignRobotConstants.maxTimeSeconds)
+          .withName("AlignAprilTag");
+        
+        alignCmd.schedule();
       }
     );
   }
@@ -628,7 +636,7 @@ public class SwerveSubsystem extends SubsystemBase
   {
     return run(() -> {
       swerveDrive.driveFieldOriented(velocity.get());
-    });
+    }).withName("DriveFieldOriented");
   }
 
   /**
