@@ -16,9 +16,9 @@ public class VisionSystem implements VisionSystemInterface {
     private NetworkTableEntry m_tableArea = m_limelightTable.getEntry("ta");
     private NetworkTableEntry m_tableID = m_limelightTable.getEntry("tid");
 
-    private Pose3d m_absoluteTargetPose = null;
-    private Pose3d m_relativeTargetPose = null;
-    private Pose2d m_robotPose = null;
+    private Pose3d m_absoluteTargetPose = new Pose3d();
+    private Pose3d m_relativeTargetPose = new Pose3d();
+    private Pose2d m_robotPose = new Pose2d();
 
     // Constructor
     public VisionSystem() {
@@ -59,7 +59,9 @@ public class VisionSystem implements VisionSystemInterface {
 
     private Pose3d calcAbsoluteTargetPoseHelper() {
         if (isDetecting()) {
-            return VisionConstants.kTagLayout.getTagPose(getID()).get();
+            if (VisionConstants.kTagLayout.getTagPose(getID()).isPresent()) {
+                return VisionConstants.kTagLayout.getTagPose(getID()).get();
+            }
         }
         return new Pose3d();
     }

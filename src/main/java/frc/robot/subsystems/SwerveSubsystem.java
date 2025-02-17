@@ -22,6 +22,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -217,12 +218,18 @@ public class SwerveSubsystem extends SubsystemBase
           return;
         }
         
-        Pose2d targetPose = m_vision.getAbsoluteTargetPose().toPose2d();
-        targetPose = targetPose.transformBy(new Transform2d(
+        Pose2d rawTargetPose = m_vision.getAbsoluteTargetPose().toPose2d();
+        Twist2d twistPose = new Twist2d(
           AlignRobotConstants.transformDrive,
           AlignRobotConstants.transformStrafe,
-          Rotation2d.fromDegrees(AlignRobotConstants.transformRot + 180)
-        ));
+          AlignRobotConstants.transformRot + rawTargetPose.getRotation().getDegrees());
+        Pose2d targetPose = rawTargetPose.exp(twistPose);
+
+        targetPose = new Pose2d(
+          targetPose.getX(),
+          targetPose.getY(),
+          Rotation2d.fromDegrees(rawTargetPose.getRotation().getDegrees() + 180)
+        );
 
         // Note: The idea here is that when we are aligning the robot based off of vision,
         // there's the possibility that the swerve pose on the field is innacurate, and
