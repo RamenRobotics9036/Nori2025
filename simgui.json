@@ -2,7 +2,9 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Autos/Auto Selector": "String Chooser",
       "/Shuffleboard/Field/Robot Position on Field": "Field2d",
+      "/Shuffleboard/Field/Target Position on Field": "Field2d",
       "/SmartDashboard/Alerts": "Alerts",
       "/SmartDashboard/Encoders": "Alerts",
       "/SmartDashboard/Field": "Field2d",

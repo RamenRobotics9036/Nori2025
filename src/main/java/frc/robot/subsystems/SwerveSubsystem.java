@@ -210,7 +210,7 @@ public class SwerveSubsystem extends SubsystemBase
     debugField.getObject("EstimatedRobotModules").setPoses(swerveDrive.getSwerveModulePoses(getPose()));
   }
 
-  public Command alignWithAprilTagCommand() {
+  public Command alignWithAprilTagCommand(double transformDrive, double transformStrafe) {
     return runOnce(
       () -> {
         if (!m_vision.isDetecting()) {
@@ -220,9 +220,9 @@ public class SwerveSubsystem extends SubsystemBase
         
         Pose2d rawTargetPose = m_vision.getAbsoluteTargetPose().toPose2d();
         Twist2d twistPose = new Twist2d(
-          AlignRobotConstants.transformDrive,
-          AlignRobotConstants.transformStrafe,
-          AlignRobotConstants.transformRot + rawTargetPose.getRotation().getDegrees());
+          transformDrive,
+          transformStrafe,
+          rawTargetPose.getRotation().getDegrees());
         Pose2d targetPose = rawTargetPose.exp(twistPose);
 
         targetPose = new Pose2d(
