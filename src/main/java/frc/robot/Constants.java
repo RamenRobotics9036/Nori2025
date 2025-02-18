@@ -185,13 +185,17 @@ public final class Constants
     public static final double armAngleChangeRate = 5;
   }
 
-  public static final class ElevatorContants {
+  public static final class ElevatorConstants {
     public static final int kLeaderMotorID = 30;
     public static final int kFollowMotorID = 31;
     public static final int kDIOIndex = 1; // TODO: placeholder
     public static final int kStallLimit = 20;
     public static final double kMaxOutputPercentage = 0.4;
-    public static final double kRotationToElevatorRatio = 1.0; // TODO: placeholder
+    //Elevator moves 5.625 in (0.1429 m) per rotation of the sprocket, gear ratio of 9:1
+    public static final double kRotationToElevatorRatio = (5.625 * 0.0254)/9;
+    //Physical limit is 43.75 in (1.1112 m)
+    public static final double kMaxHeight = 43.75 * 0.0254; 
+    public static final double kMinHeight = 0.02;
     public static final double kMarginOfError = 0.05; // TODO: placeholder 
   }
 }

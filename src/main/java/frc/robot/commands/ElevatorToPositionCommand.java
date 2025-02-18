@@ -3,7 +3,7 @@ package frc.robot.commands;
 import java.security.KeyStore.TrustedCertificateEntry;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ElevatorContants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.ElevatorSystem;
 
 public class ElevatorToPositionCommand extends Command{
@@ -23,7 +23,7 @@ public class ElevatorToPositionCommand extends Command{
     @Override
     public boolean isFinished(){
         return
-            m_elevator.getPosition() >= m_desiredPosition - ElevatorContants.kMarginOfError &&
-            m_elevator.getPosition() <= m_desiredPosition + ElevatorContants.kMarginOfError;
+            m_elevator.getPosition() >= m_desiredPosition - ElevatorConstants.kMarginOfError &&
+            m_elevator.getPosition() <= m_desiredPosition + ElevatorConstants.kMarginOfError;
     }
 }
