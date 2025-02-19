@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.IntakeSpitCommandConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmDefaultCommand;
 import frc.robot.Constants.SwerveConstants;
@@ -91,7 +92,7 @@ public class RobotContainer
   Command m_driveFieldOrientedAngularVelocity = m_swerveDrive.driveFieldOriented(driveAngularVelocity);
 
   private final IntakeSystem m_intakeSystem = new IntakeSystem();
-  private IntakeArmSystem m_armSystem = null;
+  private IntakeArmSystem m_armSystem = new IntakeArmSystem();
   private final OuttakeSystem m_outtakeSystem = new OuttakeSystem();
 
   /**
@@ -103,9 +104,6 @@ public class RobotContainer
     // pancake robot, the code will crash on startup, preventing code deployment from
     // succeeding.  Note that this fix is TEMPORARY to unblock pancake bot code deployment!
     // A better fix would be not to throw in IntakeArmSystem, at least not on pancakebot.
-    if (SwerveConstants.kJsonDirectory != "pancake") {
-      m_armSystem = new IntakeArmSystem();
-    }
 
     // Configure the trigger bindings
     configureBindings();
@@ -148,7 +146,11 @@ public class RobotContainer
     if (m_armSystem != null) {
       ArmDefaultCommand armDefaultCommand = new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY());
       m_armSystem.setDefaultCommand(armDefaultCommand);
-      m_armController.povUp().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation));
+      m_armController.povUp().onTrue(
+        new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation).andThen(
+          new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed)
+        )
+      );
       m_armController.povDown().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
     }
   
@@ -168,7 +170,7 @@ public class RobotContainer
     m_driverController.a().onTrue(m_swerveDrive.alignWithAprilTagCommand());
 
     // Command to spit out game pieces
-    m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem));
+    m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
 
     m_armController.b().onTrue(new OuttakeSpitCommand(m_outtakeSystem));
 

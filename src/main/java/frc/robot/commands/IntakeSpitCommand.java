@@ -10,8 +10,10 @@ public class IntakeSpitCommand extends Command {
     private IntakeSystem m_intake;
     private Timer m_timer = new Timer();
     private double m_startingRotations;
+    private double m_speed;
 
-    public IntakeSpitCommand(IntakeSystem intake){
+    public IntakeSpitCommand(IntakeSystem intake, double speed){
+        m_speed = speed;
         m_intake = intake;
         addRequirements(m_intake);
     }
@@ -25,8 +27,8 @@ public class IntakeSpitCommand extends Command {
     @Override
     public void execute(){
         // Reversed because spitting out
-        m_intake.setPullMotorSpeed(-IntakeSpitCommandConstants.speed);
-        m_intake.setLoadMotorSpeed(-IntakeSpitCommandConstants.speed);
+        m_intake.setPullMotorSpeed(m_speed);
+        m_intake.setLoadMotorSpeed(-m_speed);
     }
 
     @Override
