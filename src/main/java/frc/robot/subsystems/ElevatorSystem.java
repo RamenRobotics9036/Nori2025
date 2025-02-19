@@ -11,9 +11,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import javax.lang.model.util.ElementFilter;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase;
@@ -43,7 +43,6 @@ public class ElevatorSystem extends SubsystemBase{
         INIT,
         READYLOW,
         READY,
-        SHUTDOWN
     }
     private states m_state = states.INIT;
     
@@ -77,8 +76,8 @@ public class ElevatorSystem extends SubsystemBase{
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
 
-        testResetPosition();
         initShuffleboad();
+        // bringDownElevator().schedule();
     }
 
     private void initShuffleboad(){
@@ -90,13 +89,24 @@ public class ElevatorSystem extends SubsystemBase{
 
     @Override
     public void periodic(){
-        if (m_state == states.INIT){
-            testResetPosition();
-        }
-        if (m_limitSwitch.get()) {
-            m_state = states.READYLOW;
-        } else {
-            m_state = states.READY;
+        switch (m_state) {
+            case INIT:
+                if (m_limitSwitch.get()) {
+                    m_state = states.READYLOW;
+                    resetEncoder();
+                    initializeMotorConfig(true);
+                }
+                break;
+            case READYLOW:
+                if (!m_limitSwitch.get()) {
+                    m_state = states.READY;
+                }
+                break;
+            case READY:
+                if (m_limitSwitch.get()) {
+                    m_state = states.INIT; // TODO: Stop for safety
+                    initializeMotorConfig(false);
+                }
         }
     }
 
@@ -113,39 +123,20 @@ public class ElevatorSystem extends SubsystemBase{
         }
     }
 
-    private void setSpeed(double speed){
-        
-        if (m_state != states.READY && m_state != states.READYLOW) {
-            return;
-        }
-        
-        speed = MathUtil.clamp(speed, -m_maxOutput, m_maxOutput);
+    private void initializeMotorConfig(boolean isBrakeMode) {
+        m_leaderConfig.idleMode(isBrakeMode ? SparkBaseConfig.IdleMode.kBrake : SparkBaseConfig.IdleMode.kCoast);
+        m_followConfig.idleMode(isBrakeMode ? SparkBaseConfig.IdleMode.kBrake : SparkBaseConfig.IdleMode.kCoast);
 
-        if (getPosition() >= 1.0 && speed > 0){ // TODO: placeholder, we don't know wether positive is up or down
-            return;
-        }
-
-        if (getPosition() <= 0.0 && speed < 0){ // TODO: placeholder, we don't know wether positive is up or down
-            return;
-        }
-
-        m_leaderMotor.set(speed);
+        m_leaderMotor.configure(m_leaderConfig, 
+            SparkBase.ResetMode.kResetSafeParameters, 
+            SparkBase.PersistMode.kPersistParameters);
+        m_followMotor.configure(m_followConfig, 
+            SparkBase.ResetMode.kResetSafeParameters, 
+            SparkBase.PersistMode.kPersistParameters);
     }
 
-    private void testResetPosition(){
-        if (m_limitSwitch.get()){
-            m_encoder.setPosition(0);
-            m_state = states.READYLOW;
-            m_leaderConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
-            m_followConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
-
-            m_leaderMotor.configure(m_leaderConfig, 
-                SparkBase.ResetMode.kResetSafeParameters, 
-                SparkBase.PersistMode.kPersistParameters);
-            m_followMotor.configure(m_followConfig, 
-                SparkBase.ResetMode.kResetSafeParameters, 
-                SparkBase.PersistMode.kPersistParameters);
-        }
+    private void resetEncoder(){
+        m_encoder.setPosition(0);
     }
 
     public double getSpeed(){
