@@ -4,12 +4,14 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmDefaultCommand;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TestSwerveConstants;
 import frc.robot.commands.IntakeDefaultCommand;
 import frc.robot.commands.IntakeSpitCommand;
+import frc.robot.commands.SetArmToAngleCommand;
 import frc.robot.commands.testcommands.TestTurnWheel;
 import frc.robot.commands.testcommands.WheelTestContext;
 import frc.robot.subsystems.IntakeArmSystem;
@@ -141,8 +143,12 @@ public class RobotContainer
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
     m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
     if (m_armSystem != null) {
-      m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
+      ArmDefaultCommand armDefaultCommand = new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY());
+      m_armSystem.setDefaultCommand(armDefaultCommand);
+      m_armController.povUp().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation));
+      m_armController.povDown().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
     }
+  
   
     //D-pad drives straight (no gyro) for tests
     /*
