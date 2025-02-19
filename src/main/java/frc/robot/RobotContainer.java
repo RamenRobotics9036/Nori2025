@@ -13,6 +13,7 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TestSwerveConstants;
 import frc.robot.commands.IntakeDefaultCommand;
 import frc.robot.commands.IntakeSpitCommand;
+import frc.robot.commands.SetArmToAngleCommand;
 import frc.robot.commands.testcommands.TestTurnWheel;
 import frc.robot.commands.testcommands.WheelTestContext;
 import frc.robot.subsystems.IntakeArmSystem;
@@ -147,8 +148,8 @@ public class RobotContainer
     if (m_armSystem != null) {
       ArmDefaultCommand armDefaultCommand = new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY());
       m_armSystem.setDefaultCommand(armDefaultCommand);
-      m_armController.povUp().onTrue(Commands.run(() -> armDefaultCommand.setArmAngle(ArmConstants.kMaxArmRotation)));
-      m_armController.povDown().onTrue(Commands.run(() -> armDefaultCommand.setArmAngle(ArmConstants.kMinArmRotation)));
+      m_armController.povUp().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation));
+      m_armController.povDown().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
     }
   
   

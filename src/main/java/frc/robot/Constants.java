@@ -179,6 +179,8 @@ public final class Constants
     public static final double kMinArmRotation = 3.4;
     public static final double kAbsoluteEncoderOffset = 0;
     public static final int kcurrentLimit = 20;
+    public static final double tolerance = 0.1;
+    public static final double setArmMaxTime = 4;
   }
 
   public static final class ArmDefaultCommandConstants {
