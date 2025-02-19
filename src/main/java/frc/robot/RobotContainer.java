@@ -12,11 +12,13 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TestSwerveConstants;
 import frc.robot.commands.IntakeDefaultCommand;
 import frc.robot.commands.IntakeSpitCommand;
+import frc.robot.commands.OuttakeSpitCommand;
 import frc.robot.commands.SetArmToAngleCommand;
 import frc.robot.commands.testcommands.TestTurnWheel;
 import frc.robot.commands.testcommands.WheelTestContext;
 import frc.robot.subsystems.IntakeArmSystem;
 import frc.robot.subsystems.IntakeSystem;
+import frc.robot.subsystems.OuttakeSystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.AutoLogic;
 import frc.robot.util.CommandAppliedController;
@@ -91,6 +93,7 @@ public class RobotContainer
 
   private final IntakeSystem m_intakeSystem = new IntakeSystem();
   private IntakeArmSystem m_armSystem = new IntakeArmSystem();
+  private final OuttakeSystem m_outtakeSystem = new OuttakeSystem();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -168,6 +171,8 @@ public class RobotContainer
 
     // Command to spit out game pieces
     m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
+
+    m_armController.b().onTrue(new OuttakeSpitCommand(m_outtakeSystem));
 
     // Test mode has (b) button triggering a test sequence
     if (TestSwerveConstants.kIsTestMode) {
