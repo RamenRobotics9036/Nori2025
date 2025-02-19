@@ -39,7 +39,7 @@ public class ArmDefaultCommand extends Command {
         m_armSystem.stopSystem();
     }
 
-    public void setArmAngle(double value) {
+    private void setArmAngle(double value) {
         value = MathUtil.clamp(value, ArmConstants.kMinArmRotation, ArmConstants.kMaxArmRotation);
         desiredAngle = value;
         m_armSystem.setReference(desiredAngle);
