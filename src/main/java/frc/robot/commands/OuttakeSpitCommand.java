@@ -46,5 +46,6 @@ public class OuttakeSpitCommand extends Command {
 
     @Override
     public void end(boolean interrupted){
+        m_outtake.setMotorSpeeds(0);
     }   
 }
