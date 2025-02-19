@@ -187,4 +187,17 @@ public final class Constants
   public static final class ArmDefaultCommandConstants {
     public static final double armAngleChangeRate = 5;
   }
+
+  public static final class OuttakeConstants {
+    public static final int sparkflexID = 32;
+    public static final int sparkmaxID = 33;
+    public static final int currentLimit = 20;
+    public static final double motorGearRatio = 1;
+  }
+
+  public static final class OuttakeSpitCommandConstants {
+    public static final int maxTime = 3;
+    public static final double speed = 1.0;
+    public static final double numRotations = 10;
+  }
 }
