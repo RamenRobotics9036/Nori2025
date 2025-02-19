@@ -194,8 +194,8 @@ public final class Constants
     //Elevator moves 5.625 in (0.1429 m) per rotation of the sprocket, gear ratio of 9:1
     public static final double kRotationToElevatorRatio = (5.625 * 0.0254)/9;
     //Physical limit is 43.75 in (1.1112 m)
-    public static final double kMaxHeight = 43.75 * 0.0254 - 0.05; // 5 cm safety margin
-    public static final double kMinHeight = 0.02; // 2 cm safety margin
+    public static final double kMaxHeight = 43.75 - 2; // 2 in safety margin
+    public static final double kMinHeight = 1; // 1 in safety margin
     public static final double kMarginOfError = 0.05; // TODO: placeholder 
     public static final double bringDownElevatorSpeed = -0.2;
   }

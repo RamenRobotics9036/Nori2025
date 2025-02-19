@@ -17,7 +17,7 @@ public class ElevatorToPositionCommand extends Command{
 
     @Override
     public void initialize(){
-        m_elevator.setReference(m_desiredPosition);
+        m_elevator.setPosition(m_desiredPosition);
     }
 
     @Override

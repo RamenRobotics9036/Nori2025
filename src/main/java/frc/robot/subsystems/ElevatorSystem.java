@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -11,8 +10,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.RelativeEncoder;
@@ -36,8 +33,6 @@ public class ElevatorSystem extends SubsystemBase{
     private DigitalInput m_limitSwitch= new DigitalInput(ElevatorConstants.kDIOIndex);
     /* Sensor will reset a relative encoder when the elevator lowers fully
      * Encoder will be used to prevent arm from going too high*/
-
-    private double m_maxOutput = ElevatorConstants.kMaxOutputPercentage;
 
     enum states {
         INIT,
@@ -77,49 +72,56 @@ public class ElevatorSystem extends SubsystemBase{
             SparkBase.PersistMode.kPersistParameters);
 
         initShuffleboad();
-        // bringDownElevator().schedule();
     }
 
     private void initShuffleboad(){
         ShuffleboardTab tab = Shuffleboard.getTab("Elevator");
-        tab.addNumber("DesiredPosition", ()-> {return m_desiredPosition;});
+        tab.addNumber("Desired Position", () ->  m_desiredPosition);
         tab.addNumber("Position", this::getPosition);
-        //tab.addBoolean("Initialized", ()-> {return m_positionInitialized;});
+        tab.addBoolean("Limit Switch Value", () -> isLimitReached());
+        tab.addNumber("Relative Encoder Position", () -> m_encoder.getPosition());
+        tab.addNumber("Motor Speeds", this::getSpeed);
+        tab.addString("Elevator State", () -> m_state.toString());
     }
 
     @Override
     public void periodic(){
         switch (m_state) {
             case INIT:
-                if (m_limitSwitch.get()) {
+                if (isLimitReached()) {
                     m_state = states.READYLOW;
                     resetEncoder();
-                    initializeMotorConfig(true);
+                    initializeMotorConfig(false); // Set to false so we can set the elevator down
                 }
                 break;
             case READYLOW:
-                if (!m_limitSwitch.get()) {
+                if (!isLimitReached()) {
                     m_state = states.READY;
                 }
                 break;
             case READY:
-                if (m_limitSwitch.get()) {
-                    m_state = states.INIT; // TODO: Stop for safety
+                if (isLimitReached()) {
+                    m_leaderMotor.stopMotor(); // we are at the bottom, stop for safety
+                    m_state = states.INIT;
                     initializeMotorConfig(false);
                 }
         }
     }
 
-    public void setReference(double position){
+    public boolean isLimitReached() {
+        return m_limitSwitch.get();
+    }
+
+    public void setPosition(double position){
         // set desired position
         // measured in rotations of motor * a constant
         double currentEncoderPosition = m_encoder.getPosition();
         if (m_state == states.READY){
             m_desiredPosition = MathUtil.clamp(position, ElevatorConstants.kMinHeight, ElevatorConstants.kMaxHeight);
-            m_PIDController.setReference(position, ControlType.kPosition);
+            // m_PIDController.setReference(m_desiredPosition, ControlType.kPosition); // TODO: Uncomment when done with making sure INIT works
         } else if (m_state == states.READYLOW) {
             m_desiredPosition = MathUtil.clamp(position, currentEncoderPosition, ElevatorConstants.kMaxHeight);
-            m_PIDController.setReference(m_desiredPosition, ControlType.kPosition);
+            // m_PIDController.setReference(m_desiredPosition, ControlType.kPosition); // TODO: Uncomment when done with making sure INIT works
         }
     }
 
@@ -144,7 +146,6 @@ public class ElevatorSystem extends SubsystemBase{
     }
 
     public double getPosition(){
-        // 0.0 is bottom and 1.0 is top
         if (m_state == states.READY || m_state == states.READYLOW){
             return m_encoder.getPosition(); // TODO: placeholder, change this to the correct ratio
         } else {
@@ -154,6 +155,5 @@ public class ElevatorSystem extends SubsystemBase{
 
     public void stopSystem(){
         m_leaderMotor.stopMotor();
-        m_followMotor.stopMotor(); // just in case
     }
 }
