@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -48,15 +49,16 @@ public class ElevatorSystem extends SubsystemBase{
             .i(0)
             .d(0);
         closedLoopConfig.positionWrappingEnabled(false);
+        closedLoopConfig.outputRange(-ElevatorConstants.elevatorMaxSpeed, ElevatorConstants.elevatorMaxSpeed);
         //closedLoopConfig.minOutput();
         //closedLoopConfig.maxOutput();
         EncoderConfig encoderConfig = new EncoderConfig();
         encoderConfig.positionConversionFactor(ElevatorConstants.kRotationToElevatorRatio);
-        encoderConfig.velocityConversionFactor(ElevatorConstants.kRotationToElevatorRatio / 60);
+        // encoderConfig.velocityConversionFactor(ElevatorConstants.kRotationToElevatorRatio / 60);
 
         m_leaderConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
         m_leaderConfig.smartCurrentLimit(IntakeConstants.kStallLimit);
-        m_leaderConfig.inverted(false);
+        m_leaderConfig.inverted(true);
         m_leaderConfig.apply(closedLoopConfig);
         m_leaderConfig.apply(encoderConfig);
         m_leaderMotor.configure(m_leaderConfig, 
@@ -65,7 +67,7 @@ public class ElevatorSystem extends SubsystemBase{
 
         m_followConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
         m_followConfig.smartCurrentLimit(IntakeConstants.kStallLimit);
-        m_followConfig.inverted(true);
+        m_followConfig.inverted(false);
         m_followConfig.follow(ElevatorConstants.kLeaderMotorID);
         m_followMotor.configure(m_followConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
@@ -115,13 +117,9 @@ public class ElevatorSystem extends SubsystemBase{
     public void setPosition(double position){
         // set desired position
         // measured in rotations of motor * a constant
-        double currentEncoderPosition = m_encoder.getPosition();
-        if (m_state == states.READY){
-            m_desiredPosition = MathUtil.clamp(position, ElevatorConstants.kMinHeight, ElevatorConstants.kMaxHeight);
-            // m_PIDController.setReference(m_desiredPosition, ControlType.kPosition); // TODO: Uncomment when done with making sure INIT works
-        } else if (m_state == states.READYLOW) {
-            m_desiredPosition = MathUtil.clamp(position, currentEncoderPosition, ElevatorConstants.kMaxHeight);
-            // m_PIDController.setReference(m_desiredPosition, ControlType.kPosition); // TODO: Uncomment when done with making sure INIT works
+        if (m_state == states.READY || m_state == states.READYLOW){
+            m_desiredPosition = MathUtil.clamp(position, ElevatorConstants.kMaxElevatorPosition, ElevatorConstants.kDownElevatorPosition);
+            m_PIDController.setReference(m_desiredPosition, ControlType.kPosition);
         }
     }
 

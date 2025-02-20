@@ -4,21 +4,21 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AimAtLimeLightV2;
-import frc.robot.commands.AlignRobot;
 import frc.robot.commands.ArmDefaultCommand;
+import frc.robot.commands.ElevatorToPositionCommand;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TestSwerveConstants;
 import frc.robot.commands.IntakeDefaultCommand;
 import frc.robot.commands.IntakeSpitCommand;
 import frc.robot.commands.testcommands.TestTurnWheel;
 import frc.robot.commands.testcommands.WheelTestContext;
+import frc.robot.subsystems.ElevatorSystem;
 import frc.robot.subsystems.IntakeArmSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.CommandAppliedController;
-import frc.robot.vision.VisionSystem;
 import swervelib.SwerveInputStream;
 
 import java.io.File;
@@ -89,8 +89,10 @@ public class RobotContainer
   // right stick controls the angular velocity of the robot
   Command m_driveFieldOrientedAngularVelocity = m_swerveDrive.driveFieldOriented(driveAngularVelocity);
 
-private final IntakeSystem m_intakeSystem = new IntakeSystem();
-private IntakeArmSystem m_armSystem = null;
+  private IntakeArmSystem m_armSystem = new IntakeArmSystem();
+  private final IntakeSystem m_intakeSystem = new IntakeSystem();
+  private final ElevatorSystem m_elevatorSystem = new ElevatorSystem();
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -100,9 +102,6 @@ private IntakeArmSystem m_armSystem = null;
     // pancake robot, the code will crash on startup, preventing code deployment from
     // succeeding.  Note that this fix is TEMPORARY to unblock pancake bot code deployment!
     // A better fix would be not to throw in IntakeArmSystem, at least not on pancakebot.
-    if (SwerveConstants.kJsonDirectory != "pancake") {
-      m_armSystem = new IntakeArmSystem();
-    }
 
     // Configure the trigger bindings
     configureBindings();
@@ -143,9 +142,7 @@ private IntakeArmSystem m_armSystem = null;
     
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
     m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
-    if (m_armSystem != null) {
-      m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
-    }
+    m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
   
     //D-pad drives straight (no gyro) for tests
     /*
@@ -163,6 +160,11 @@ private IntakeArmSystem m_armSystem = null;
 
     // Command to spit out game pieces
     m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem));
+
+    m_armController.povLeft().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
+    m_armController.rightBumper().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
+    m_armController.leftBumper().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
+
 
     // Test mode has (b) button triggering a test sequence
     if (TestSwerveConstants.kIsTestMode) {
