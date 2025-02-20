@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.IntakeSpitCommandConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmDefaultCommand;
+import frc.robot.commands.ElevatorToPositionCommand;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TestSwerveConstants;
 import frc.robot.commands.IntakeDefaultCommand;
@@ -16,6 +18,7 @@ import frc.robot.commands.OuttakeSpitCommand;
 import frc.robot.commands.SetArmToAngleCommand;
 import frc.robot.commands.testcommands.TestTurnWheel;
 import frc.robot.commands.testcommands.WheelTestContext;
+import frc.robot.subsystems.ElevatorSystem;
 import frc.robot.subsystems.IntakeArmSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.OuttakeSystem;
@@ -91,9 +94,11 @@ public class RobotContainer
   // right stick controls the angular velocity of the robot
   Command m_driveFieldOrientedAngularVelocity = m_swerveDrive.driveFieldOriented(driveAngularVelocity);
 
+
   private final IntakeSystem m_intakeSystem = new IntakeSystem();
   private IntakeArmSystem m_armSystem = new IntakeArmSystem();
   private final OuttakeSystem m_outtakeSystem = new OuttakeSystem();
+  private final ElevatorSystem m_elevatorSystem = new ElevatorSystem();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -173,6 +178,11 @@ public class RobotContainer
     m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
 
     m_armController.b().onTrue(new OuttakeSpitCommand(m_outtakeSystem));
+
+    m_armController.povLeft().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
+    m_armController.rightBumper().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
+    m_armController.leftBumper().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
+
 
     // Test mode has (b) button triggering a test sequence
     if (TestSwerveConstants.kIsTestMode) {
