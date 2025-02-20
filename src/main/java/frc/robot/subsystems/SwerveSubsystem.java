@@ -19,7 +19,6 @@ import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -28,7 +27,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -39,7 +37,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.CommandConstants.AlignRobotConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Constants.VisionSimConstants;
 import frc.robot.Robot;
 import frc.robot.commands.testcommands.WheelTestContext;
 import frc.robot.vision.VisionSim;
@@ -50,20 +47,15 @@ import frc.robot.vision.VisionSystemSim;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
-import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
 import swervelib.math.SwerveMath;
-import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -85,6 +77,10 @@ public class SwerveSubsystem extends SubsystemBase
   private final boolean trackOdometry = true;
 
   private Field2d m_field = new Field2d();
+  
+  // $TODO - We should see if we can achieve showing the target location on m_field, so
+  // all the info is in one place.
+  private Field2d m_targetField = new Field2d();
 
   private WheelTestContext m_wheelTestContext = new WheelTestContext();
 
@@ -165,6 +161,7 @@ public class SwerveSubsystem extends SubsystemBase
 
     ShuffleboardTab tab = Shuffleboard.getTab("Field");
     tab.add("Robot Position on Field", m_field);
+    tab.add("Target Position on Field", m_targetField);
   }
 
   public WheelTestContext getWheelTestContext() {
@@ -183,6 +180,11 @@ public class SwerveSubsystem extends SubsystemBase
     {
       swerveDrive.updateOdometry();
       if (m_vision.isDetecting()) {
+        // $TODO - We originally thought that this call would update the swerve's location and
+        // pose estimation whenever vision is detecting an apriltag.  We thought this would
+        // help the swerve system adjust its own view of where the robot is on the field.
+        // However, it doesnt seem to do that (otherwise when vision isdetecting, the robot
+        // would slightly jump on the field).  So we should investigate this further.
         swerveDrive.addVisionMeasurement(m_vision.getRobotPose(), DriverStation.getMatchTime());
       }
       m_field.setRobotPose(getPose());
@@ -214,7 +216,7 @@ public class SwerveSubsystem extends SubsystemBase
           System.out.println("No vision target detected");
           return;
         }
-    
+        
         Pose2d targetPose = m_vision.getAbsoluteTargetPose().toPose2d();
         targetPose = targetPose.transformBy(new Transform2d(
           AlignRobotConstants.transformDrive,
@@ -222,9 +224,20 @@ public class SwerveSubsystem extends SubsystemBase
           Rotation2d.fromDegrees(AlignRobotConstants.transformRot + 180)
         ));
 
+        // Note: The idea here is that when we are aligning the robot based off of vision,
+        // there's the possibility that the swerve pose on the field is innacurate, and
+        // instead the vision system's estimation of robot location and pose on the field
+        // is much better.  So we reset the robot position on the field to the vision
+        // systems estimation.
+        swerveDrive.resetOdometry(m_vision.getRobotPose());
+
+        m_targetField.setRobotPose(targetPose);
+
         System.out.println("Driving to alignment with AprilTag");
 
-        driveToPose(targetPose).schedule();
+        // $TODO - We should double-check if this is necessary, or is it covering-up
+        // any issue? 
+        driveToPose(targetPose).withTimeout(AlignRobotConstants.maxTimeSeconds).schedule();
       }
     );
   }
@@ -368,7 +381,7 @@ public class SwerveSubsystem extends SubsystemBase
   {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        swerveDrive.getMaximumChassisVelocity(), 4.0,
+        swerveDrive.getMaximumChassisVelocity(), 1.0,
         swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
@@ -815,10 +828,10 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Add a fake vision reading for testing purposes.
    */
-  public void addFakeVisionReading()
-  {
-    swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
-  }
+  // public void addFakeVisionReading()
+  // {
+  //   swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
+  // }
 
   /**
    * Gets the swerve drive object.

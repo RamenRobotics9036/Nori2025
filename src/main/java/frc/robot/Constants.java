@@ -18,6 +18,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import swervelib.math.Matter;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
@@ -41,6 +43,7 @@ public final class Constants
     public static final double kExpo = 4; //do not change this value
     public static final double kExpoRatio = 0.8; // change this 0..1 to add more exponential, 0 = no expo (linear)
     public static final double kDeadband = 0.07;
+    public static final Alliance kAlliance = (DriverStation.getAlliance().isPresent()) ? DriverStation.getAlliance().get() : Alliance.Red;
   }
   /**
    * Constants for the swerve system.
@@ -48,8 +51,8 @@ public final class Constants
   public static class SwerveConstants
   {
     // USe the directory matching the robot
-    //public static final String  kJsonDirectory = "pancake";
-    public static final String  kJsonDirectory = "nori";
+    public static final String  kJsonDirectory = "pancake";
+    // public static final String  kJsonDirectory = "nori";
     public static final double kMaxSpeedMetersPerSecond = 5.06;
     public static final double kRobotMass = Units.lbsToKilograms(120); // TODO: update
     public static final Matter kChassisMatter = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), kRobotMass); // TODO: update
@@ -92,7 +95,9 @@ public final class Constants
       public static final String kCameraName = "RAMEN SIM CAMERA";
       // Cam mounted facing forward, half a meter forward of center, half a meter up from center,
       // pitched upward.
-      private static final double camPitch = Units.degreesToRadians(30.0);
+      // NOTE: For reefscape, set camPitch to 15 degrees, since 30 degrees was too high to detect
+      // the april tags near the coral reefs.
+      private static final double camPitch = Units.degreesToRadians(15.0); // Units.degreesToRadians(30.0);
       public static final Transform3d kRobotToCam =
               new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, -camPitch, 0));
 
@@ -124,7 +129,7 @@ public final class Constants
       /**
        * How much the robot should be offset from the April tag pose x direction.
       */
-      public static final double transformDrive = 1.1;
+      public static final double transformDrive = (OperatorConstants.kAlliance == Alliance.Red) ? 0.5 : 0.5;
 
       /**
        * How much the robot should be offset from the April tag pose y direction.
@@ -152,22 +157,24 @@ public final class Constants
   }
 
   public static final class IntakeConstants{
-    public static final int kPullMotorID = 20;
-    public static final int kLoadMotorID = 21;
+    public static final int kPullMotorID = 21;
+    public static final int kLoadMotorID = 20;
     public static final int kStallLimit = 20;
-    public static final double kMaxOutputPercentage = 0.4;
+    public static final double kMaxOutputPercentage = 1.0;
     public static final int pullMotorGearBoxFactor= 4;
     public static final int loadMotorGearBoxFactor = 4;
   }
 
   public static final class IntakeDefaultCommandConstants {
     public static final double speed = 0.3;
+    public static final double pullSpeed = 0.5;
   }
 
   public static final class IntakeSpitCommandConstants {
     public static final int maxTime = 3;
-    public static final double speed = 1.0;
-    public static final double numRotations = 10;
+    public static final double speed = 0.8;
+    public static final double numRotations = 15;
+    public static final double bucketSpeed = 0.5;
   }
 
   public static final class ArmConstants {
@@ -175,10 +182,12 @@ public final class Constants
     public static final double maxOutput = 1.0;
     public static final int kArmEncoderID = 0;
     public static final double kArmGearBoxRatio = 125 * (44/30);
-    public static final double kMaxArmRotation = 2.6;
-    public static final double kMinArmRotation = 0.1;
+    public static final double kMaxArmRotation = 6.15;
+    public static final double kMinArmRotation = 3.4;
     public static final double kAbsoluteEncoderOffset = 0;
     public static final int kcurrentLimit = 20;
+    public static final double tolerance = 0.1;
+    public static final double setArmMaxTime = 4;
   }
 
   public static final class ArmDefaultCommandConstants {
@@ -202,5 +211,18 @@ public final class Constants
     public static final double kLevel2ReefPosition = -0.2;
     public static final double kLevel3ReefPosition = -0.35;
     public static final double maxTime = 3;
+  }
+  
+  public static final class OuttakeConstants {
+    public static final int sparkflexID = 32;
+    public static final int sparkmaxID = 33;
+    public static final int currentLimit = 20;
+    public static final double motorGearRatio = 1;
+  }
+
+  public static final class OuttakeSpitCommandConstants {
+    public static final int maxTime = 3;
+    public static final double speed = 1.0;
+    public static final double numRotations = 40;
   }
 }

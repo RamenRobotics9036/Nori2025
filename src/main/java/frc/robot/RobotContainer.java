@@ -5,6 +5,8 @@
 package frc.robot;
 
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.IntakeSpitCommandConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmDefaultCommand;
 import frc.robot.commands.ElevatorToPositionCommand;
@@ -12,12 +14,16 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TestSwerveConstants;
 import frc.robot.commands.IntakeDefaultCommand;
 import frc.robot.commands.IntakeSpitCommand;
+import frc.robot.commands.OuttakeSpitCommand;
+import frc.robot.commands.SetArmToAngleCommand;
 import frc.robot.commands.testcommands.TestTurnWheel;
 import frc.robot.commands.testcommands.WheelTestContext;
 import frc.robot.subsystems.ElevatorSystem;
 import frc.robot.subsystems.IntakeArmSystem;
 import frc.robot.subsystems.IntakeSystem;
+import frc.robot.subsystems.OuttakeSystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.AutoLogic;
 import frc.robot.util.CommandAppliedController;
 import swervelib.SwerveInputStream;
 
@@ -40,11 +46,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer
 {
-
   private final CommandAppliedController m_driverController =
-      new CommandAppliedController(OperatorConstants.kDriverPort);
-    private final CommandAppliedController m_armController =
-      new CommandAppliedController(OperatorConstants.kArmPort);
+    new CommandAppliedController(OperatorConstants.kDriverPort);
+  private final CommandAppliedController m_armController =
+    new CommandAppliedController(OperatorConstants.kArmPort);
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       m_swerveDrive  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
@@ -89,8 +94,10 @@ public class RobotContainer
   // right stick controls the angular velocity of the robot
   Command m_driveFieldOrientedAngularVelocity = m_swerveDrive.driveFieldOriented(driveAngularVelocity);
 
-  private IntakeArmSystem m_armSystem = new IntakeArmSystem();
+
   private final IntakeSystem m_intakeSystem = new IntakeSystem();
+  private IntakeArmSystem m_armSystem = new IntakeArmSystem();
+  private final OuttakeSystem m_outtakeSystem = new OuttakeSystem();
   private final ElevatorSystem m_elevatorSystem = new ElevatorSystem();
 
   /**
@@ -108,10 +115,9 @@ public class RobotContainer
     DriverStation.silenceJoystickConnectionWarning(true);
 
     m_swerveDrive.initShuffleboad();
+    AutoLogic.initShuffleBoard();
   }
-
-
-
+  
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary predicate, or via the
@@ -142,7 +148,17 @@ public class RobotContainer
     
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
     m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
-    m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
+    if (m_armSystem != null) {
+      ArmDefaultCommand armDefaultCommand = new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY());
+      m_armSystem.setDefaultCommand(armDefaultCommand);
+      m_armController.povUp().onTrue(
+        new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation).andThen(
+          new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed)
+        )
+      );
+      m_armController.povDown().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
+    }
+  
   
     //D-pad drives straight (no gyro) for tests
     /*
@@ -159,7 +175,9 @@ public class RobotContainer
     m_driverController.a().onTrue(m_swerveDrive.alignWithAprilTagCommand());
 
     // Command to spit out game pieces
-    m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem));
+    m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
+
+    m_armController.b().onTrue(new OuttakeSpitCommand(m_outtakeSystem));
 
     m_armController.povLeft().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
     m_armController.rightBumper().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
@@ -203,8 +221,7 @@ public class RobotContainer
    */
   public Command getAutonomousCommand()
   {
-    // An example command will be run in autonomous
-    return new InstantCommand();
+    return AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
   }
 
   public void setMotorBrake(boolean brake)
