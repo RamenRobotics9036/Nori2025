@@ -17,8 +17,10 @@ public class IntakeDefaultCommand extends Command {
 
     @Override
     public void execute(){
-        m_intake.setPullMotorSpeed(IntakeDefaultCommandConstants.pullSpeed);
-        m_intake.setLoadMotorSpeed(IntakeDefaultCommandConstants.speed);
+        if (m_intake.isCoralLoaded()){
+            m_intake.setPullMotorSpeed(IntakeDefaultCommandConstants.pullSpeed);
+            m_intake.setLoadMotorSpeed(IntakeDefaultCommandConstants.speed);
+        }
     }
 
     @Override

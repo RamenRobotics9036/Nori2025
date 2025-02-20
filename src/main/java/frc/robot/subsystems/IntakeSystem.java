@@ -1,5 +1,9 @@
 package frc.robot.subsystems;
 
+import com.reduxrobotics.sensors.canandcolor.Canandcolor;
+import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
+import com.reduxrobotics.sensors.canandcolor.DataSource;
+import com.reduxrobotics.sensors.canandcolor.DigoutChannel;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -8,6 +12,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -22,6 +28,9 @@ public class IntakeSystem extends SubsystemBase{
     private double maxOutput = IntakeConstants.kMaxOutputPercentage;
     private RelativeEncoder m_pullMotorRelativeEncoder = m_pullMotor.getEncoder();
     private RelativeEncoder m_loadMotorRelativeEncoder = m_loadMotor.getEncoder();
+
+    private Canandcolor m_proximitySensor = new Canandcolor(IntakeConstants.kProximitySensorID);
+    private CanandcolorSettings m_settings = m_proximitySensor.getSettings();
 
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit
     public IntakeSystem(){
@@ -40,6 +49,25 @@ public class IntakeSystem extends SubsystemBase{
         m_loadMotor.configure(m_loadConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
+
+
+        m_proximitySensor.setSettings(m_settings);
+    }
+
+    public void initShuffleboad() {
+        ShuffleboardTab tab = Shuffleboard.getTab("Intake");
+        tab.addDouble("Proximity", this::getProximitySensorOutput);
+        tab.addBoolean("IsLoaded", this::isCoralLoaded);
+    }
+
+    //Raw output of proximity sensor
+    public double getProximitySensorOutput(){
+        return m_proximitySensor.getProximity();
+    }
+
+    //If proimity sensor says coral is loaded
+    public boolean isCoralLoaded(){
+        return m_proximitySensor.getProximity() <= IntakeConstants.kCoralProximity;
     }
 
     //sets the speed of m_pullMotor. Cannot exceed maxOutputPercentage

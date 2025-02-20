@@ -155,12 +155,15 @@ public final class Constants
   }
 
   public static final class IntakeConstants{
+    //All IDs should be in 20s
+    public static final int kProximitySensorID = 23;
     public static final int kPullMotorID = 21;
     public static final int kLoadMotorID = 20;
     public static final int kStallLimit = 20;
     public static final double kMaxOutputPercentage = 1.0;
     public static final int pullMotorGearBoxFactor= 4;
     public static final int loadMotorGearBoxFactor = 4;
+    public static final double kCoralProximity = 0.4; //TODO: filler value
   }
 
   public static final class IntakeDefaultCommandConstants {
