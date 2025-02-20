@@ -163,7 +163,7 @@ public final class Constants
     public static final double kMaxOutputPercentage = 1.0;
     public static final int pullMotorGearBoxFactor= 4;
     public static final int loadMotorGearBoxFactor = 4;
-    public static final double kCoralProximity = 0.4; //TODO: filler value
+    public static final double kCoralProximity = 0.1; //TODO: filler value
   }
 
   public static final class IntakeDefaultCommandConstants {

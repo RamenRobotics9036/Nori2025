@@ -11,6 +11,7 @@ import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
+import com.reduxrobotics.canand.CanandEventLoop;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -40,6 +41,9 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    //Get Redux CANLink set up
+    CanandEventLoop.getInstance();
 
     enableLogging();
   }
