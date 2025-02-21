@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.config.PIDConstants;
+import com.revrobotics.spark.SparkMax;
+
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -192,6 +194,25 @@ public final class Constants
     public static final double armAngleChangeRate = 5;
   }
 
+  public static final class ElevatorConstants {
+    public static final int kLeaderMotorID = 30;
+    public static final int kFollowMotorID = 31;
+    public static final int kDIOIndex = 1; // TODO: placeholder
+    public static final int kStallLimit = 20;
+    public static final double kMaxOutputPercentage = 0.4;
+    //Elevator moves 5.625 in (0.1429 m) per rotation of the sprocket, gear ratio of 9:1
+    public static final double kRotationToElevatorRatio = (5.625 * 0.0254) / 9;
+    //Physical limit is 43.75 in (1.1112 m)
+    public static final double kMarginOfError = 0.06;
+    public static final double elevatorMaxSpeed = 0.2;
+
+    public static final double kDownElevatorPosition = 0.0;
+    public static final double kMaxElevatorPosition = -0.4;
+    public static final double kLevel2ReefPosition = -0.2;
+    public static final double kLevel3ReefPosition = -0.35;
+    public static final double maxTime = 3;
+  }
+  
   public static final class OuttakeConstants {
     public static final int sparkflexID = 32;
     public static final int sparkmaxID = 33;
