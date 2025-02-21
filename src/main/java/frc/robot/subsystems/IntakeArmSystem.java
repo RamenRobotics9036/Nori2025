@@ -32,7 +32,7 @@ public class IntakeArmSystem extends SubsystemBase{
 
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit
     public IntakeArmSystem(){
-        m_armEncoder.setInverted(false);
+        m_armEncoder.setInverted(true);
         m_armEncoder.setDutyCycleRange(0, 1);
 
         ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig();
@@ -91,7 +91,7 @@ public class IntakeArmSystem extends SubsystemBase{
 
     public void setReference(double position) {
         desiredAngle = position;
-        // m_armPIDController.setReference(position, ControlType.kPosition);
+        m_armPIDController.setReference(position, ControlType.kPosition);
     }
 
     //sets the speed of m_armMotor. Cannot exceed maxOutputPercentage
