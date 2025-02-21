@@ -5,8 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.config.PIDConstants;
-import com.revrobotics.spark.SparkMax;
-
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
