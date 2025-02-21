@@ -28,7 +28,7 @@ public class IntakeSystem extends SubsystemBase{
         //pull inverted because of motor positioning
         m_pullConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
         m_pullConfig.smartCurrentLimit(IntakeConstants.kStallLimit);
-        m_pullConfig.inverted(true);
+        m_pullConfig.inverted(false);
 
         m_pullMotor.configure(m_pullConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
@@ -36,7 +36,7 @@ public class IntakeSystem extends SubsystemBase{
 
         m_loadConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
         m_loadConfig.smartCurrentLimit(IntakeConstants.kStallLimit);
-        m_loadConfig.inverted(false);
+        m_loadConfig.inverted(true);
         m_loadMotor.configure(m_loadConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
