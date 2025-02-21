@@ -17,8 +17,8 @@ public class IntakeDefaultCommand extends Command {
 
     @Override
     public void execute(){
-        m_intake.setPullMotorSpeed(IntakeDefaultCommandConstants.speed);
-        m_intake.setLoadMotorSpeed(IntakeDefaultCommandConstants.speed);
+        m_intake.setPullMotorSpeed(-IntakeDefaultCommandConstants.speed);
+        m_intake.setLoadMotorSpeed(-IntakeDefaultCommandConstants.speed);
     }
 
     @Override

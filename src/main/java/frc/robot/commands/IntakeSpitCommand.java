@@ -25,8 +25,8 @@ public class IntakeSpitCommand extends Command {
     @Override
     public void execute(){
         // Reversed because spitting out
-        m_intake.setPullMotorSpeed(-IntakeSpitCommandConstants.speed);
-        m_intake.setLoadMotorSpeed(-IntakeSpitCommandConstants.speed);
+        m_intake.setPullMotorSpeed(IntakeSpitCommandConstants.speed);
+        m_intake.setLoadMotorSpeed(IntakeSpitCommandConstants.speed);
     }
 
     @Override
