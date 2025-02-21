@@ -4,41 +4,41 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeSpitCommandConstants;
+import frc.robot.Constants.OuttakeConstants;
+import frc.robot.Constants.OuttakeSpitCommandConstants;
 import frc.robot.subsystems.IntakeSystem;
+import frc.robot.subsystems.OuttakeSystem;
 
-public class IntakeSpitCommand extends Command {
-    private IntakeSystem m_intake;
+public class OuttakeSpitCommand extends Command {
+    private OuttakeSystem m_outtake;
     private Timer m_timer = new Timer();
     private double m_startingRotations;
-    private double m_speed;
 
-    public IntakeSpitCommand(IntakeSystem intake, double speed){
-        m_speed = speed;
-        m_intake = intake;
-        addRequirements(m_intake);
+    public OuttakeSpitCommand(OuttakeSystem outtake){
+        m_outtake = outtake;
+        addRequirements(m_outtake);
     }
 
     @Override
     public void initialize(){
         m_timer.restart();
-        m_startingRotations = m_intake.getPullMotorPosition();
+        m_startingRotations = m_outtake.getLeaderPosition();
     }
 
     @Override
     public void execute(){
         // Reversed because spitting out
-        m_intake.setPullMotorSpeed(IntakeSpitCommandConstants.speed);
-        m_intake.setLoadMotorSpeed(IntakeSpitCommandConstants.speed);
+        m_outtake.setMotorSpeeds(OuttakeSpitCommandConstants.speed);
     }
 
     @Override
     public boolean isFinished(){
         //checks if command has been running for too long...
-        if (m_timer.get() > IntakeSpitCommandConstants.maxTime) {
+        if (m_timer.get() > OuttakeSpitCommandConstants.maxTime) {
             return true;
         }
         //...or for too many rotations.
-        if (Math.abs((m_intake.getPullMotorPosition() - m_startingRotations)) / IntakeConstants.pullMotorGearBoxFactor > IntakeSpitCommandConstants.numRotations) {
+        if (Math.abs((m_outtake.getLeaderPosition() - m_startingRotations)) / OuttakeConstants.motorGearRatio > OuttakeSpitCommandConstants.numRotations) {
             return true;
         }
         return false;
@@ -46,6 +46,6 @@ public class IntakeSpitCommand extends Command {
 
     @Override
     public void end(boolean interrupted){
-        m_intake.stopSystem();
+        m_outtake.setMotorSpeeds(0);
     }   
 }

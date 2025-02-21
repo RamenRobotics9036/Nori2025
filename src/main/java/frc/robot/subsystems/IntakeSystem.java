@@ -36,6 +36,7 @@ public class IntakeSystem extends SubsystemBase{
 
         m_loadConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
         m_loadConfig.smartCurrentLimit(IntakeConstants.kStallLimit);
+        m_loadConfig.inverted(false);
         m_loadMotor.configure(m_loadConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
