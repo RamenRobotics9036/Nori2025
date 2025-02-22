@@ -8,6 +8,9 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -22,6 +25,9 @@ public class IntakeSystem extends SubsystemBase{
     private double maxOutput = IntakeConstants.kMaxOutputPercentage;
     private RelativeEncoder m_pullMotorRelativeEncoder = m_pullMotor.getEncoder();
     private RelativeEncoder m_loadMotorRelativeEncoder = m_loadMotor.getEncoder();
+
+    private Counter m_canEncoderA = new Counter(IntakeConstants.kCanEncoderSensorAPort);
+    private Counter m_canEncoderB = new Counter(IntakeConstants.kCanEncoderSensorBPort);
 
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit
     public IntakeSystem(){
@@ -40,6 +46,23 @@ public class IntakeSystem extends SubsystemBase{
         m_loadMotor.configure(m_loadConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
+        
+        m_canEncoderA.setSemiPeriodMode(true);
+        m_canEncoderA.setMaxPeriod(1);
+        m_canEncoderA.setSamplesToAverage(5);
+
+        m_canEncoderB.setSemiPeriodMode(true);
+        m_canEncoderB.setMaxPeriod(1);
+        m_canEncoderB.setSamplesToAverage(5);
+
+        initShuffleboad();
+    }
+
+    public void initShuffleboad() {
+        ShuffleboardTab tab = Shuffleboard.getTab("Intake");
+        tab.addDouble("Can Encoder A", this::getCanEncoderAPeriod);
+        tab.addDouble("Can Encoder B", this::getCanEncoderBPeriod);
+        tab.addBoolean("Is Holding Coral", this::isHoldingCoral);
     }
 
     //sets the speed of m_pullMotor. Cannot exceed maxOutputPercentage
@@ -51,6 +74,26 @@ public class IntakeSystem extends SubsystemBase{
     public void setLoadMotorSpeed(double speed){
         speed = MathUtil.clamp(speed, -maxOutput, maxOutput);
         m_loadMotor.set(speed);
+    }
+
+    public double getCanEncoderAPeriod() {
+        return m_canEncoderA.getPeriod() * IntakeConstants.canEncoderScalar;
+    }
+
+    public double getCanEncoderBPeriod() {
+        return m_canEncoderB.getPeriod() * IntakeConstants.canEncoderScalar;
+    }
+
+    public boolean canEncoderAIsDetecting() {
+        return getCanEncoderAPeriod() < IntakeConstants.canEncoderThreshold;
+    }
+
+    public boolean canEncoderBIsDetecting() {
+        return getCanEncoderBPeriod() < IntakeConstants.canEncoderThreshold;
+    }
+
+    public boolean isHoldingCoral() {
+        return canEncoderAIsDetecting() || canEncoderBIsDetecting();
     }
 
     //gets the speed of m_pullMotor

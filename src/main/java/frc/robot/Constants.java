@@ -163,6 +163,10 @@ public final class Constants
     public static final double kMaxOutputPercentage = 1.0;
     public static final int pullMotorGearBoxFactor= 4;
     public static final int loadMotorGearBoxFactor = 4;
+    public static final int kCanEncoderSensorAPort = 2;
+    public static final int kCanEncoderSensorBPort = 3;
+    public static final double canEncoderScalar = 10_000;
+    public static final double canEncoderThreshold = 3;
   }
 
   public static final class IntakeDefaultCommandConstants {
