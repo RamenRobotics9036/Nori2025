@@ -110,7 +110,15 @@ public class RobotContainer
   private final Command m_shootIntoBucketFromIntakeCommand = new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed);
   private final Command m_shootIntoL1FromIntakeCommand = new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed);
   
-  private final Command m_autoAlignCommand = m_swerveDrive.alignWithAprilTagCommand();
+  private final Command m_autoAlignCommandLeft = m_swerveDrive.alignWithAprilTagCommand(
+    AlignRobotConstants.transformDrive,
+    AlignRobotConstants.transformLeftStrafe
+  );
+
+  private final Command m_autoAlignCommandRight = m_swerveDrive.alignWithAprilTagCommand(
+    AlignRobotConstants.transformDrive,
+    AlignRobotConstants.transformRightStrafe
+  );
 
   private final Command m_outtakeCommand = new OuttakeSpitCommand(m_outtakeSystem);
 
@@ -143,7 +151,8 @@ public class RobotContainer
     NamedCommands.registerCommand("Shoot From Intake", m_shootIntoL1FromIntakeCommand);
 
     NamedCommands.registerCommand("Outtake from Bucket", m_outtakeCommand);
-    NamedCommands.registerCommand("Align to April Tag", m_autoAlignCommand);
+    NamedCommands.registerCommand("Align to April Tag Left Side", m_autoAlignCommandLeft);
+    NamedCommands.registerCommand("Align to April Tag Right Side", m_autoAlignCommandRight);
 
     NamedCommands.registerCommand("Set Elevator Position To Bottom", m_setElevatorPositionBottom);
     NamedCommands.registerCommand("Set Elevator Position To L2", m_setElevatorPositionL2);
@@ -206,14 +215,8 @@ public class RobotContainer
 
     // A button aligns the robot using the AprilTag
     //m_driverController.a().onTrue(new AimAtLimeLightV2(m_swerveDrive));
-    m_driverController.povLeft().onTrue(m_swerveDrive.alignWithAprilTagCommand(
-      AlignRobotConstants.transformDrive,
-      AlignRobotConstants.transformLeftStrafe
-    ));
-    m_driverController.povRight().onTrue(m_swerveDrive.alignWithAprilTagCommand(
-      AlignRobotConstants.transformDrive,
-      AlignRobotConstants.transformRightStrafe
-    ));
+    m_driverController.povLeft().onTrue(m_autoAlignCommandLeft);
+    m_driverController.povRight().onTrue(m_autoAlignCommandRight);
 
 
     // Command to spit out game pieces
