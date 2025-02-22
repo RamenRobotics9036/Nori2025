@@ -52,7 +52,9 @@ public class IntakeSystem extends SubsystemBase{
 
 
         m_proximitySensor.setSettings(m_settings);
+        initShuffleboad();
     }
+
 
     public void initShuffleboad() {
         ShuffleboardTab tab = Shuffleboard.getTab("Intake");
