@@ -12,6 +12,7 @@ import frc.robot.commands.ArmDefaultCommand;
 import frc.robot.commands.ElevatorToPositionCommand;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TestSwerveConstants;
+import frc.robot.Constants.CommandConstants.AlignRobotConstants;
 import frc.robot.commands.IntakeDefaultCommand;
 import frc.robot.commands.IntakeSpitCommand;
 import frc.robot.commands.OuttakeSpitCommand;
@@ -205,7 +206,15 @@ public class RobotContainer
 
     // A button aligns the robot using the AprilTag
     //m_driverController.a().onTrue(new AimAtLimeLightV2(m_swerveDrive));
-    m_driverController.a().onTrue(m_autoAlignCommand);
+    m_driverController.povLeft().onTrue(m_swerveDrive.alignWithAprilTagCommand(
+      AlignRobotConstants.transformDrive,
+      AlignRobotConstants.transformLeftStrafe
+    ));
+    m_driverController.povRight().onTrue(m_swerveDrive.alignWithAprilTagCommand(
+      AlignRobotConstants.transformDrive,
+      AlignRobotConstants.transformRightStrafe
+    ));
+
 
     // Command to spit out game pieces
     m_armController.a().onTrue(m_shootIntoL1FromIntakeCommand);
