@@ -46,6 +46,9 @@ public class IntakeSystem extends SubsystemBase{
         m_loadMotor.configure(m_loadConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
+
+        m_canEncoderA.reset();
+        m_canEncoderB.reset();
         
         m_canEncoderA.setSemiPeriodMode(true);
         m_canEncoderA.setMaxPeriod(1);
@@ -93,7 +96,8 @@ public class IntakeSystem extends SubsystemBase{
     }
 
     public boolean isHoldingCoral() {
-        return canEncoderAIsDetecting() || canEncoderBIsDetecting();
+        // Removed encoder B because not working.
+        return canEncoderAIsDetecting(); // || canEncoderBIsDetecting();
     }
 
     //gets the speed of m_pullMotor

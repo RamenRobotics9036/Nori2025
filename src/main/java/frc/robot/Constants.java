@@ -166,7 +166,7 @@ public final class Constants
     public static final int kCanEncoderSensorAPort = 2;
     public static final int kCanEncoderSensorBPort = 3;
     public static final double canEncoderScalar = 10_000;
-    public static final double canEncoderThreshold = 3;
+    public static final double canEncoderThreshold = 0.3;
   }
 
   public static final class IntakeDefaultCommandConstants {
@@ -230,6 +230,6 @@ public final class Constants
   public static final class OuttakeSpitCommandConstants {
     public static final int maxTime = 3;
     public static final double speed = 1.0;
-    public static final double numRotations = 40;
+    public static final double numRotations = 80;
   }
 }

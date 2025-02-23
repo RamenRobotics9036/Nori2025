@@ -103,29 +103,6 @@ public class RobotContainer
   private final OuttakeSystem m_outtakeSystem = new OuttakeSystem();
   private final ElevatorSystem m_elevatorSystem = new ElevatorSystem();
 
-  private final Command m_raiseArmToBottomCommand = new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation);
-  private final Command m_raiseArmToTopCommand = new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation);
-  private final Command m_raiseArmToL1Command = new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle);
-
-  private final Command m_shootIntoBucketFromIntakeCommand = new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed);
-  private final Command m_shootIntoL1FromIntakeCommand = new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed);
-  
-  private final Command m_autoAlignCommandLeft = m_swerveDrive.alignWithAprilTagCommand(
-    AlignRobotConstants.transformDrive,
-    AlignRobotConstants.transformLeftStrafe
-  );
-
-  private final Command m_autoAlignCommandRight = m_swerveDrive.alignWithAprilTagCommand(
-    AlignRobotConstants.transformDrive,
-    AlignRobotConstants.transformRightStrafe
-  );
-
-  private final Command m_outtakeCommand = new OuttakeSpitCommand(m_outtakeSystem);
-
-  private final Command m_setElevatorPositionBottom = new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition);
-  private final Command m_setElevatorPositionL2 = new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition);
-  private final Command m_setElevatorPositionL3 = new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition);
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -143,20 +120,27 @@ public class RobotContainer
     m_swerveDrive.initShuffleboad();
     AutoLogic.initShuffleBoard();
 
-    NamedCommands.registerCommand("Set Arm Position To Bottom", m_raiseArmToBottomCommand);
-    NamedCommands.registerCommand("Set Arm Position To Top", m_raiseArmToTopCommand);
-    NamedCommands.registerCommand("Set Arm Position To L1", m_raiseArmToL1Command);
+    NamedCommands.registerCommand("Set Arm Position To Bottom",  new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation));
+    NamedCommands.registerCommand("Set Arm Position To Top", new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
+    NamedCommands.registerCommand("Set Arm Position To L1", new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle));
 
-    NamedCommands.registerCommand("Dispense Intake Into Bucket", m_shootIntoBucketFromIntakeCommand);
-    NamedCommands.registerCommand("Shoot From Intake", m_shootIntoL1FromIntakeCommand);
+    NamedCommands.registerCommand("Dispense Intake Into Bucket", new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed));
+    NamedCommands.registerCommand("Shoot From Intake", new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
 
-    NamedCommands.registerCommand("Outtake from Bucket", m_outtakeCommand);
-    NamedCommands.registerCommand("Align to April Tag Left Side", m_autoAlignCommandLeft);
-    NamedCommands.registerCommand("Align to April Tag Right Side", m_autoAlignCommandRight);
+    NamedCommands.registerCommand("Outtake from Bucket", new OuttakeSpitCommand(m_outtakeSystem));
+    NamedCommands.registerCommand("Align to April Tag Left Side",
+      m_swerveDrive.alignWithAprilTagCommand(
+      AlignRobotConstants.transformDrive,
+      AlignRobotConstants.transformLeftStrafe
+    ));
+    NamedCommands.registerCommand("Align to April Tag Right Side", m_swerveDrive.alignWithAprilTagCommand(
+    AlignRobotConstants.transformDrive,
+    AlignRobotConstants.transformRightStrafe
+  ));
 
-    NamedCommands.registerCommand("Set Elevator Position To Bottom", m_setElevatorPositionBottom);
-    NamedCommands.registerCommand("Set Elevator Position To L2", m_setElevatorPositionL2);
-    NamedCommands.registerCommand("Set Elevator Position To L3", m_setElevatorPositionL3);
+    NamedCommands.registerCommand("Set Elevator Position To Bottom", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
+    NamedCommands.registerCommand("Set Elevator Position To L2", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
+    NamedCommands.registerCommand("Set Elevator Position To L3", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
   }
   
   /**
@@ -193,13 +177,13 @@ public class RobotContainer
       m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
 
       m_armController.povUp().onTrue(
-          m_raiseArmToBottomCommand.alongWith(m_setElevatorPositionBottom)
+           new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation).alongWith(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition))
           .andThen(
-            m_shootIntoBucketFromIntakeCommand
+            new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed)
         )
       );
-      m_armController.povDown().onTrue(m_raiseArmToTopCommand);
-      m_armController.povRight().onTrue(m_raiseArmToL1Command.andThen(m_shootIntoL1FromIntakeCommand));
+      m_armController.povDown().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
+      m_armController.povRight().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle).andThen(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed)));
     }
   
   
@@ -215,18 +199,24 @@ public class RobotContainer
 
     // A button aligns the robot using the AprilTag
     //m_driverController.a().onTrue(new AimAtLimeLightV2(m_swerveDrive));
-    m_driverController.povLeft().onTrue(m_autoAlignCommandLeft);
-    m_driverController.povRight().onTrue(m_autoAlignCommandRight);
+    m_driverController.povLeft().onTrue(m_swerveDrive.alignWithAprilTagCommand(
+    AlignRobotConstants.transformDrive,
+    AlignRobotConstants.transformLeftStrafe
+  ));
+    m_driverController.povRight().onTrue(m_swerveDrive.alignWithAprilTagCommand(
+    AlignRobotConstants.transformDrive,
+    AlignRobotConstants.transformRightStrafe
+  ));
 
 
     // Command to spit out game pieces
-    m_armController.a().onTrue(m_shootIntoL1FromIntakeCommand);
+    m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
 
-    m_armController.b().onTrue(m_outtakeCommand);
+    m_armController.b().onTrue(new OuttakeSpitCommand(m_outtakeSystem));
 
-    m_armController.povLeft().onTrue(m_setElevatorPositionBottom);
-    m_armController.rightBumper().onTrue(m_setElevatorPositionL2);
-    m_armController.leftBumper().onTrue(m_setElevatorPositionL3);
+    m_armController.povLeft().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
+    m_armController.rightBumper().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
+    m_armController.leftBumper().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
 
 
     // Test mode has (b) button triggering a test sequence
