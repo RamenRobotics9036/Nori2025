@@ -10,7 +10,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OuttakeConstants;
 
 public class OuttakeSystem extends SubsystemBase {
@@ -21,7 +20,6 @@ public class OuttakeSystem extends SubsystemBase {
     public OuttakeSystem() {
         SparkMaxConfig sparkMaxConfig = new SparkMaxConfig();
         sparkMaxConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
-        sparkMaxConfig.smartCurrentLimit(IntakeConstants.kStallLimit);
         sparkMaxConfig.inverted(true);
         sparkMaxConfig.smartCurrentLimit(OuttakeConstants.currentLimit);
         m_outtakeSparkMax.configure(sparkMaxConfig, 
@@ -30,7 +28,6 @@ public class OuttakeSystem extends SubsystemBase {
 
         SparkFlexConfig sparkFlexConfig = new SparkFlexConfig();
         sparkFlexConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
-        sparkFlexConfig.smartCurrentLimit(IntakeConstants.kStallLimit);
         sparkFlexConfig.inverted(false);
         sparkFlexConfig.smartCurrentLimit(OuttakeConstants.currentLimit);
         m_outtakeSparkFlex.configure(sparkFlexConfig, 
@@ -41,6 +38,11 @@ public class OuttakeSystem extends SubsystemBase {
     public void setMotorSpeeds(double speed) {
         m_outtakeSparkMax.set(speed);
         m_outtakeSparkFlex.set(speed);
+    }
+
+    public void setMotorSpeeds(double sparkMaxSpeed, double sparkFlexSpeed) {
+        m_outtakeSparkMax.set(sparkMaxSpeed);
+        m_outtakeSparkFlex.set(sparkFlexSpeed);
     }
 
     public double getLeaderPosition() {

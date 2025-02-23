@@ -211,13 +211,14 @@ public final class Constants
     public static final double kRotationToElevatorRatio = (5.625 * 0.0254) / 9;
     //Physical limit is 43.75 in (1.1112 m)
     public static final double kMarginOfError = 0.06;
-    public static final double elevatorMaxSpeed = 0.2;
+    public static final double elevatorMaxSpeed = 0.3;
 
     public static final double kDownElevatorPosition = 0.0;
     public static final double kMaxElevatorPosition = -0.4;
     public static final double kLevel2ReefPosition = -0.2;
     public static final double kLevel3ReefPosition = -0.35;
-    public static final double maxTime = 3;
+    public static final double maxTime = 8;
+    public static final double tolerance = 0.01;
   }
   
   public static final class OuttakeConstants {
@@ -230,6 +231,6 @@ public final class Constants
   public static final class OuttakeSpitCommandConstants {
     public static final int maxTime = 3;
     public static final double speed = 1.0;
-    public static final double numRotations = 80;
+    public static final double numRotations = 250;
   }
 }
