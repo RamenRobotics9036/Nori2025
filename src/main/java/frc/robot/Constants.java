@@ -214,9 +214,11 @@ public final class Constants
     public static final double elevatorMaxSpeed = 0.3;
 
     public static final double kDownElevatorPosition = 0.0;
-    public static final double kMaxElevatorPosition = -0.4;
-    public static final double kLevel2ReefPosition = -0.2;
-    public static final double kLevel3ReefPosition = -0.35;
+    public static final double kMaxElevatorPosition = -0.6;
+    public static final double kLevel2ReefPosition = -0.35;
+    //Tested with robot with 2024 bumpers, will need to adjust for new bumpers
+    public static final double kLevel3ReefPosition = -0.55;
+    //Tested with robot with 2024 bumpers, will need to adjust for new bumpers
     public static final double maxTime = 8;
     public static final double tolerance = 0.01;
   }
