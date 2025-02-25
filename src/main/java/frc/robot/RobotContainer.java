@@ -176,13 +176,13 @@ public class RobotContainer
     if (m_armSystem != null) {
       m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
 
-      m_armController.povUp().onTrue(
+      m_armController.rightTrigger().onTrue(
            new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation).alongWith(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition))
           .andThen(
             new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed)
         )
       );
-      m_armController.povDown().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
+      m_armController.leftTrigger().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
       m_armController.povRight().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle).andThen(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed)));
     }
   
@@ -214,9 +214,9 @@ public class RobotContainer
 
     m_armController.b().onTrue(new OuttakeSpitCommand(m_outtakeSystem));
 
-    m_armController.povLeft().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
-    m_armController.rightBumper().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
-    m_armController.leftBumper().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
+    m_armController.povDown().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
+    m_armController.x().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
+    m_armController.y().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
 
 
     // Test mode has (b) button triggering a test sequence
