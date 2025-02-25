@@ -26,8 +26,8 @@ public class IntakeSystem extends SubsystemBase{
     private RelativeEncoder m_pullMotorRelativeEncoder = m_pullMotor.getEncoder();
     private RelativeEncoder m_loadMotorRelativeEncoder = m_loadMotor.getEncoder();
 
-    private Counter m_canEncoderA = new Counter(IntakeConstants.kCanEncoderSensorAPort);
-    private Counter m_canEncoderB = new Counter(IntakeConstants.kCanEncoderSensorBPort);
+    private Counter m_canAndColorA = new Counter(IntakeConstants.kCanAndColorSensorAPort);
+    private Counter m_canAndColorB = new Counter(IntakeConstants.kCanAndColorSensorBPort);
 
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit
     public IntakeSystem(){
@@ -47,24 +47,24 @@ public class IntakeSystem extends SubsystemBase{
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
 
-        m_canEncoderA.reset();
-        m_canEncoderB.reset();
+        m_canAndColorA.reset();
+        m_canAndColorB.reset();
         
-        m_canEncoderA.setSemiPeriodMode(true);
-        m_canEncoderA.setMaxPeriod(1);
-        m_canEncoderA.setSamplesToAverage(5);
+        m_canAndColorA.setSemiPeriodMode(true);
+        m_canAndColorA.setMaxPeriod(1);
+        m_canAndColorA.setSamplesToAverage(5);
 
-        m_canEncoderB.setSemiPeriodMode(true);
-        m_canEncoderB.setMaxPeriod(1);
-        m_canEncoderB.setSamplesToAverage(5);
+        m_canAndColorB.setSemiPeriodMode(true);
+        m_canAndColorB.setMaxPeriod(1);
+        m_canAndColorB.setSamplesToAverage(5);
 
         initShuffleboad();
     }
 
     public void initShuffleboad() {
         ShuffleboardTab tab = Shuffleboard.getTab("Intake");
-        tab.addDouble("Can Encoder A", this::getCanEncoderAPeriod);
-        tab.addDouble("Can Encoder B", this::getCanEncoderBPeriod);
+        tab.addDouble("Can Encoder A", this::getCanAndColorAPeriod);
+        tab.addDouble("Can Encoder B", this::getCanAndColorBPeriod);
         tab.addBoolean("Is Holding Coral", this::isHoldingCoral);
     }
 
@@ -79,25 +79,25 @@ public class IntakeSystem extends SubsystemBase{
         m_loadMotor.set(speed);
     }
 
-    public double getCanEncoderAPeriod() {
-        return m_canEncoderA.getPeriod() * IntakeConstants.canEncoderScalar;
+    public double getCanAndColorAPeriod() {
+        return m_canAndColorA.getPeriod() * IntakeConstants.canAndColorScalar;
     }
 
-    public double getCanEncoderBPeriod() {
-        return m_canEncoderB.getPeriod() * IntakeConstants.canEncoderScalar;
+    public double getCanAndColorBPeriod() {
+        return m_canAndColorB.getPeriod() * IntakeConstants.canAndColorScalar;
     }
 
-    public boolean canEncoderAIsDetecting() {
-        return getCanEncoderAPeriod() < IntakeConstants.canEncoderThreshold;
+    public boolean canAndColorAIsDetecting() {
+        return getCanAndColorAPeriod() < IntakeConstants.canAndColorThreshold;
     }
 
-    public boolean canEncoderBIsDetecting() {
-        return getCanEncoderBPeriod() < IntakeConstants.canEncoderThreshold;
+    public boolean canAndColorBIsDetecting() {
+        return getCanAndColorBPeriod() < IntakeConstants.canAndColorThreshold;
     }
 
     public boolean isHoldingCoral() {
         // Removed encoder B because not working.
-        return canEncoderAIsDetecting(); // || canEncoderBIsDetecting();
+        return canAndColorAIsDetecting(); // || canAndColorBIsDetecting();
     }
 
     //gets the speed of m_pullMotor
