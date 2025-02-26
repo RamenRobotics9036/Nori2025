@@ -66,8 +66,6 @@ public class TestTurnWheel extends Command {
             angleDegrees = 90.0 * (1 + Math.cos(Math.PI * fraction)) / 2.0;
         }
 
-        m_swerveDriveSubsystem.getWheelTestContext().cancelRunningTestWithError("Oh no!");
-
         //System.out.println("Elapsed time: " + elapsed + "s, Angle: " + angleDegrees + " degrees");
         m_moduleInfo.obj.setAngle(angleDegrees);
 
