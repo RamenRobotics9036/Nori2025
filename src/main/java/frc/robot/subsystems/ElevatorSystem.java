@@ -49,7 +49,7 @@ public class ElevatorSystem extends SubsystemBase{
             .i(0)
             .d(0);
         closedLoopConfig.positionWrappingEnabled(false);
-        closedLoopConfig.outputRange(-ElevatorConstants.elevatorMaxSpeed, ElevatorConstants.elevatorMaxSpeed);
+        closedLoopConfig.outputRange(-ElevatorConstants.kElevatorMaxSpeed, ElevatorConstants.kElevatorMaxSpeed);
         //closedLoopConfig.minOutput();
         //closedLoopConfig.maxOutput();
         EncoderConfig encoderConfig = new EncoderConfig();

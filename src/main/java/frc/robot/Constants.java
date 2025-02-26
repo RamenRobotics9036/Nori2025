@@ -72,14 +72,14 @@ public final class Constants
 
   public static final class TestSwerveConstants {
     public static final boolean kIsTestMode = true;
-    public static final double maxTimeSeconds = 60;
+    public static final double kMaxTimeSeconds = 60;
   }
 
   public static final class VisionConstants {
-    public static final String limelightName = "limelight";
-    public static final double allowedAngleUncertaintyDegrees = 0.5;
-    public static final double allowedAngleUncertaintyMetersDrive = 0.05;
-    public static final double allowedAngleUncertaintyMetersStrafe = 0.025;
+    public static final String kLimelightName = "limelight";
+    public static final double kAllowedAngleUncertaintyDegrees = 0.5;
+    public static final double kAllowedAngleUncertaintyMetersDrive = 0.05;
+    public static final double kAllowedAngleUncertaintyMetersStrafe = 0.025;
 
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout =
@@ -92,9 +92,9 @@ public final class Constants
       // pitched upward.
       // NOTE: For reefscape, set camPitch to 15 degrees, since 30 degrees was too high to detect
       // the april tags near the coral reefs.
-      private static final double camPitch = Units.degreesToRadians(15.0); // Units.degreesToRadians(30.0);
+      private static final double kCamPitch = Units.degreesToRadians(15.0); // Units.degreesToRadians(30.0);
       public static final Transform3d kRobotToCam =
-              new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, -camPitch, 0));
+              new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, -kCamPitch, 0));
 
       // The standard deviations of our vision estimated poses, which affect correction rate
       // (Fake values. Experiment and determine estimation noise on an actual robot.)
@@ -104,55 +104,55 @@ public final class Constants
 
   public static final class CommandConstants {
     public static final class AimAtLimeLightConstants {
-      public static final double maxTimeSeconds = 10;
+      public static final double kMaxTimeSeconds = 10;
       public static final double kP = 0.01;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
-      public static final double maxSpeed = 0.02;
+      public static final double kMaxSpeed = 0.02;
     }
 
     public static final class AlignRobotConstants {
-      public static final double maxTimeSeconds = 10;
-      public static final double maxSpeed = 0.4;
-      public static final double maxSpeedRot = 0.2;
+      public static final double kMaxTimeSeconds = 10;
+      public static final double kMaxSpeed = 0.4;
+      public static final double kMaxSpeedRot = 0.2;
 
       /**
        * How much the robot should be offset from the April tag pose rotation.
       */
-      public static final double transformRot = 0.0;
+      public static final double kTransformRot = 0.0;
 
       /**
        * How much the robot should be offset from the April tag pose x direction.
       */
-      public static final double transformDrive = 0.5;
+      public static final double kTransformDrive = 0.5;
 
-      public static final double coralOffset = (13.25 / 2) * 0.0254;
-      public static final double outTakeOffset = (3.25) * 0.0254;
+      public static final double kCoralOffset = (13.25 / 2) * 0.0254;
+      public static final double kOutTakeOffset = (3.25) * 0.0254;
 
       /**
        * How much the robot should be offset from the April tag pose y direction.
       */
-      public static final double transformStrafe = 3.25 / 12; // 3.25 inches offset
-      public static final double transformLeftStrafe = -coralOffset - outTakeOffset;
-      public static final double transformRightStrafe = coralOffset - outTakeOffset;
+      public static final double kTransformStrafe = 3.25 / 12; // 3.25 inches offset
+      public static final double kTransformLeftStrafe = -kCoralOffset - kOutTakeOffset;
+      public static final double kTransformRightStrafe = kCoralOffset - kOutTakeOffset;
     }
 
     public static final class AimAtLimeLightV2Constants {
       // 5 seconds should be plenty of time to just turn
-      public static final double maxTimeSeconds = 5;
-      public static final double maxSpeed = 0.4;
+      public static final double kMaxTimeSeconds = 5;
+      public static final double kMaxSpeed = 0.4;
       public static final double kMaxRotateRadsPerSecond = 2 * Math.PI;
 
       public static final double kP = 0.01;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
-      public static final double allowedAngleUncertaintyDegrees = 0.5;
-      public static final int dontRotateIfSmallDegrees = 5;
+      public static final double kAllowedAngleUncertaintyDegrees = 0.5;
+      public static final int kDontRotateIfSmallDegrees = 5;
 
       /**
        * How much the robot should be offset from the April tag pose rotation.
       */
-      public static final double transformRot = 0.0;
+      public static final double kTransformRot = 0.0;
     }
   }
 
@@ -161,44 +161,44 @@ public final class Constants
     public static final int kLoadMotorID = 20;
     public static final int kStallLimit = 20;
     public static final double kMaxOutputPercentage = 1.0;
-    public static final int pullMotorGearBoxFactor= 4;
-    public static final int loadMotorGearBoxFactor = 4;
+    public static final int kPullMotorGearBoxFactor= 4;
+    public static final int kLoadMotorGearBoxFactor = 4;
     public static final int kCanAndColorSensorAPort = 2;
     public static final int kCanAndColorSensorBPort = 3;
-    public static final double canAndColorScalar = 10_000;
-    public static final double canAndColorThreshold = 0.3;
+    public static final double kCanAndColorScalar = 10_000;
+    public static final double kCanAndColorThreshold = 0.3;
   }
 
   public static final class IntakeDefaultCommandConstants {
-    public static final double speed = 0.3;
-    public static final double pullSpeed = 0.5;
+    public static final double kSpeed = 0.3;
+    public static final double kPullSpeed = 0.5;
   }
 
   public static final class IntakeSpitCommandConstants {
-    public static final int maxTime = 3;
-    public static final double speed = 0.8;
-    public static final double numRotations = 15;
-    public static final double bucketSpeed = 0.5;
+    public static final int kMaxTime = 3;
+    public static final double kSpeed = 0.8;
+    public static final double kNumRotations = 15;
+    public static final double kBucketSpeed = 0.5;
   }
 
   public static final class ArmConstants {
     public static final int kArmMotorID = 22;
-    public static final double maxOutput = 1.0;
+    public static final double kMaxOutput = 1.0;
     public static final int kArmEncoderID = 0;
     public static final double kArmGearBoxRatio = 125 * (44/30);
 
     public static final double kMaxArmRotation = 3.5;
-    public static final double L1ArmAngle = 0.8;
+    public static final double kL1ArmAngle = 0.8;
     public static final double kMinArmRotation = 0.7;
     
     public static final double kAbsoluteEncoderOffset = 0;
     public static final int kcurrentLimit = 20;
-    public static final double tolerance = 0.1;
-    public static final double setArmMaxTime = 4;
+    public static final double kTolerance = 0.1;
+    public static final double kSetArmMaxTime = 4;
   }
 
   public static final class ArmDefaultCommandConstants {
-    public static final double armAngleChangeRate = 5;
+    public static final double kArmAngleChangeRate = 5;
   }
 
   public static final class ElevatorConstants {
@@ -211,7 +211,7 @@ public final class Constants
     public static final double kRotationToElevatorRatio = (5.625 * 0.0254) / 9;
     //Physical limit is 43.75 in (1.1112 m)
     public static final double kMarginOfError = 0.06;
-    public static final double elevatorMaxSpeed = 0.3;
+    public static final double kElevatorMaxSpeed = 0.3;
 
     public static final double kDownElevatorPosition = 0.0;
     public static final double kMaxElevatorPosition = -0.6;
@@ -219,20 +219,20 @@ public final class Constants
     //Tested with robot with 2024 bumpers, will need to adjust for new bumpers
     public static final double kLevel3ReefPosition = -0.55;
     //Tested with robot with 2024 bumpers, will need to adjust for new bumpers
-    public static final double maxTime = 8;
-    public static final double tolerance = 0.01;
+    public static final double kMaxTime = 8;
+    public static final double kTolerance = 0.01;
   }
   
   public static final class OuttakeConstants {
-    public static final int sparkflexID = 32;
-    public static final int sparkmaxID = 33;
-    public static final int currentLimit = 20;
-    public static final double motorGearRatio = 1;
+    public static final int kSparkflexID = 32;
+    public static final int kSparkmaxID = 33;
+    public static final int kCurrentLimit = 20;
+    public static final double kMotorGearRatio = 1;
   }
 
   public static final class OuttakeSpitCommandConstants {
-    public static final int maxTime = 3;
-    public static final double speed = 1.0;
-    public static final double numRotations = 250;
+    public static final int kMaxTime = 3;
+    public static final double kSpeed = 1.0;
+    public static final double kNumRotations = 250;
   }
 }

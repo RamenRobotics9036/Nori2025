@@ -29,10 +29,10 @@ public class SetArmToAngleCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        if (m_timer.get() > ArmConstants.setArmMaxTime) {
+        if (m_timer.get() > ArmConstants.kSetArmMaxTime) {
 
         }
-        if (MathUtil.applyDeadband(m_desiredAngle - m_armSystem.getArmAngleRelative(), ArmConstants.tolerance) == 0) {
+        if (MathUtil.applyDeadband(m_desiredAngle - m_armSystem.getArmAngleRelative(), ArmConstants.kTolerance) == 0) {
             return true;
         }
         return false;

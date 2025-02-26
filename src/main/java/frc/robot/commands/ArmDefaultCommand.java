@@ -26,7 +26,7 @@ public class ArmDefaultCommand extends Command {
 
     @Override
     public void execute() {
-        setArmAngle(m_armSystem.getArmAngleRelative() + (m_deltaArmAngleFromController.get() / ArmDefaultCommandConstants.armAngleChangeRate));
+        setArmAngle(m_armSystem.getArmAngleRelative() + (m_deltaArmAngleFromController.get() / ArmDefaultCommandConstants.kArmAngleChangeRate));
     }
 
     @Override

@@ -34,11 +34,11 @@ public class IntakeSpitCommand extends Command {
     @Override
     public boolean isFinished(){
         //checks if command has been running for too long...
-        if (m_timer.get() > IntakeSpitCommandConstants.maxTime) {
+        if (m_timer.get() > IntakeSpitCommandConstants.kMaxTime) {
             return true;
         }
         //...or for too many rotations.
-        if (Math.abs((m_intake.getPullMotorPosition() - m_startingRotations)) / IntakeConstants.pullMotorGearBoxFactor > IntakeSpitCommandConstants.numRotations) {
+        if (Math.abs((m_intake.getPullMotorPosition() - m_startingRotations)) / IntakeConstants.kPullMotorGearBoxFactor > IntakeSpitCommandConstants.kNumRotations) {
             return true;
         }
         return false;

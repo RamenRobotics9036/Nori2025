@@ -29,9 +29,9 @@ public class ElevatorToPositionCommand extends Command{
 
     @Override
     public boolean isFinished(){
-        if (m_timer.get() > ElevatorConstants.maxTime) {
+        if (m_timer.get() > ElevatorConstants.kMaxTime) {
             return true;
         }
-        return MathUtil.applyDeadband(m_desiredPosition - m_elevator.getPosition(), ElevatorConstants.tolerance) == 0;
+        return MathUtil.applyDeadband(m_desiredPosition - m_elevator.getPosition(), ElevatorConstants.kTolerance) == 0;
     }
 }

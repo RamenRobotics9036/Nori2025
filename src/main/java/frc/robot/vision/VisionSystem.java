@@ -10,7 +10,7 @@ import frc.robot.Constants.VisionConstants;
 public class VisionSystem implements VisionSystemInterface {
 
     private NetworkTable m_limelightTable = NetworkTableInstance.getDefault()
-            .getTable(VisionConstants.limelightName);
+            .getTable(VisionConstants.kLimelightName);
     private NetworkTableEntry m_tableX = m_limelightTable.getEntry("tx");
     private NetworkTableEntry m_tableY = m_limelightTable.getEntry("ty");
     private NetworkTableEntry m_tableArea = m_limelightTable.getEntry("ta");
@@ -68,14 +68,14 @@ public class VisionSystem implements VisionSystemInterface {
 
     private Pose3d calcRelativeTargetPoseHelper() {
         if (isDetecting()) {
-            return LimelightHelpers.getTargetPose3d_CameraSpace(VisionConstants.limelightName);
+            return LimelightHelpers.getTargetPose3d_CameraSpace(VisionConstants.kLimelightName);
         }
         return new Pose3d();
     }
 
     private Pose2d calcRobotPoseHelper() {
         if (isDetecting()) {
-            return LimelightHelpers.getBotPose2d_wpiBlue(VisionConstants.limelightName);
+            return LimelightHelpers.getBotPose2d_wpiBlue(VisionConstants.kLimelightName);
         }
         return new Pose2d();
     }

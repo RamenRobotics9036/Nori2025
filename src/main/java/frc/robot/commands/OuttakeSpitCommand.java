@@ -25,17 +25,17 @@ public class OuttakeSpitCommand extends Command {
     @Override
     public void execute(){
         // Reversed because spitting out
-        m_outtake.setMotorSpeeds(OuttakeSpitCommandConstants.speed);
+        m_outtake.setMotorSpeeds(OuttakeSpitCommandConstants.kSpeed);
     }
 
     @Override
     public boolean isFinished(){
         //checks if command has been running for too long...
-        if (m_timer.get() > OuttakeSpitCommandConstants.maxTime) {
+        if (m_timer.get() > OuttakeSpitCommandConstants.kMaxTime) {
             return true;
         }
         //...or for too many rotations.
-        if (Math.abs((m_outtake.getLeaderPosition() - m_startingRotations)) / OuttakeConstants.motorGearRatio > OuttakeSpitCommandConstants.numRotations) {
+        if (Math.abs((m_outtake.getLeaderPosition() - m_startingRotations)) / OuttakeConstants.kMotorGearRatio > OuttakeSpitCommandConstants.kNumRotations) {
             return true;
         }
         return false;

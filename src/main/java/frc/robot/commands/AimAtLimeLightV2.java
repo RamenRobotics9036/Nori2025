@@ -43,7 +43,7 @@ public class AimAtLimeLightV2 extends Command {
         // a hair outside of the tolerance, it will move VERY SLOWLY towards the 
         // tolerance this second time.  To avoid this, we don't even START a PID
         // loop unless we're currently more than 2x (or 3x) tolerance away from the target.
-        if (Math.abs(m_initialTX) < AimAtLimeLightV2Constants.dontRotateIfSmallDegrees) {
+        if (Math.abs(m_initialTX) < AimAtLimeLightV2Constants.kDontRotateIfSmallDegrees) {
             m_shouldRun = false;
             System.out.println("Already pointing at target.");
             return;
@@ -76,7 +76,7 @@ public class AimAtLimeLightV2 extends Command {
         // Set derivative tolerance to infinity so atSetpoint() ignores the derivative.
         // Without this, we may be near the setpoint within tolerance, but derivative
         // is still too high, so we keep moving.
-        m_rotatePIDController.setTolerance(AimAtLimeLightV2Constants.allowedAngleUncertaintyDegrees, Double.POSITIVE_INFINITY);
+        m_rotatePIDController.setTolerance(AimAtLimeLightV2Constants.kAllowedAngleUncertaintyDegrees, Double.POSITIVE_INFINITY);
     }
 
     private double getCurrentTX() {
@@ -119,7 +119,7 @@ public class AimAtLimeLightV2 extends Command {
             return true;
         }
 
-        if (m_timer.get() > AimAtLimeLightV2Constants.maxTimeSeconds) {
+        if (m_timer.get() > AimAtLimeLightV2Constants.kMaxTimeSeconds) {
             System.out.println("UNEXPECTED TIMEOUT TURNING!");
             //throw new RuntimeException("TIMEOUT TURNING!");
             return true;

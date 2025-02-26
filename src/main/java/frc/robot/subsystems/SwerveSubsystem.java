@@ -243,7 +243,7 @@ public class SwerveSubsystem extends SubsystemBase
 
         // $TODO - We should double-check if this is necessary, or is it covering-up
         // any issue? 
-        driveToPose(targetPose).withTimeout(AlignRobotConstants.maxTimeSeconds).schedule();
+        driveToPose(targetPose).withTimeout(AlignRobotConstants.kMaxTimeSeconds).schedule();
       }
     );
   }

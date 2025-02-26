@@ -24,20 +24,20 @@ public class AimAtLimeLight extends Command {
     public void initialize() {
         m_timer.restart();
         m_pidController.setSetpoint(0);
-        m_pidController.setTolerance(VisionConstants.allowedAngleUncertaintyDegrees);
+        m_pidController.setTolerance(VisionConstants.kAllowedAngleUncertaintyDegrees);
     }
     
     @Override
     public void execute() {
         Translation2d translation = new Translation2d(0, 0);
         double rotation = m_pidController.calculate(m_swerveDrive.getVisionSystem().getTX());
-        rotation = MathUtil.clamp(rotation, -AimAtLimeLightConstants.maxSpeed, AimAtLimeLightConstants.maxSpeed);
+        rotation = MathUtil.clamp(rotation, -AimAtLimeLightConstants.kMaxSpeed, AimAtLimeLightConstants.kMaxSpeed);
         m_swerveDrive.drive(translation, rotation, true);
     }
 
     @Override
     public boolean isFinished() {
-        if (m_timer.get() > AimAtLimeLightConstants.maxTimeSeconds) {
+        if (m_timer.get() > AimAtLimeLightConstants.kMaxTimeSeconds) {
             return true;
         }
         if (!m_swerveDrive.getVisionSystem().isDetecting()) {

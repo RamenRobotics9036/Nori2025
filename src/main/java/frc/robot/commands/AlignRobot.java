@@ -21,13 +21,13 @@ public class AlignRobot extends Command {
     public AlignRobot(SwerveSubsystem swerveDrive) { 
         m_swerveDrive = swerveDrive; 
  
-        m_drivePIDController.setTolerance(VisionConstants.allowedAngleUncertaintyMetersDrive); 
-        m_strafePIDController.setTolerance(VisionConstants.allowedAngleUncertaintyMetersStrafe); 
-        m_rotatePIDController.setTolerance(VisionConstants.allowedAngleUncertaintyDegrees); 
+        m_drivePIDController.setTolerance(VisionConstants.kAllowedAngleUncertaintyMetersDrive); 
+        m_strafePIDController.setTolerance(VisionConstants.kAllowedAngleUncertaintyMetersStrafe); 
+        m_rotatePIDController.setTolerance(VisionConstants.kAllowedAngleUncertaintyDegrees); 
  
-        m_drivePIDController.setSetpoint(AlignRobotConstants.transformDrive); 
-        m_strafePIDController.setSetpoint(AlignRobotConstants.transformStrafe); 
-        m_rotatePIDController.setSetpoint(AlignRobotConstants.transformRot); 
+        m_drivePIDController.setSetpoint(AlignRobotConstants.kTransformDrive); 
+        m_strafePIDController.setSetpoint(AlignRobotConstants.kTransformStrafe); 
+        m_rotatePIDController.setSetpoint(AlignRobotConstants.kTransformRot); 
  
         addRequirements(m_swerveDrive); 
     } 
@@ -45,9 +45,9 @@ public class AlignRobot extends Command {
         double strafe = m_strafePIDController.calculate(targetPose.getX()); 
         double rotate = m_rotatePIDController.calculate(m_swerveDrive.getVisionSystem().getTX()); 
  
-        drive = MathUtil.clamp(drive, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed); 
-        strafe = MathUtil.clamp(strafe, -AlignRobotConstants.maxSpeed, AlignRobotConstants.maxSpeed); 
-        rotate = MathUtil.clamp(rotate, -AlignRobotConstants.maxSpeedRot, AlignRobotConstants.maxSpeedRot); 
+        drive = MathUtil.clamp(drive, -AlignRobotConstants.kMaxSpeed, AlignRobotConstants.kMaxSpeed); 
+        strafe = MathUtil.clamp(strafe, -AlignRobotConstants.kMaxSpeed, AlignRobotConstants.kMaxSpeed); 
+        rotate = MathUtil.clamp(rotate, -AlignRobotConstants.kMaxSpeedRot, AlignRobotConstants.kMaxSpeedRot); 
  
         // Drive is negative 
         m_swerveDrive.drive(new Translation2d(-drive, strafe), -rotate, false); 
@@ -55,7 +55,7 @@ public class AlignRobot extends Command {
  
     @Override 
     public boolean isFinished() { 
-        if (m_timer.get() > AlignRobotConstants.maxTimeSeconds) { 
+        if (m_timer.get() > AlignRobotConstants.kMaxTimeSeconds) { 
             return true; 
         } 
         if (!m_swerveDrive.getVisionSystem().isDetecting()) { 

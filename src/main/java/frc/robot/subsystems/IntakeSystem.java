@@ -86,20 +86,20 @@ public class IntakeSystem extends SubsystemBase{
 
     //checks values of canandcolors
     public double getCanAndColorAPeriod() {
-        return m_canAndColorA.getPeriod() * IntakeConstants.canAndColorScalar;
+        return m_canAndColorA.getPeriod() * IntakeConstants.kCanAndColorScalar;
     }
 
     public double getCanAndColorBPeriod() {
-        return m_canAndColorB.getPeriod() * IntakeConstants.canAndColorScalar;
+        return m_canAndColorB.getPeriod() * IntakeConstants.kCanAndColorScalar;
     }
 
     //checks to see if one detects a coral
     public boolean canAndColorAIsDetecting() {
-        return getCanAndColorAPeriod() < IntakeConstants.canAndColorThreshold;
+        return getCanAndColorAPeriod() < IntakeConstants.kCanAndColorThreshold;
     }
 
     public boolean canAndColorBIsDetecting() {
-        return getCanAndColorBPeriod() < IntakeConstants.canAndColorThreshold;
+        return getCanAndColorBPeriod() < IntakeConstants.kCanAndColorThreshold;
     }
 
     public boolean isHoldingCoral() {

@@ -13,15 +13,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.OuttakeConstants;
 
 public class OuttakeSystem extends SubsystemBase {
-    private SparkFlex m_outtakeSparkFlex = new SparkFlex(OuttakeConstants.sparkflexID, MotorType.kBrushless);
-    private SparkMax m_outtakeSparkMax = new SparkMax(OuttakeConstants.sparkmaxID, MotorType.kBrushless);
+    private SparkFlex m_outtakeSparkFlex = new SparkFlex(OuttakeConstants.kSparkflexID, MotorType.kBrushless);
+    private SparkMax m_outtakeSparkMax = new SparkMax(OuttakeConstants.kSparkmaxID, MotorType.kBrushless);
     private RelativeEncoder m_relativeEncoder = m_outtakeSparkMax.getEncoder();
 
     public OuttakeSystem() {
         SparkMaxConfig sparkMaxConfig = new SparkMaxConfig();
         sparkMaxConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
         sparkMaxConfig.inverted(true);
-        sparkMaxConfig.smartCurrentLimit(OuttakeConstants.currentLimit);
+        sparkMaxConfig.smartCurrentLimit(OuttakeConstants.kCurrentLimit);
         m_outtakeSparkMax.configure(sparkMaxConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
@@ -29,7 +29,7 @@ public class OuttakeSystem extends SubsystemBase {
         SparkFlexConfig sparkFlexConfig = new SparkFlexConfig();
         sparkFlexConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
         sparkFlexConfig.inverted(false);
-        sparkFlexConfig.smartCurrentLimit(OuttakeConstants.currentLimit);
+        sparkFlexConfig.smartCurrentLimit(OuttakeConstants.kCurrentLimit);
         m_outtakeSparkFlex.configure(sparkFlexConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);

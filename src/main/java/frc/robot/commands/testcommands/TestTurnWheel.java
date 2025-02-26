@@ -118,11 +118,11 @@ public class TestTurnWheel extends Command {
         double totalTime = 2 * TURN_TIME_SECONDS * CYCLES;
 
         // Safety check of N seconds
-        if (totalTime > TestSwerveConstants.maxTimeSeconds) {
+        if (totalTime > TestSwerveConstants.kMaxTimeSeconds) {
             throw new IllegalStateException("Total time: " + totalTime
-                + ", Max allowed time: " + TestSwerveConstants.maxTimeSeconds);
+                + ", Max allowed time: " + TestSwerveConstants.kMaxTimeSeconds);
         }
-        if (m_timer.get() > TestSwerveConstants.maxTimeSeconds) {
+        if (m_timer.get() > TestSwerveConstants.kMaxTimeSeconds) {
             return true;
         }
 
