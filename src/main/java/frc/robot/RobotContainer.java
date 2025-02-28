@@ -9,6 +9,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.IntakeSpitCommandConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmDefaultCommand;
+import frc.robot.commands.ElevatorDefaultCommand;
 import frc.robot.commands.ElevatorToPositionCommand;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TestSwerveConstants;
@@ -173,6 +174,7 @@ public class RobotContainer
     
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
     m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
+    m_elevatorSystem.setDefaultCommand(new ElevatorDefaultCommand(m_elevatorSystem, () -> m_armController.getRightY()));
     if (m_armSystem != null) {
       m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
 
@@ -210,7 +212,7 @@ public class RobotContainer
 
 
     // Command to spit out game pieces
-    m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.kSpeed));
+    m_armController.a().whileTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.kSpeed));
 
     m_armController.b().onTrue(new OuttakeSpitCommand(m_outtakeSystem));
 

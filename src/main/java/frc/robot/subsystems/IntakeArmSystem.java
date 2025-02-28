@@ -67,9 +67,9 @@ public class IntakeArmSystem extends SubsystemBase{
             m_armRelativeEncoder.setPosition(getArmAngle());
         }
 
-        if (!m_armEncoder.isConnected()) {
-            throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get());
-        }
+        // if (!m_armEncoder.isConnected()) {
+        //     throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get());
+        // }
         desiredAngle = getArmAngleRelative();
 
         initShuffleboad();

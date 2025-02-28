@@ -184,12 +184,12 @@ public final class Constants
   public static final class ArmConstants {
     public static final int kArmMotorID = 22;
     public static final double kMaxOutput = 1.0;
-    public static final int kArmEncoderID = 0;
+    public static final int kArmEncoderID = 9;
     public static final double kArmGearBoxRatio = 125 * (44/30);
 
     public static final double kMaxArmRotation = 3.5;
-    public static final double kL1ArmAngle = 0.8;
-    public static final double kMinArmRotation = 0.7;
+    public static final double kL1ArmAngle = 0.7;
+    public static final double kMinArmRotation = 0.8;
     
     public static final double kAbsoluteEncoderOffset = 0;
     public static final int kcurrentLimit = 20;
@@ -208,7 +208,7 @@ public final class Constants
     public static final int kStallLimit = 20;
     public static final double kMaxOutputPercentage = 0.4;
     //Elevator moves 5.625 in (0.1429 m) per rotation of the sprocket, gear ratio of 9:1
-    public static final double kRotationToElevatorRatio = (5.625 * 0.0254) / 9;
+    public static final double kRotationToElevatorRatio = (5.625 * 0.0254) / 12;
     //Physical limit is 43.75 in (1.1112 m)
     public static final double kMarginOfError = 0.06;
     public static final double kElevatorMaxSpeed = 0.3;
@@ -221,6 +221,7 @@ public final class Constants
     //Tested with robot with 2024 bumpers, will need to adjust for new bumpers
     public static final double kMaxTime = 8;
     public static final double kTolerance = 0.01;
+    public static final double elevatorAngleChange = 5;
   }
   
   public static final class OuttakeConstants {
