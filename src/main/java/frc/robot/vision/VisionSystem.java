@@ -23,6 +23,7 @@ public class VisionSystem implements VisionSystemInterface {
     // Constructor
     public VisionSystem() {
         // Empty
+        
     }
 
     @Override

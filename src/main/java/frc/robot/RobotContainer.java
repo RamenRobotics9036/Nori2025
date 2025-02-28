@@ -182,6 +182,7 @@ public class RobotContainer
             new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed)
         )
       );
+      m_armController.rightBumper().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.algaePreset).andThen(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed)));
       m_armController.leftTrigger().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
       m_armController.povRight().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle).andThen(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed)));
     }
