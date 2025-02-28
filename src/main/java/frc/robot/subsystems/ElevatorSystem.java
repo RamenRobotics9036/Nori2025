@@ -45,7 +45,7 @@ public class ElevatorSystem extends SubsystemBase{
     public ElevatorSystem() {
         ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig();
         closedLoopConfig
-            .p(1)
+            .p(2)
             .i(0)
             .d(0);
         closedLoopConfig.positionWrappingEnabled(false);

@@ -17,10 +17,10 @@ public class IntakeDefaultCommand extends Command {
 
     @Override
     public void execute(){
-        if (!m_intake.isHoldingCoral()) {
+        // if (!m_intake.isHoldingCoral()) {
             m_intake.setPullMotorSpeed(-IntakeDefaultCommandConstants.speed);
             m_intake.setLoadMotorSpeed(-IntakeDefaultCommandConstants.speed);
-        }
+        //}
     }
 
     @Override
