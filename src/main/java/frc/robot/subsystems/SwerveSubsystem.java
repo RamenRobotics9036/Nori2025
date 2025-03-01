@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.CommandConstants.AlignRobotConstants;
@@ -85,6 +86,8 @@ public class SwerveSubsystem extends SubsystemBase
   private WheelTestContext m_wheelTestContext = new WheelTestContext();
 
   private VisionSystemInterface m_vision = null;
+
+  private boolean m_isPathfinderWarmedUp = false;
 
   //
   // Simulated Vision
@@ -162,6 +165,12 @@ public class SwerveSubsystem extends SubsystemBase
     ShuffleboardTab tab = Shuffleboard.getTab("Field");
     tab.add("Robot Position on Field", m_field);
     tab.add("Target Position on Field", m_targetField);
+
+    // Show current command on shuffleboard
+    tab.addString(
+      "Current Swerve Command",
+      () -> (this.getCurrentCommand() == null) ? "None"
+              : this.getCurrentCommand().getName());
   }
 
   public WheelTestContext getWheelTestContext() {
@@ -216,6 +225,11 @@ public class SwerveSubsystem extends SubsystemBase
           System.out.println("No vision target detected");
           return;
         }
+    
+        if (!m_isPathfinderWarmedUp) {
+          System.out.println("Pathfinder not warmed up yet!");
+          return;
+        }
         
         Pose2d rawTargetPose = m_vision.getAbsoluteTargetPose().toPose2d();
         Twist2d twistPose = new Twist2d(
@@ -241,9 +255,11 @@ public class SwerveSubsystem extends SubsystemBase
 
         System.out.println("Driving to alignment with AprilTag");
 
-        // $TODO - We should double-check if this is necessary, or is it covering-up
-        // any issue? 
-        driveToPose(targetPose).withTimeout(AlignRobotConstants.maxTimeSeconds).schedule();
+        Command alignCmd = driveToPose(targetPose)
+          .withTimeout(AlignRobotConstants.maxTimeSeconds)
+          .withName("AlignAprilTag");
+        
+        alignCmd.schedule();
       }
     );
   }
@@ -316,7 +332,19 @@ public class SwerveSubsystem extends SubsystemBase
 
     //Preload PathPlanner Path finding
     // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
-    PathfindingCommand.warmupCommand().schedule();
+    
+    // Run warmCommand, and then a command that sets m_isPathfinderWarmedUp to true.
+    // NOTE: We cant use RunOnce() to set m_isPathfinderWarmedUp, since it
+    // creates a dependency on the subsystem, and thus blocks the default comman d
+    // from running (which means we cant drive the robot until warmup would be complete).
+    Command warmCommand =
+      Commands.print("[--> START PATHFINDER WARMUP]")
+      .andThen(PathfindingCommand.warmupCommand())
+      .andThen(Commands.print("[--> *END* PATHFINDER WARMUP]"))
+      .andThen(new InstantCommand(() -> m_isPathfinderWarmedUp = true))
+      .ignoringDisable(true);
+
+    warmCommand.schedule();
   }
 
   // /**
@@ -608,7 +636,7 @@ public class SwerveSubsystem extends SubsystemBase
   {
     return run(() -> {
       swerveDrive.driveFieldOriented(velocity.get());
-    });
+    }).withName("DriveFieldOriented");
   }
 
   /**
