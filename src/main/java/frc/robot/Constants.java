@@ -129,7 +129,7 @@ public final class Constants
       /**
        * How much the robot should be offset from the April tag pose x direction.
       */
-      public static final double transformDrive = 0; // Was 0.5
+      public static final double transformDrive = 0.5; // Was 0.5
 
       public static final double coralOffset = (13.25 / 2) * 0.0254;
       public static final double outTakeOffset = (3.25) * 0.0254;

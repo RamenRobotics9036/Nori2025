@@ -247,7 +247,7 @@ public class SwerveSubsystem extends SubsystemBase
         Twist2d twistPose = new Twist2d(
           transformDrive,
           transformStrafe,
-          rawTargetPose.getRotation().getDegrees());
+          rawTargetPose.getRotation().getRadians());
         m_targetPose = rawTargetPose.exp(twistPose);
 
         m_targetPose = new Pose2d(

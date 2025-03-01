@@ -201,12 +201,12 @@ public class RobotContainer
     // A button aligns the robot using the AprilTag
     //m_driverController.a().onTrue(new AimAtLimeLightV2(m_swerveDrive));
     m_driverController.povLeft().onTrue(m_swerveDrive.alignWithAprilTagCommand(
-    AlignRobotConstants.transformLeftStrafe,
-    AlignRobotConstants.transformDrive
+    AlignRobotConstants.transformDrive,
+    AlignRobotConstants.transformLeftStrafe
   ));
     m_driverController.povRight().onTrue(m_swerveDrive.alignWithAprilTagCommand(
-      AlignRobotConstants.transformRightStrafe,
-      AlignRobotConstants.transformDrive
+      AlignRobotConstants.transformDrive,
+      AlignRobotConstants.transformRightStrafe
   ));
 
 
