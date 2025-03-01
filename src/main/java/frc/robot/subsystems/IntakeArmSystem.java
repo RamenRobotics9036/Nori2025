@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import org.dyn4j.exception.ValueOutOfRangeException;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -67,9 +65,9 @@ public class IntakeArmSystem extends SubsystemBase{
             m_armRelativeEncoder.setPosition(getArmAngle());
         }
 
-        if (!m_armEncoder.isConnected()) {
-            throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get());
-        }
+        // if (!m_armEncoder.isConnected()) {
+        //     throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get());
+        // }
         desiredAngle = getArmAngleRelative();
 
         initShuffleboard();
@@ -87,6 +85,7 @@ public class IntakeArmSystem extends SubsystemBase{
         tab.addDouble("Arm Relative Encoder", () -> getArmAngleRelative());
         tab.addDouble("Arm Encoder", () -> getArmAngle());
         tab.addDouble("Desired Angle", () -> desiredAngle);
+        tab.addBoolean("Encoder Is Connected", () -> m_armEncoder.isConnected());
   }
 
     public void setReference(double position) {
