@@ -12,6 +12,7 @@ import frc.robot.commands.ArmDefaultCommand;
 import frc.robot.commands.ElevatorToPositionCommand;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TestSwerveConstants;
+import frc.robot.Constants.CommandConstants.AlignRobotConstants;
 import frc.robot.commands.IntakeDefaultCommand;
 import frc.robot.commands.IntakeSpitCommand;
 import frc.robot.commands.OuttakeSpitCommand;
@@ -28,6 +29,8 @@ import frc.robot.util.CommandAppliedController;
 import swervelib.SwerveInputStream;
 
 import java.io.File;
+
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -116,6 +119,28 @@ public class RobotContainer
 
     m_swerveDrive.initShuffleboad();
     AutoLogic.initShuffleBoard();
+
+    NamedCommands.registerCommand("Set Arm Position To Bottom",  new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation));
+    NamedCommands.registerCommand("Set Arm Position To Top", new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
+    NamedCommands.registerCommand("Set Arm Position To L1", new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle));
+
+    NamedCommands.registerCommand("Dispense Intake Into Bucket", new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed));
+    NamedCommands.registerCommand("Shoot From Intake", new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
+
+    NamedCommands.registerCommand("Outtake from Bucket", new OuttakeSpitCommand(m_outtakeSystem));
+    NamedCommands.registerCommand("Align to April Tag Left Side",
+      m_swerveDrive.alignWithAprilTagCommand(
+      AlignRobotConstants.transformDrive,
+      AlignRobotConstants.transformLeftStrafe
+    ));
+    NamedCommands.registerCommand("Align to April Tag Right Side", m_swerveDrive.alignWithAprilTagCommand(
+    AlignRobotConstants.transformDrive,
+    AlignRobotConstants.transformRightStrafe
+  ));
+
+    NamedCommands.registerCommand("Set Elevator Position To Bottom", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
+    NamedCommands.registerCommand("Set Elevator Position To L2", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
+    NamedCommands.registerCommand("Set Elevator Position To L3", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
   }
   
   /**
@@ -149,14 +174,16 @@ public class RobotContainer
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
     m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
     if (m_armSystem != null) {
-      ArmDefaultCommand armDefaultCommand = new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY());
-      m_armSystem.setDefaultCommand(armDefaultCommand);
+      m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
+
       m_armController.povUp().onTrue(
-        new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation).andThen(
-          new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed)
+           new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation).alongWith(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition))
+          .andThen(
+            new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed)
         )
       );
       m_armController.povDown().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
+      m_armController.povRight().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle).andThen(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed)));
     }
   
   
@@ -172,7 +199,15 @@ public class RobotContainer
 
     // A button aligns the robot using the AprilTag
     //m_driverController.a().onTrue(new AimAtLimeLightV2(m_swerveDrive));
-    m_driverController.a().onTrue(m_swerveDrive.alignWithAprilTagCommand());
+    m_driverController.povLeft().onTrue(m_swerveDrive.alignWithAprilTagCommand(
+    AlignRobotConstants.transformDrive,
+    AlignRobotConstants.transformLeftStrafe
+  ));
+    m_driverController.povRight().onTrue(m_swerveDrive.alignWithAprilTagCommand(
+    AlignRobotConstants.transformDrive,
+    AlignRobotConstants.transformRightStrafe
+  ));
+
 
     // Command to spit out game pieces
     m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));

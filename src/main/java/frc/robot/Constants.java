@@ -5,8 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.config.PIDConstants;
-import com.revrobotics.spark.SparkMax;
-
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -18,8 +16,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import swervelib.math.Matter;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
@@ -43,7 +39,6 @@ public final class Constants
     public static final double kExpo = 4; //do not change this value
     public static final double kExpoRatio = 0.8; // change this 0..1 to add more exponential, 0 = no expo (linear)
     public static final double kDeadband = 0.07;
-    public static final Alliance kAlliance = (DriverStation.getAlliance().isPresent()) ? DriverStation.getAlliance().get() : Alliance.Red;
   }
   /**
    * Constants for the swerve system.
@@ -51,8 +46,8 @@ public final class Constants
   public static class SwerveConstants
   {
     // USe the directory matching the robot
-    public static final String  kJsonDirectory = "pancake";
-    // public static final String  kJsonDirectory = "nori";
+    // public static final String  kJsonDirectory = "pancake";
+    public static final String  kJsonDirectory = "nori";
     public static final double kMaxSpeedMetersPerSecond = 5.06;
     public static final double kRobotMass = Units.lbsToKilograms(120); // TODO: update
     public static final Matter kChassisMatter = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), kRobotMass); // TODO: update
@@ -129,12 +124,17 @@ public final class Constants
       /**
        * How much the robot should be offset from the April tag pose x direction.
       */
-      public static final double transformDrive = (OperatorConstants.kAlliance == Alliance.Red) ? 0.5 : 0.5;
+      public static final double transformDrive = 0.5;
+
+      public static final double coralOffset = (13.25 / 2) * 0.0254;
+      public static final double outTakeOffset = (3.25) * 0.0254;
 
       /**
        * How much the robot should be offset from the April tag pose y direction.
       */
-      public static final double transformStrafe = 0;
+      public static final double transformStrafe = 3.25 / 12; // 3.25 inches offset
+      public static final double transformLeftStrafe = -coralOffset - outTakeOffset;
+      public static final double transformRightStrafe = coralOffset - outTakeOffset;
     }
 
     public static final class AimAtLimeLightV2Constants {
@@ -163,6 +163,10 @@ public final class Constants
     public static final double kMaxOutputPercentage = 1.0;
     public static final int pullMotorGearBoxFactor= 4;
     public static final int loadMotorGearBoxFactor = 4;
+    public static final int kCanAndColorSensorAPort = 2;
+    public static final int kCanAndColorSensorBPort = 3;
+    public static final double canAndColorScalar = 10_000;
+    public static final double canAndColorThreshold = 0.3;
   }
 
   public static final class IntakeDefaultCommandConstants {
@@ -184,6 +188,7 @@ public final class Constants
     public static final double kArmGearBoxRatio = 125 * (44/30);
 
     public static final double kMaxArmRotation = 3.5;
+    public static final double L1ArmAngle = 0.8;
     public static final double kMinArmRotation = 0.7;
     
     public static final double kAbsoluteEncoderOffset = 0;
@@ -206,13 +211,16 @@ public final class Constants
     public static final double kRotationToElevatorRatio = (5.625 * 0.0254) / 9;
     //Physical limit is 43.75 in (1.1112 m)
     public static final double kMarginOfError = 0.06;
-    public static final double elevatorMaxSpeed = 0.2;
+    public static final double elevatorMaxSpeed = 0.3;
 
     public static final double kDownElevatorPosition = 0.0;
-    public static final double kMaxElevatorPosition = -0.4;
-    public static final double kLevel2ReefPosition = -0.2;
-    public static final double kLevel3ReefPosition = -0.35;
-    public static final double maxTime = 3;
+    public static final double kMaxElevatorPosition = -0.6;
+    public static final double kLevel2ReefPosition = -0.35;
+    //Tested with robot with 2024 bumpers, will need to adjust for new bumpers
+    public static final double kLevel3ReefPosition = -0.55;
+    //Tested with robot with 2024 bumpers, will need to adjust for new bumpers
+    public static final double maxTime = 8;
+    public static final double tolerance = 0.01;
   }
   
   public static final class OuttakeConstants {
@@ -225,6 +233,6 @@ public final class Constants
   public static final class OuttakeSpitCommandConstants {
     public static final int maxTime = 3;
     public static final double speed = 1.0;
-    public static final double numRotations = 40;
+    public static final double numRotations = 250;
   }
 }

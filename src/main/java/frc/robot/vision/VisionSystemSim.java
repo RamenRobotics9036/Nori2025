@@ -89,6 +89,7 @@ public class VisionSystemSim implements VisionSystemInterface {
         return fiducialId;
     }
 
+    // This method will return an empty Pose3d if theres no valid target.
     private Pose3d calcAbsoluteTargetPoseHelper() {
         Optional<PhotonTrackedTarget> result = m_visionSim.getBestTarget();
         if (result.isEmpty()) {
