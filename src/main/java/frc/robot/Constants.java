@@ -129,7 +129,7 @@ public final class Constants
       /**
        * How much the robot should be offset from the April tag pose x direction.
       */
-      public static final double transformDrive = 0.5; // Was 0.5
+      public static final double transformDrive = -0.5; // Was 0.5
 
       public static final double coralOffset = (13.25 / 2) * 0.0254;
       public static final double outTakeOffset = (3.25) * 0.0254;
@@ -138,8 +138,8 @@ public final class Constants
        * How much the robot should be offset from the April tag pose y direction.
       */
       public static final double transformStrafe = 3.25 / 12; // 3.25 inches offset
-      public static final double transformLeftStrafe = -coralOffset - outTakeOffset; // Was -coralOffset - outTakeOffset, -72
-      public static final double transformRightStrafe = coralOffset - outTakeOffset; // Was coralOffset - outTakeOffset, -18
+      public static final double transformRightStrafe = -coralOffset - outTakeOffset; // Was coralOffset - outTakeOffset, -18
+      public static final double transformLeftStrafe = transformRightStrafe + 0.2; // Was -coralOffset - outTakeOffset, -72
     }
 
     public static final class AimAtLimeLightV2Constants {
