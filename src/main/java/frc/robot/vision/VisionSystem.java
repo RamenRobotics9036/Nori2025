@@ -85,7 +85,7 @@ public class VisionSystem implements VisionSystemInterface {
 
     private Pose2d calcRobotPoseHelper() {
         if (isDetecting()) {
-            return LimelightHelpers.getBotPose2d_wpiBlue(VisionConstants.limelightName);
+            return LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.limelightName).pose;
         }
         return new Pose2d();
     }

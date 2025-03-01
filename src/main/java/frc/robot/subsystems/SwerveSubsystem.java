@@ -319,7 +319,7 @@ public class SwerveSubsystem extends SubsystemBase
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            return OperatorConstants.kAlliance == Alliance.Red;
+            return OperatorConstants.kAlliance.get() == Alliance.Red;
           },
           this
           // Reference to this subsystem to set requirements
@@ -725,7 +725,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   private boolean isRedAlliance()
   {
-    return OperatorConstants.kAlliance == DriverStation.Alliance.Red;
+    return OperatorConstants.kAlliance.get() == DriverStation.Alliance.Red;
   }
 
   /**
