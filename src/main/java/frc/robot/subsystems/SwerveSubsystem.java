@@ -86,6 +86,8 @@ public class SwerveSubsystem extends SubsystemBase
 
   private VisionSystemInterface m_vision = null;
 
+  private boolean isUsingSimVision;
+
   //
   // Simulated Vision
   //
@@ -141,10 +143,12 @@ public class SwerveSubsystem extends SubsystemBase
 
     if (!Robot.isSimulation()) {
       m_vision = new VisionSystem();
+      isUsingSimVision = false;
     }
     else {
       m_visionSim = new VisionSim();
       m_vision = new VisionSystemSim(m_visionSim);
+      isUsingSimVision = true;
     }
   }
 
@@ -154,6 +158,8 @@ public class SwerveSubsystem extends SubsystemBase
     tabVision.addDouble("TY", () -> m_vision.getTY());
     tabVision.addBoolean("Is Detecting", () -> m_vision.isDetecting());
     tabVision.addDouble("ID", () -> m_vision.getID());
+
+    tabVision.addBoolean("Is Using Sim Vision", () -> isUsingSimVision);
 
     tabVision.addDouble("Distance to target", () -> PhotonUtils.getDistanceToPose(
       m_vision.getRobotPose(),
