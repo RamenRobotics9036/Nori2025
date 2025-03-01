@@ -37,7 +37,7 @@ public final class Constants
     public static final int kDriverPort = 0;
     public static final int kArmPort = 1;
     public static final double kExpo = 4; //do not change this value
-    public static final double kExpoRatio = 0.8; // change this 0..1 to add more exponential, 0 = no expo (linear)
+    public static final double kExpoRatio = 0.5; // change this 0..1 to add more exponential, 0 = no expo (linear)
     public static final double kDeadband = 0.07;
   }
   /**
@@ -184,7 +184,7 @@ public final class Constants
   public static final class ArmConstants {
     public static final int kArmMotorID = 22;
     public static final double maxOutput = 1.0;
-    public static final int kArmEncoderID = 0;
+    public static final int kArmEncoderID = 9;
     public static final double kArmGearBoxRatio = 125 * (44/30);
 
     public static final double kMaxArmRotation = 3.5;
@@ -195,6 +195,7 @@ public final class Constants
     public static final int kcurrentLimit = 20;
     public static final double tolerance = 0.1;
     public static final double setArmMaxTime = 4;
+    public static final double algaePreset = 1.849222;
   }
 
   public static final class ArmDefaultCommandConstants {
@@ -206,12 +207,12 @@ public final class Constants
     public static final int kFollowMotorID = 31;
     public static final int kDIOIndex = 1; // TODO: placeholder
     public static final int kStallLimit = 20;
-    public static final double kMaxOutputPercentage = 0.4;
-    //Elevator moves 5.625 in (0.1429 m) per rotation of the sprocket, gear ratio of 9:1
-    public static final double kRotationToElevatorRatio = (5.625 * 0.0254) / 9;
+    public static final double kMaxOutputPercentage = 1;
+    //Elevator moves 5.625 in (0.1429 m) per rotation of the sprocket, gear ratio of 12:1
+    public static final double kRotationToElevatorRatio = (5.625 * 0.0254) / 12;
     //Physical limit is 43.75 in (1.1112 m)
     public static final double kMarginOfError = 0.06;
-    public static final double elevatorMaxSpeed = 0.3;
+    public static final double elevatorMaxSpeed = 1;
 
     public static final double kDownElevatorPosition = 0.0;
     public static final double kMaxElevatorPosition = -0.6;
