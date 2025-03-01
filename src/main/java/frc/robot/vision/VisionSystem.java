@@ -59,7 +59,7 @@ public class VisionSystem implements VisionSystemInterface {
 
     @Override
     public boolean isDetecting() {
-        return (getTX() + getTY() + getTA()) != 0;
+        return getTA() > 0.1;
     }
 
     @Override
