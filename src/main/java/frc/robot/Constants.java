@@ -115,7 +115,7 @@ public final class Constants
     }
 
     public static final class AlignRobotConstants {
-      public static final double maxTimeSeconds = 10;
+      public static final double maxTimeSeconds = 4;
       public static final double maxSpeed = 0.4;
       public static final double maxSpeedRot = 0.2;
 
@@ -127,7 +127,7 @@ public final class Constants
       /**
        * How much the robot should be offset from the April tag pose x direction.
       */
-      public static final double transformDrive = 0.5;
+      public static final double transformDrive = 77; // Was 0.5
 
       public static final double coralOffset = (13.25 / 2) * 0.0254;
       public static final double outTakeOffset = (3.25) * 0.0254;
@@ -136,8 +136,8 @@ public final class Constants
        * How much the robot should be offset from the April tag pose y direction.
       */
       public static final double transformStrafe = 3.25 / 12; // 3.25 inches offset
-      public static final double transformLeftStrafe = -coralOffset - outTakeOffset;
-      public static final double transformRightStrafe = coralOffset - outTakeOffset;
+      public static final double transformLeftStrafe = -69; // Was -coralOffset - outTakeOffset
+      public static final double transformRightStrafe = -70; // Was coralOffset - outTakeOffset
     }
 
     public static final class AimAtLimeLightV2Constants {
@@ -190,7 +190,7 @@ public final class Constants
     public static final int kArmEncoderID = 9;
     public static final double kArmGearBoxRatio = 125 * (44/30);
 
-    public static final double kMaxArmRotation = 3.7;
+    public static final double kMaxArmRotation = 1.6;
     public static final double L1ArmAngle = 0.8;
     public static final double kMinArmRotation = 0.9;
     
