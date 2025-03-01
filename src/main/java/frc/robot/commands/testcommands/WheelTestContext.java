@@ -83,6 +83,8 @@ public class WheelTestContext {
     }
 
     public void testSucceeded() {
+        System.out.println("Swerve test succeeded");
+
         m_testFailed = false;
         setAlertSucceeded();
     }

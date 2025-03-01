@@ -17,7 +17,7 @@ import frc.robot.commands.IntakeDefaultCommand;
 import frc.robot.commands.IntakeSpitCommand;
 import frc.robot.commands.OuttakeSpitCommand;
 import frc.robot.commands.SetArmToAngleCommand;
-import frc.robot.commands.testcommands.TestTurnWheel;
+import frc.robot.commands.testcommands.TestSanityChecks;
 import frc.robot.commands.testcommands.WheelTestContext;
 import frc.robot.subsystems.ElevatorSystem;
 import frc.robot.subsystems.IntakeArmSystem;
@@ -229,10 +229,11 @@ public class RobotContainer
   private Command testSequence() {
     return new SequentialCommandGroup(
         new InstantCommand(() -> m_swerveDrive.getWheelTestContext().reset()),
-        new TestTurnWheel(m_swerveDrive, "frontleft"),
-        new TestTurnWheel(m_swerveDrive, "frontright"),
-        new TestTurnWheel(m_swerveDrive, "backleft"),
-        new TestTurnWheel(m_swerveDrive, "backright"),
+        new TestSanityChecks(m_swerveDrive, "frontleft"),
+        new TestSanityChecks(m_swerveDrive, "frontright"),
+        new TestSanityChecks(m_swerveDrive, "backleft"),
+        new TestSanityChecks(m_swerveDrive, "backright"),
+
         new InstantCommand(() -> m_swerveDrive.getWheelTestContext().testSucceeded())
     );
   }
