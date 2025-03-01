@@ -391,10 +391,13 @@ public class SwerveSubsystem extends SubsystemBase
         swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
-    return AutoBuilder.pathfindToPose(
+    Command align =  AutoBuilder.pathfindToPose(
         pose,
         constraints,
         edu.wpi.first.units.Units.MetersPerSecond.of(0)); // Goal end velocity in meters/sec
+
+      align.addRequirements(this);
+      return align;
   }
 
   /**
@@ -680,6 +683,10 @@ public class SwerveSubsystem extends SubsystemBase
   public void zeroGyro()
   {
     swerveDrive.zeroGyro();
+  }
+
+  public void trueResetPose() {
+    swerveDrive.resetOdometry(m_vision.getRobotPose());
   }
 
   /**
