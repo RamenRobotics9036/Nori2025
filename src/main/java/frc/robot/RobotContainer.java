@@ -232,7 +232,8 @@ public class RobotContainer
         new TestTurnWheel(m_swerveDrive, "frontleft"),
         new TestTurnWheel(m_swerveDrive, "frontright"),
         new TestTurnWheel(m_swerveDrive, "backleft"),
-        new TestTurnWheel(m_swerveDrive, "backright")
+        new TestTurnWheel(m_swerveDrive, "backright"),
+        m_swerveDrive.sysIdDriveMotorCommand(), // $TODO - This is an experiment, remove
     );
   }
 
