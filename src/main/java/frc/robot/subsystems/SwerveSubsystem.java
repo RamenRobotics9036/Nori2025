@@ -80,6 +80,8 @@ public class SwerveSubsystem extends SubsystemBase
   private final boolean trackOdometry = true;
 
   private Field2d m_field = new Field2d();
+
+  private Pose2d m_targetPose = new Pose2d();
   
   // $TODO - We should see if we can achieve showing the target location on m_field, so
   // all the info is in one place.
@@ -169,6 +171,10 @@ public class SwerveSubsystem extends SubsystemBase
     tabVision.addDouble("Distance to target", () -> PhotonUtils.getDistanceToPose(
       m_vision.getRobotPose(),
       m_vision.getRelativeTargetPose().toPose2d()));
+    
+      tabVision.addDouble("Target Pose X", () -> m_targetPose.getX());
+      tabVision.addDouble("Target Pose Y", () -> m_targetPose.getX());
+      tabVision.addDouble("Target Pose Rot", () -> m_targetPose.getRotation().getDegrees());
 
     ShuffleboardTab tab = Shuffleboard.getTab("Field");
     tab.add("Robot Position on Field", m_field);
@@ -242,11 +248,11 @@ public class SwerveSubsystem extends SubsystemBase
           transformDrive,
           transformStrafe,
           rawTargetPose.getRotation().getDegrees());
-        Pose2d targetPose = rawTargetPose.exp(twistPose);
+        m_targetPose = rawTargetPose.exp(twistPose);
 
-        targetPose = new Pose2d(
-          targetPose.getX(),
-          targetPose.getY(),
+        m_targetPose = new Pose2d(
+          m_targetPose.getX(),
+          m_targetPose.getY(),
           Rotation2d.fromDegrees(rawTargetPose.getRotation().getDegrees() + 180)
         );
 
@@ -257,11 +263,11 @@ public class SwerveSubsystem extends SubsystemBase
         // systems estimation.
         swerveDrive.resetOdometry(m_vision.getRobotPose());
 
-        m_targetField.setRobotPose(targetPose);
+        m_targetField.setRobotPose(m_targetPose);
 
         System.out.println("Driving to alignment with AprilTag");
 
-        Command alignCmd = driveToPose(targetPose)
+        Command alignCmd = driveToPose(m_targetPose)
           .withTimeout(AlignRobotConstants.maxTimeSeconds)
           .withName("AlignAprilTag");
         
@@ -416,7 +422,7 @@ public class SwerveSubsystem extends SubsystemBase
   {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        swerveDrive.getMaximumChassisVelocity(), 4.0,
+        swerveDrive.getMaximumChassisVelocity(), 1.0,
         swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands

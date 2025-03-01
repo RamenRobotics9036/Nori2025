@@ -202,11 +202,11 @@ public class RobotContainer
     //m_driverController.a().onTrue(new AimAtLimeLightV2(m_swerveDrive));
     m_driverController.povLeft().onTrue(m_swerveDrive.alignWithAprilTagCommand(
     AlignRobotConstants.transformLeftStrafe,
-    0
+    AlignRobotConstants.transformDrive
   ));
     m_driverController.povRight().onTrue(m_swerveDrive.alignWithAprilTagCommand(
       AlignRobotConstants.transformRightStrafe,
-    0
+      AlignRobotConstants.transformDrive
   ));
 
 

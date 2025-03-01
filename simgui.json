@@ -5,6 +5,9 @@
         "header": {
           "open": true
         }
+      },
+      "window": {
+        "visible": false
       }
     }
   },
@@ -149,6 +152,12 @@
           }
         }
       },
+      "Shuffleboard": {
+        "Vision": {
+          "open": true
+        },
+        "open": true
+      },
       "SmartDashboard": {
         "VisionSystemSim-main": {
           "Sim Field": {
@@ -160,8 +169,7 @@
             }
           },
           "open": true
-        },
-        "open": true
+        }
       },
       "photonvision": {
         "YOUR CAMERA NAME": {
