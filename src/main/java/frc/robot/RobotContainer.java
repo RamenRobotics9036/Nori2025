@@ -211,7 +211,7 @@ public class RobotContainer
 
 
     // Command to spit out game pieces
-    m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
+    m_armController.a().whileTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
 
     m_armController.b().onTrue(new OuttakeSpitCommand(m_outtakeSystem));
 
