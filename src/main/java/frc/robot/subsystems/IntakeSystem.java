@@ -63,10 +63,10 @@ public class IntakeSystem extends SubsystemBase{
         m_canAndColorB.setMaxPeriod(1);
         m_canAndColorB.setSamplesToAverage(5);
 
-        initShuffleboad();
+        initShuffleboard();
     }
 
-    public void initShuffleboad() {
+    public void initShuffleboard() {
         ShuffleboardTab tab = Shuffleboard.getTab("Intake");
         tab.addDouble("Can Encoder A", this::getCanAndColorAPeriod);
         tab.addDouble("Can Encoder B", this::getCanAndColorBPeriod);

@@ -117,7 +117,7 @@ public class RobotContainer
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    m_swerveDrive.initShuffleboad();
+    m_swerveDrive.initShuffleboard();
     AutoLogic.initShuffleBoard();
 
     NamedCommands.registerCommand("Set Arm Position To Bottom",  new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation));

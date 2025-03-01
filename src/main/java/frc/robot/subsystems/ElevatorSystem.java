@@ -73,10 +73,10 @@ public class ElevatorSystem extends SubsystemBase{
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
 
-        initShuffleboad();
+        initShuffleboard();
     }
 
-    private void initShuffleboad(){
+    private void initShuffleboard(){
         ShuffleboardTab tab = Shuffleboard.getTab("Elevator");
         tab.addNumber("Desired Position", () ->  m_desiredPosition);
         tab.addNumber("Position", this::getPosition);
