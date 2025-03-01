@@ -219,6 +219,10 @@ public class RobotContainer
     m_armController.x().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
     m_armController.y().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
 
+    new Trigger(() -> (m_driverController.leftBumper().getAsBoolean() && m_swerveDrive.getVisionSystem().isDetecting())).onTrue(
+      Commands.runOnce(() -> m_swerveDrive.trueResetPose())
+    );
+
 
     // Test mode has (b) button triggering a test sequence
     if (TestSwerveConstants.kIsTestMode) {
