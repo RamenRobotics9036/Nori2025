@@ -90,7 +90,7 @@ public class IntakeArmSystem extends SubsystemBase{
 
     public void setReference(double position) {
         desiredAngle = position;
-        // m_armPIDController.setReference(position, ControlType.kPosition);
+        m_armPIDController.setReference(position, ControlType.kPosition);
     }
 
     //sets the speed of m_armMotor. Cannot exceed maxOutputPercentage
