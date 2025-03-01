@@ -171,14 +171,12 @@ public class SwerveSubsystem extends SubsystemBase
       "Current Swerve Command",
       () -> (this.getCurrentCommand() == null) ? "None"
               : this.getCurrentCommand().getName());
+
+    m_wheelTestContext.initShuffleboard();
   }
 
   public WheelTestContext getWheelTestContext() {
     return m_wheelTestContext;
-  }
-
-  public void cancelWheelTest() {
-    m_wheelTestContext.cancellableCommand.cancel();
   }
 
   @Override
