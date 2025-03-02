@@ -108,14 +108,6 @@ public final class Constants
   }
 
   public static final class CommandConstants {
-    public static final class AimAtLimeLightConstants {
-      public static final double maxTimeSeconds = 4;
-      public static final double kP = 0.01;
-      public static final double kI = 0.0;
-      public static final double kD = 0.0;
-      public static final double maxSpeed = 0.02;
-    }
-
     public static final class AlignRobotConstants {
       public static final double maxTimeSeconds = 10;
       public static final double maxSpeed = 0.4;
@@ -199,7 +191,7 @@ public final class Constants
     public static final double kAbsoluteEncoderOffset = 2.4;
     public static final int kcurrentLimit = 20;
     public static final double tolerance = 0.1;
-    public static final double setArmMaxTime = 4;
+    public static final double setArmMaxTime = 10;
     public static final double algaePreset = 1.849222;
   }
 

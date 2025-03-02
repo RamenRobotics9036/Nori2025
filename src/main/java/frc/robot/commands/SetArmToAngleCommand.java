@@ -30,7 +30,8 @@ public class SetArmToAngleCommand extends Command {
     @Override
     public boolean isFinished() {
         if (m_timer.get() > ArmConstants.setArmMaxTime) {
-
+            System.out.println("WARNING: SetArmToAngleCommand timed out!");
+            return true;
         }
         if (MathUtil.applyDeadband(m_desiredAngle - m_armSystem.getArmAngleRelative(), ArmConstants.tolerance) == 0) {
             return true;
