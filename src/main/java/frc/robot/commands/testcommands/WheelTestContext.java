@@ -67,6 +67,10 @@ public class WheelTestContext {
         setAlertCleared();
     }
 
+    public boolean getResult() {
+        return m_testFailed;
+    }
+
     public void cancelRunningTestWithError(String errorMsg) {
         m_testFailed = true;
 
