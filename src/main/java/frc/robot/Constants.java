@@ -188,7 +188,7 @@ public final class Constants
     public static final double L1ArmAngle = 0.8;
     public static final double kMinArmRotation = 0.9;
     
-    public static final double kAbsoluteEncoderOffset = 2.4;
+    public static final double kAbsoluteEncoderOffset = 2.2;
     public static final int kcurrentLimit = 20;
     public static final double tolerance = 0.1;
     public static final double setArmMaxTime = 10;

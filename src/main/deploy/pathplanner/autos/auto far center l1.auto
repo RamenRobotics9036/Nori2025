@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BarelyMovePath"
+            "pathName": "auto far center start to far center score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot From Intake"
           }
         }
       ]
