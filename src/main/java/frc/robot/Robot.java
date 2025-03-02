@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
     m_voltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/my/Voltage");
     m_canBusUtilizationLog = new DoubleLogEntry(DataLogManager.getLog(), "/my/CAN_Bus_Utilization");
 
-    DataLogManager.log("Logging enabled with canbus and NT!");
+    System.out.println("Logging enabled with canbus and NT!");
   }
 
   private void logCustomMetrics() {
