@@ -230,15 +230,18 @@ public class SwerveSubsystem extends SubsystemBase
         }
         
         Pose2d rawTargetPose = m_vision.getAbsoluteTargetPose().toPose2d();
+
+        // NOTE: The last parameter to Twist2d must be in RADIANS.  This
+        // fixed an important bug.
         Twist2d twistPose = new Twist2d(
           transformDrive,
           transformStrafe,
-          rawTargetPose.getRotation().getDegrees());
-        Pose2d targetPose = rawTargetPose.exp(twistPose);
+          rawTargetPose.getRotation().getRadians());
 
-        targetPose = new Pose2d(
-          targetPose.getX(),
-          targetPose.getY(),
+        Pose2d tempTargetPose = rawTargetPose.exp(twistPose);
+        Pose2d targetPose = new Pose2d(
+          tempTargetPose.getX(),
+          tempTargetPose.getY(),
           Rotation2d.fromDegrees(rawTargetPose.getRotation().getDegrees() + 180)
         );
 
