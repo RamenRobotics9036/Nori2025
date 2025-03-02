@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.VisionConstants;
 
 public class VisionSystem implements VisionSystemInterface {
@@ -23,7 +25,14 @@ public class VisionSystem implements VisionSystemInterface {
     // Constructor
     public VisionSystem() {
         // Empty
-        
+        initShuffleboad();
+    }
+
+    public void initShuffleboad() {
+        ShuffleboardTab tab = Shuffleboard.getTab("Vision");
+        tab.addDouble("Robot Pose X", () -> getRobotPose().getX());
+        tab.addDouble("Robot Pose Y", () -> getRobotPose().getY());
+        tab.addDouble("Robot Pose Rot", () -> getRobotPose().getRotation().getDegrees());
     }
 
     @Override
@@ -50,7 +59,7 @@ public class VisionSystem implements VisionSystemInterface {
 
     @Override
     public boolean isDetecting() {
-        return (getTX() + getTY() + getTA()) != 0;
+        return getTA() > 0.1;
     }
 
     @Override
@@ -76,7 +85,7 @@ public class VisionSystem implements VisionSystemInterface {
 
     private Pose2d calcRobotPoseHelper() {
         if (isDetecting()) {
-            return LimelightHelpers.getBotPose2d_wpiBlue(VisionConstants.limelightName);
+            return LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.limelightName).pose;
         }
         return new Pose2d();
     }

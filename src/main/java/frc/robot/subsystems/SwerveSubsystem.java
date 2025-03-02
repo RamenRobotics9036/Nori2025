@@ -28,6 +28,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -37,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.CommandConstants.AlignRobotConstants;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.commands.testcommands.WheelTestContext;
@@ -78,6 +80,8 @@ public class SwerveSubsystem extends SubsystemBase
   private final boolean trackOdometry = true;
 
   private Field2d m_field = new Field2d();
+
+  private Pose2d m_targetPose = new Pose2d();
   
   // $TODO - We should see if we can achieve showing the target location on m_field, so
   // all the info is in one place.
@@ -86,6 +90,8 @@ public class SwerveSubsystem extends SubsystemBase
   private WheelTestContext m_wheelTestContext = new WheelTestContext();
 
   private VisionSystemInterface m_vision = null;
+
+  private boolean isUsingSimVision;
 
   private boolean m_isPathfinderWarmedUp = false;
 
@@ -144,10 +150,12 @@ public class SwerveSubsystem extends SubsystemBase
 
     if (!Robot.isSimulation()) {
       m_vision = new VisionSystem();
+      isUsingSimVision = false;
     }
     else {
       m_visionSim = new VisionSim();
       m_vision = new VisionSystemSim(m_visionSim);
+      isUsingSimVision = true;
     }
   }
 
@@ -158,9 +166,15 @@ public class SwerveSubsystem extends SubsystemBase
     tabVision.addBoolean("Is Detecting", () -> m_vision.isDetecting());
     tabVision.addDouble("ID", () -> m_vision.getID());
 
+    tabVision.addBoolean("Is Using Sim Vision", () -> isUsingSimVision);
+
     tabVision.addDouble("Distance to target", () -> PhotonUtils.getDistanceToPose(
       m_vision.getRobotPose(),
       m_vision.getRelativeTargetPose().toPose2d()));
+    
+      tabVision.addDouble("Target Pose X", () -> m_targetPose.getX());
+      tabVision.addDouble("Target Pose Y", () -> m_targetPose.getX());
+      tabVision.addDouble("Target Pose Rot", () -> m_targetPose.getRotation().getDegrees());
 
     ShuffleboardTab tab = Shuffleboard.getTab("Field");
     tab.add("Robot Position on Field", m_field);
@@ -239,7 +253,7 @@ public class SwerveSubsystem extends SubsystemBase
           rawTargetPose.getRotation().getRadians());
 
         Pose2d tempTargetPose = rawTargetPose.exp(twistPose);
-        Pose2d targetPose = new Pose2d(
+        m_targetPose = new Pose2d(
           tempTargetPose.getX(),
           tempTargetPose.getY(),
           Rotation2d.fromDegrees(rawTargetPose.getRotation().getDegrees() + 180)
@@ -252,11 +266,11 @@ public class SwerveSubsystem extends SubsystemBase
         // systems estimation.
         swerveDrive.resetOdometry(m_vision.getRobotPose());
 
-        m_targetField.setRobotPose(targetPose);
+        m_targetField.setRobotPose(m_targetPose);
 
         System.out.println("Driving to alignment with AprilTag");
 
-        Command alignCmd = driveToPose(targetPose)
+        Command alignCmd = driveToPose(m_targetPose)
           .withTimeout(AlignRobotConstants.maxTimeSeconds)
           .withName("AlignAprilTag");
         
@@ -314,12 +328,7 @@ public class SwerveSubsystem extends SubsystemBase
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent())
-            {
-              return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
+            return OperatorConstants.kAlliance.get() == Alliance.Red;
           },
           this
           // Reference to this subsystem to set requirements
@@ -420,10 +429,13 @@ public class SwerveSubsystem extends SubsystemBase
         swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
-    return AutoBuilder.pathfindToPose(
+    Command align =  AutoBuilder.pathfindToPose(
         pose,
         constraints,
         edu.wpi.first.units.Units.MetersPerSecond.of(0)); // Goal end velocity in meters/sec
+
+      align.addRequirements(this);
+      return align;
   }
 
   /**
@@ -711,6 +723,10 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive.zeroGyro();
   }
 
+  public void trueResetPose() {
+    swerveDrive.resetOdometry(m_vision.getRobotPose());
+  }
+
   /**
    * Checks if the alliance is red, defaults to false if alliance isn't available.
    *
@@ -718,8 +734,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   private boolean isRedAlliance()
   {
-    var alliance = DriverStation.getAlliance();
-    return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
+    return OperatorConstants.kAlliance.get() == DriverStation.Alliance.Red;
   }
 
   /**
