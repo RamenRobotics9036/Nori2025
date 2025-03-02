@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -16,6 +18,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import swervelib.math.Matter;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
@@ -39,6 +43,7 @@ public final class Constants
     public static final double kExpo = 4; //do not change this value
     public static final double kExpoRatio = 0.5; // change this 0..1 to add more exponential, 0 = no expo (linear)
     public static final double kDeadband = 0.07;
+    public static final Supplier<Alliance> kAlliance = () -> (DriverStation.getAlliance().isPresent()) ? DriverStation.getAlliance().get() : Alliance.Red;
   }
   /**
    * Constants for the swerve system.
@@ -49,8 +54,8 @@ public final class Constants
     // public static final String  kJsonDirectory = "pancake";
     public static final String  kJsonDirectory = "nori";
     public static final double kMaxSpeedMetersPerSecond = 5.06;
-    public static final double kRobotMass = Units.lbsToKilograms(120); // TODO: update
-    public static final Matter kChassisMatter = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), kRobotMass); // TODO: update
+    public static final double kRobotMass = Units.lbsToKilograms(115); // TODO: update
+    public static final Matter kChassisMatter = new Matter(new Translation3d(0, 0, Units.inchesToMeters(7)), kRobotMass); // TODO: update
     public static final double kLoopTime = 0.13; //s, 20ms + 110ms sprk max velocity lag
   }
   /**
@@ -104,7 +109,7 @@ public final class Constants
 
   public static final class CommandConstants {
     public static final class AimAtLimeLightConstants {
-      public static final double maxTimeSeconds = 10;
+      public static final double maxTimeSeconds = 4;
       public static final double kP = 0.01;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
@@ -124,7 +129,7 @@ public final class Constants
       /**
        * How much the robot should be offset from the April tag pose x direction.
       */
-      public static final double transformDrive = 0.5;
+      public static final double transformDrive = 0.1; // Was 0.5
 
       public static final double coralOffset = (13.25 / 2) * 0.0254;
       public static final double outTakeOffset = (3.25) * 0.0254;
@@ -133,8 +138,8 @@ public final class Constants
        * How much the robot should be offset from the April tag pose y direction.
       */
       public static final double transformStrafe = 3.25 / 12; // 3.25 inches offset
-      public static final double transformLeftStrafe = -coralOffset - outTakeOffset;
-      public static final double transformRightStrafe = coralOffset - outTakeOffset;
+      public static final double transformLeftStrafe = -0.22 - 0.15; // Was coralOffset - outTakeOffset, -18
+      public static final double transformRightStrafe = -0.22 + 0.15; // Was -coralOffset - outTakeOffset, -72
     }
 
     public static final class AimAtLimeLightV2Constants {
@@ -187,11 +192,11 @@ public final class Constants
     public static final int kArmEncoderID = 9;
     public static final double kArmGearBoxRatio = 125 * (44/30);
 
-    public static final double kMaxArmRotation = 3.5;
+    public static final double kMaxArmRotation = 3.7;
     public static final double L1ArmAngle = 0.8;
-    public static final double kMinArmRotation = 0.7;
+    public static final double kMinArmRotation = 0.9;
     
-    public static final double kAbsoluteEncoderOffset = 0;
+    public static final double kAbsoluteEncoderOffset = 2.4;
     public static final int kcurrentLimit = 20;
     public static final double tolerance = 0.1;
     public static final double setArmMaxTime = 4;

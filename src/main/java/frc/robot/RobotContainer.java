@@ -205,19 +205,23 @@ public class RobotContainer
     AlignRobotConstants.transformLeftStrafe
   ));
     m_driverController.povRight().onTrue(m_swerveDrive.alignWithAprilTagCommand(
-    AlignRobotConstants.transformDrive,
-    AlignRobotConstants.transformRightStrafe
+      AlignRobotConstants.transformDrive,
+      AlignRobotConstants.transformRightStrafe
   ));
 
 
     // Command to spit out game pieces
-    m_armController.a().onTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
+    m_armController.a().whileTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
 
     m_armController.b().onTrue(new OuttakeSpitCommand(m_outtakeSystem));
 
     m_armController.povDown().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
     m_armController.x().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
     m_armController.y().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
+
+    new Trigger(() -> (m_driverController.leftBumper().getAsBoolean() && m_swerveDrive.getVisionSystem().isDetecting())).onTrue(
+      Commands.runOnce(() -> m_swerveDrive.trueResetPose())
+    );
 
 
     // Test mode has (b) button triggering a test sequence
