@@ -199,7 +199,7 @@ public final class Constants
     public static final double kAbsoluteEncoderOffset = 2.4;
     public static final int kcurrentLimit = 20;
     public static final double tolerance = 0.1;
-    public static final double setArmMaxTime = 4;
+    public static final double setArmMaxTime = 10;
     public static final double algaePreset = 1.849222;
   }
 
