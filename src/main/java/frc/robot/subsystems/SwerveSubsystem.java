@@ -91,6 +91,8 @@ public class SwerveSubsystem extends SubsystemBase
 
   private VisionSystemInterface m_vision = null;
 
+  private DetectHistory m_detectHistory = new DetectHistory();
+
   private boolean isUsingSimVision;
 
   private boolean m_isPathfinderWarmedUp = false;
@@ -200,12 +202,21 @@ public class SwerveSubsystem extends SubsystemBase
     if (trackOdometry)
     {
       swerveDrive.updateOdometry();
+
       if (m_vision.isDetecting()) {
+        // We constantly record the last N detections we had
+        Pose2d rawTargetPose = m_vision.getAbsoluteTargetPose().toPose2d();
+        Pose2d robotPose = m_vision.getRobotPose();
+        double ta = m_vision.getTA();
+        m_detectHistory.add(new DetectedValue(rawTargetPose, robotPose, ta));
+
         // $TODO - We originally thought that this call would update the swerve's location and
         // pose estimation whenever vision is detecting an apriltag.  We thought this would
         // help the swerve system adjust its own view of where the robot is on the field.
         // However, it doesnt seem to do that (otherwise when vision isdetecting, the robot
         // would slightly jump on the field).  So we should investigate this further.
+
+        // $TODO - Its possible this line is actually causing problems?
         swerveDrive.addVisionMeasurement(m_vision.getRobotPose(), DriverStation.getMatchTime());
       }
       m_field.setRobotPose(getPose());
@@ -243,7 +254,13 @@ public class SwerveSubsystem extends SubsystemBase
           return;
         }
         
-        Pose2d rawTargetPose = m_vision.getAbsoluteTargetPose().toPose2d();
+        DetectedValue best = m_detectHistory.getBestValue();
+        if (best == null) {
+          System.out.println("Although were detecting a target, the queue with the best values is UNEXPECTEDLY empty");
+          return;
+        }
+
+        Pose2d rawTargetPose = best.absoluteTargetPose;
 
         // NOTE: The last parameter to Twist2d must be in RADIANS.  This
         // fixed an important bug.
@@ -264,7 +281,7 @@ public class SwerveSubsystem extends SubsystemBase
         // instead the vision system's estimation of robot location and pose on the field
         // is much better.  So we reset the robot position on the field to the vision
         // systems estimation.
-        swerveDrive.resetOdometry(m_vision.getRobotPose());
+        swerveDrive.resetOdometry(best.robotPose);
 
         m_targetField.setRobotPose(m_targetPose);
 
