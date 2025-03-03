@@ -109,11 +109,12 @@ public class AutoLogic {
     return trajectory;
   }
 
-  public void addOptionToPicker(String autoName) {
+  public static void addOptionToPicker(String autoName) {
     autoPicker.addOption(autoName, autoName);
   }
 
   public static void addAutoOptions() {
     autoPicker.setDefaultOption("auto far center l1", "auto far center l1");
+    addOptionToPicker("auto lower l1");
   }
 }

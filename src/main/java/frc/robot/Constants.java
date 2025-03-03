@@ -51,8 +51,8 @@ public final class Constants
   public static class SwerveConstants
   {
     // USe the directory matching the robot
-    // public static final String  kJsonDirectory = "pancake";
-    public static final String  kJsonDirectory = "nori";
+    public static final String  kJsonDirectory = "pancake";
+    //public static final String  kJsonDirectory = "nori";
     public static final double kMaxSpeedMetersPerSecond = 5.06;
     public static final double kRobotMass = Units.lbsToKilograms(115); // TODO: update
     public static final Matter kChassisMatter = new Matter(new Translation3d(0, 0, Units.inchesToMeters(7)), kRobotMass); // TODO: update
