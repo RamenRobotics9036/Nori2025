@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "auto far center start to far center score"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "auto far center start to far center score"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Set Arm Position To L1"
+                }
+              }
+            ]
           }
         },
         {
