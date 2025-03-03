@@ -34,9 +34,14 @@
   "eventMarkers": [
     {
       "name": "Set Arm Position To L1",
-      "waypointRelativePos": 0.0023741690408357074,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Set Arm Position To L1"
+        }
+      }
     }
   ],
   "globalConstraints": {
