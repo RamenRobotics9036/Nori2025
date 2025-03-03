@@ -10,9 +10,11 @@ public class OuttakeSpitCommand extends Command {
     private OuttakeSystem m_outtake;
     private Timer m_timer = new Timer();
     private double m_startingRotations;
+    private double speed;
 
-    public OuttakeSpitCommand(OuttakeSystem outtake){
+    public OuttakeSpitCommand(OuttakeSystem outtake, double speed){
         m_outtake = outtake;
+        this.speed = speed;
         addRequirements(m_outtake);
     }
 
@@ -25,7 +27,7 @@ public class OuttakeSpitCommand extends Command {
     @Override
     public void execute(){
         // Reversed because spitting out
-        m_outtake.setMotorSpeeds(OuttakeSpitCommandConstants.speed);
+        m_outtake.setMotorSpeeds(speed);
     }
 
     @Override
