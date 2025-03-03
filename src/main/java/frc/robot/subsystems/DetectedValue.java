@@ -29,4 +29,18 @@ public class DetectedValue {
         ta = taIn;
         timeStamp = DriverStation.getMatchTime();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        DetectedValue other = (DetectedValue) obj;
+        return absoluteTargetPose.equals(other.absoluteTargetPose) &&
+               robotPose.equals(other.robotPose) &&
+               Double.compare(other.ta, ta) == 0;
+    }
 }
