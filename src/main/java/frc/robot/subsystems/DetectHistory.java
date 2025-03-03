@@ -25,7 +25,7 @@ class DetectHistory {
     }
 
     // Returns a DetectedValue if one found, otherwise null
-    private DetectedValue getItemWithSameTargetAndRobotPose(DetectedValue value) {
+    private DetectedValue getFirstItemWithSameTargetAndRobotPose(DetectedValue value) {
         // Note that we dont care if timestamp is different, we just check if it
         // describes the same target location
         for (DetectedValue detectedValueIter : m_detectedValues) {
@@ -39,7 +39,7 @@ class DetectHistory {
     }
 
     public void add(DetectedValue detectedValue) {
-        DetectedValue existingItem = getItemWithSameTargetAndRobotPose(detectedValue);
+        DetectedValue existingItem = getFirstItemWithSameTargetAndRobotPose(detectedValue);
         if (existingItem != null) {
             // Remove the existing item
             m_detectedValues.remove(existingItem);
