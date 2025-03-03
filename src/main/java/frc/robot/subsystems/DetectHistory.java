@@ -3,8 +3,11 @@ package frc.robot.subsystems;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 class DetectHistory {
     private static final int CAPACITY = 5;
+    private static final double LOOKBACK_SECONDS = 0.5;
     private Deque<DetectedValue> m_detectedValues = new ArrayDeque<>(CAPACITY);
 
     // Constructor
@@ -18,6 +21,7 @@ class DetectHistory {
         }
 
         m_detectedValues.addLast(detectedValue);
+        //System.out.println("Added vision item...");
     }
 
     // Returns a DetectedValue if one found, otherwise null
@@ -45,6 +49,12 @@ class DetectHistory {
         addToQueueEnd(detectedValue);
     }
 
+    private boolean isRecent(DetectedValue value) {
+        double timeDiff = DriverStation.getMatchTime() - value.timeStamp;
+
+        return timeDiff >= 0 && timeDiff <= LOOKBACK_SECONDS;
+    }
+
     // Returns null if none found
     public DetectedValue getBestValue() {
         if (m_detectedValues.size() == 0) {
@@ -54,7 +64,9 @@ class DetectHistory {
         // Print the queue, with index and ta value.  Use whitespace to align text
         int index = 0;
         for (DetectedValue iter : m_detectedValues) {
-            System.out.printf("Item %d: ta = %.2f\n", index, iter.ta);
+            if (isRecent(iter)) {
+                System.out.printf("Item %d: ta = %.2f\n", index, iter.ta);
+            }
             index++;
         }
 
@@ -63,10 +75,14 @@ class DetectHistory {
         int bestIndex = 0;
         index = 0;
         for (DetectedValue detectedValueIter : m_detectedValues) {
-            // All things being equal, we want the most recent item, so use <=
-            if (bestValue == null || detectedValueIter.ta >= bestValue.ta) {
-                bestValue = detectedValueIter;
-                bestIndex = index;
+            // We only allow values that are within ~0.5 a second
+            if (isRecent(detectedValueIter)) {
+
+                // All things being equal, we want the most recent item, so use <=
+                if (bestValue == null || detectedValueIter.ta >= bestValue.ta) {
+                    bestValue = detectedValueIter;
+                    bestIndex = index;
+                }
             }
 
             index++;
