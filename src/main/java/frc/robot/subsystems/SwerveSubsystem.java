@@ -162,33 +162,33 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
   public void initShuffleboard() {
-    ShuffleboardTab tabVision = Shuffleboard.getTab("Vision");
-    tabVision.addDouble("TX", () -> m_vision.getTX());
-    tabVision.addDouble("TY", () -> m_vision.getTY());
-    tabVision.addBoolean("Is Detecting", () -> m_vision.isDetecting());
-    tabVision.addDouble("ID", () -> m_vision.getID());
+//    ShuffleboardTab tabVision = Shuffleboard.getTab("Vision");
+ //   tabVision.addDouble("TX", () -> m_vision.getTX());
+  //  tabVision.addDouble("TY", () -> m_vision.getTY());
+  //  tabVision.addBoolean("Is Detecting", () -> m_vision.isDetecting());
+//    tabVision.addDouble("ID", () -> m_vision.getID());
 
-    tabVision.addBoolean("Is Using Sim Vision", () -> isUsingSimVision);
+ //   tabVision.addBoolean("Is Using Sim Vision", () -> isUsingSimVision);
 
-    tabVision.addDouble("Distance to target", () -> PhotonUtils.getDistanceToPose(
-      m_vision.getRobotPose(),
-      m_vision.getRelativeTargetPose().toPose2d()));
+   // tabVision.addDouble("Distance to target", () -> PhotonUtils.getDistanceToPose(
+ //     m_vision.getRobotPose(),
+ //     m_vision.getRelativeTargetPose().toPose2d()));
     
-      tabVision.addDouble("Target Pose X", () -> m_targetPose.getX());
-      tabVision.addDouble("Target Pose Y", () -> m_targetPose.getX());
-      tabVision.addDouble("Target Pose Rot", () -> m_targetPose.getRotation().getDegrees());
+ //     tabVision.addDouble("Target Pose X", () -> m_targetPose.getX());
+ //     tabVision.addDouble("Target Pose Y", () -> m_targetPose.getX());
+ //     tabVision.addDouble("Target Pose Rot", () -> m_targetPose.getRotation().getDegrees());
 
-    ShuffleboardTab tab = Shuffleboard.getTab("Field");
-    tab.add("Robot Position on Field", m_field);
-    tab.add("Target Position on Field", m_targetField);
+  //  ShuffleboardTab tab = Shuffleboard.getTab("Field");
+  //  tab.add("Robot Position on Field", m_field);
+  //  tab.add("Target Position on Field", m_targetField);
 
     // Show current command on shuffleboard
-    tab.addString(
-      "Current Swerve Command",
-      () -> (this.getCurrentCommand() == null) ? "None"
-              : this.getCurrentCommand().getName());
+   // tab.addString(
+   //   "Current Swerve Command",
+   ///   () -> (this.getCurrentCommand() == null) ? "None"
+    //          : this.getCurrentCommand().getName());
 
-    m_wheelTestContext.initShuffleboard();
+//    m_wheelTestContext.initShuffleboard();
   }
 
   public WheelTestContext getWheelTestContext() {
