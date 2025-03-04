@@ -19,12 +19,6 @@
                 "data": {
                   "name": "Set Arm Position To L1"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": null
-                }
               }
             ]
           }
@@ -77,6 +71,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot From Intake"
           }
         }
       ]
