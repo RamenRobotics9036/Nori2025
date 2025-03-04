@@ -174,18 +174,17 @@ public class RobotContainer
     
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
     m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
+
     if (m_armSystem != null) {
       m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
-
-      m_armController.rightTrigger().onTrue(
-           new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation).alongWith(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition))
-          .andThen(
-            new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed)
-        )
-      );
-      m_armController.rightBumper().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.algaePreset).andThen(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed)));
+      // Arm up
+      m_armController.rightTrigger().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation).
+           alongWith(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition)));
+      // Algae preset
+      m_armController.leftBumper().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.algaePreset).
+      andThen(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed)));
+      // Arm down
       m_armController.leftTrigger().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
-      m_armController.povRight().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle).andThen(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed)));
     }
   
   
@@ -213,14 +212,22 @@ public class RobotContainer
 
     // Command to spit out game pieces
     m_armController.a().whileTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
-
-    m_armController.b().whileTrue(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed));
-
-    m_armController.start().whileTrue(new OuttakeSpitCommand(m_outtakeSystem, -OuttakeSpitCommandConstants.speed));
-
-    m_armController.povDown().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
+    // Spit coral into outtake
+    m_armController.b().onTrue(new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed));
+    // L2 preset
     m_armController.x().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
+    // L3 Preset
     m_armController.y().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
+
+    // Elevator down
+    m_armController.povDown().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
+    // Outtake reverse
+    m_armController.povLeft().onTrue(new OuttakeSpitCommand(m_outtakeSystem, -OuttakeSpitCommandConstants.speed));
+    // Outtake coral
+    m_armController.povRight().onTrue(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed));
+    
+    // 
+    m_armController.start().whileTrue(new OuttakeSpitCommand(m_outtakeSystem, -OuttakeSpitCommandConstants.speed));
 
     new Trigger(() -> (m_driverController.leftBumper().getAsBoolean() && m_swerveDrive.getVisionSystem().isDetecting())).onTrue(
       Commands.runOnce(() -> m_swerveDrive.trueResetPose())
