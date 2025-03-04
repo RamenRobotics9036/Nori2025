@@ -16,21 +16,37 @@
     },
     {
       "anchor": {
-        "x": 1.1115,
-        "y": 1.3339999999999999
+        "x": 3.7342500000000003,
+        "y": 1.7142499999999996
       },
       "prevControl": {
-        "x": 1.4959999999999998,
-        "y": 1.4119999999999993
+        "x": 4.976468750000002,
+        "y": 2.140812499999999
+      },
+      "nextControl": {
+        "x": 2.4920312500000006,
+        "y": 1.2876875
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.0530000000000002,
+        "y": 1.24625
+      },
+      "prevControl": {
+        "x": 1.4374999999999996,
+        "y": 1.3242499999999995
       },
       "nextControl": null,
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "lower pickup"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.44776119402984493,
+      "waypointRelativePos": 0.9,
       "rotationDegrees": 29.999999999999996
     }
   ],
@@ -47,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 150.0
+    "rotation": 140.0
   },
   "reversed": false,
   "folder": null,

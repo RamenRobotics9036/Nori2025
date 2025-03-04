@@ -129,6 +129,9 @@ public class RobotContainer
     NamedCommands.registerCommand("Dispense Intake Into Bucket", new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed, true));
     NamedCommands.registerCommand("Shoot From Intake", new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true));
 
+    NamedCommands.registerCommand("Idle Intake", new IntakeDefaultCommand(m_intakeSystem).withTimeout(2));
+
+
     NamedCommands.registerCommand("Outtake from Bucket", new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed));
     NamedCommands.registerCommand("Align to April Tag Left Side",
       m_swerveDrive.alignWithAprilTagCommand(
@@ -143,6 +146,14 @@ public class RobotContainer
     NamedCommands.registerCommand("Set Elevator Position To Bottom", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
     NamedCommands.registerCommand("Set Elevator Position To L2", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
     NamedCommands.registerCommand("Set Elevator Position To L3", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
+  }
+
+  public void configureDefaultCommands() {
+    m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
+    m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
+    m_elevatorSystem.setDefaultCommand(new ElevatorDefaultCommand(m_elevatorSystem, () -> m_armController.getRightY()));
+
+    m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
   }
   
   /**
@@ -172,13 +183,8 @@ public class RobotContainer
 
 
     // this is field relative, right stick controls rotation around z axis
-    
-    m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
-    m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
-    m_elevatorSystem.setDefaultCommand(new ElevatorDefaultCommand(m_elevatorSystem, () -> m_armController.getRightY()));
-
+    configureDefaultCommands();
     if (m_armSystem != null) {
-      m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
       // Arm up
       m_armController.rightTrigger().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation).
            alongWith(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition)));
