@@ -96,7 +96,7 @@ class DetectHistory {
         }
 
         if (bestValue != null) {
-            System.out.printf("Picked item: %d (time: %.2f)%n", bestIndex, bestValue.getTimeStamp());
+            //System.out.printf("Picked item: %d (time: %.2f)%n", bestIndex, bestValue.getTimeStamp());
         }
 
         return bestValue;
