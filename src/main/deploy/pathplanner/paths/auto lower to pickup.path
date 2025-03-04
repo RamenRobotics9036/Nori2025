@@ -28,7 +28,12 @@
       "linkedName": "lower pickup"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.44776119402984493,
+      "rotationDegrees": 29.999999999999996
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -35.0
+    "rotation": 150.0
   },
   "reversed": false,
   "folder": null,

@@ -122,8 +122,8 @@ public class RobotContainer
     m_swerveDrive.initShuffleboard();
     AutoLogic.initShuffleBoard();
 
-    NamedCommands.registerCommand("Set Arm Position To Bottom",  new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation));
-    NamedCommands.registerCommand("Set Arm Position To Top", new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
+    NamedCommands.registerCommand("Set Arm Position To Bottom",  new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
+    NamedCommands.registerCommand("Set Arm Position To Top", new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation));
     NamedCommands.registerCommand("Set Arm Position To L1", new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle));
 
     NamedCommands.registerCommand("Dispense Intake Into Bucket", new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed, true));
