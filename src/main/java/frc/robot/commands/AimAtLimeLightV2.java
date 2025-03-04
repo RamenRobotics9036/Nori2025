@@ -120,7 +120,7 @@ public class AimAtLimeLightV2 extends Command {
         }
 
         if (m_timer.get() > AimAtLimeLightV2Constants.maxTimeSeconds) {
-            System.err.println("UNEXPECTED TIMEOUT TURNING!");
+            System.out.println("UNEXPECTED TIMEOUT TURNING!");
             return true;
         }
         // $TODO - Add this back

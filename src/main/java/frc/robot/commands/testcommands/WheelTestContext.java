@@ -74,13 +74,13 @@ public class WheelTestContext {
     public void cancelRunningTestWithError(String errorMsg) {
         m_testFailed = true;
 
-        System.err.println("Swerve test failed: " + errorMsg);
+        System.out.println("Swerve test failed: " + errorMsg);
 
         if (m_cancellableCommand != null) {
             m_cancellableCommand.cancel();
         }
         else {
-            System.err.println("Expected m_cancellableCommand to be set");
+            System.out.println("Expected m_cancellableCommand to be set");
         }
 
         setAlertFailed(errorMsg);

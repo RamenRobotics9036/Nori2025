@@ -30,7 +30,7 @@ public class ElevatorToPositionCommand extends Command{
     @Override
     public boolean isFinished(){
         if (m_timer.get() > ElevatorConstants.maxTime) {
-            System.err.println("WARNING: ElevatorToPositionCommand timed out!");
+            System.out.println("WARNING: ElevatorToPositionCommand timed out!");
             return true;
         }
         return MathUtil.applyDeadband(m_desiredPosition - m_elevator.getPosition(), ElevatorConstants.tolerance) == 0;

@@ -280,7 +280,7 @@ public class SwerveSubsystem extends SubsystemBase
         CommandAppliedController driverController =
           new CommandAppliedController(OperatorConstants.kDriverPort);
         if (driverController.a().getAsBoolean()) {
-          estimatedVisionTargetPosition = new Pose2d();
+          System.out.println("hi");
         }
 
         m_field.getObject("TargetPose").setPose(estimatedVisionTargetPosition);
@@ -334,13 +334,13 @@ public class SwerveSubsystem extends SubsystemBase
         }
     
         if (!m_isPathfinderWarmedUp) {
-          System.err.println("Pathfinder not warmed up yet!");
+          System.out.println("Pathfinder not warmed up yet!");
           return;
         }
         
         DetectedValue best = m_detectHistory.getBestValue();
         if (best == null) {
-          System.err.println("Although were detecting a target, the queue with the best values is UNEXPECTEDLY empty");
+          System.out.println("Although were detecting a target, the queue with the best values is UNEXPECTEDLY empty");
           return;
         }
 

@@ -34,12 +34,12 @@ public class OuttakeSpitCommand extends Command {
     public boolean isFinished(){
         //checks if command has been running for too long...
         // if (m_timer.get() > OuttakeSpitCommandConstants.maxTime) {
-        //     System.err.println("WARNING: OuttakeSpitCommand timed out!");
+        //     System.out.println("WARNING: OuttakeSpitCommand timed out!");
         //     return true;
         // }
         // //...or for too many rotations.
         // if (Math.abs((m_outtake.getLeaderPosition() - m_startingRotations)) / OuttakeConstants.motorGearRatio > OuttakeSpitCommandConstants.numRotations) {
-        //     System.err.println("WARNING: OuttakeSpitCommand ROTATED motor too many times!");
+        //     System.out.println("WARNING: OuttakeSpitCommand ROTATED motor too many times!");
         //     return true;
         // }
         return false;
