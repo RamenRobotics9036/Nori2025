@@ -104,7 +104,7 @@ public class IntakeSystem extends SubsystemBase{
 
     public boolean isHoldingCoral() {
         // Removed encoder B because not working.
-        return canAndColorAIsDetecting(); // || canAndColorBIsDetecting();
+        return canAndColorAIsDetecting() || canAndColorBIsDetecting();
     }
 
     //gets the speed of m_pullMotor

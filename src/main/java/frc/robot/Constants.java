@@ -163,7 +163,7 @@ public final class Constants
     public static final int kCanAndColorSensorAPort = 2;
     public static final int kCanAndColorSensorBPort = 3;
     public static final double canAndColorScalar = 10_000;
-    public static final double canAndColorThreshold = 0.3;
+    public static final double canAndColorThreshold = 0.5;
   }
 
   public static final class IntakeDefaultCommandConstants {
