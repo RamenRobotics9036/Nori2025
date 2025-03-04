@@ -241,7 +241,8 @@ public class SwerveSubsystem extends SubsystemBase
         Pose2d rawTargetPose = m_vision.getAbsoluteTargetPose().toPose2d();
         Pose2d robotPose = m_vision.getRobotPose();
         double ta = m_vision.getTA();
-        m_detectHistory.add(new DetectedValue(rawTargetPose, robotPose, ta));
+        DetectedValue detectedValue = m_detectHistory.createDetectedValue(rawTargetPose, robotPose, ta);
+        m_detectHistory.add(detectedValue);
 
         // $TODO - We originally thought that this call would update the swerve's location and
         // pose estimation whenever vision is detecting an apriltag.  We thought this would

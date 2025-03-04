@@ -8,32 +8,26 @@ import org.junit.jupiter.api.Test;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.subsystems.VisionHelpers.ClockFake;
+import frc.robot.subsystems.VisionHelpers.ClockInterface;
 import frc.robot.subsystems.VisionHelpers.DetectHistory;
 import frc.robot.subsystems.VisionHelpers.DetectedValue;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class DetectHistoryTest {
+    private ClockInterface m_clockFake;
     private DetectHistory m_detectHistory;
     private static final int kTestHistoryLen = 5;
     private static final double kTestLookbackSec = 0.5;
-    private double m_currentTime = 0.0;
 
     @BeforeEach
     void setup() {
-        m_currentTime = 0.0;
-        m_detectHistory = new DetectHistory(kTestHistoryLen, kTestLookbackSec);
-    }
-
-    // We use a fake clock, since using the real clock would make the tests
-    // non-deterministic.
-    private double getTestCurrentTime() {
-        double result = m_currentTime;
-
-        // Add a hundredth of a second
-        m_currentTime += 0.01;
-
-        return result;
+        m_clockFake = new ClockFake();
+        m_detectHistory = new DetectHistory(
+            kTestHistoryLen,
+            kTestLookbackSec,
+            m_clockFake);
     }
 
     //
@@ -43,67 +37,67 @@ class DetectHistoryTest {
     @Test
     void testNullTargetPoseShouldThrowException() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new DetectedValue(null, createSamplePose2d(), 0.5, getTestCurrentTime());
+            new DetectedValue(null, createSamplePose2d(), 0.5, 0.0);
         });
     }
 
     @Test
     void testNullRobotPoseShouldThrowException() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new DetectedValue(createSamplePose2d(), null, 0.5, getTestCurrentTime());
+            new DetectedValue(createSamplePose2d(), null, 0.5, 0.0);
         });
     }
 
     @Test
     void testEmptyTargetPoseShouldThrowException() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new DetectedValue(new Pose2d(), createSamplePose2d(), 0.5, getTestCurrentTime());
+            new DetectedValue(new Pose2d(), createSamplePose2d(), 0.5, 0.0);
         });
     }
 
     @Test
     void testEmptyRobotPoseShouldThrowException() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new DetectedValue(createSamplePose2d(), new Pose2d(), 0.5, getTestCurrentTime());
+            new DetectedValue(createSamplePose2d(), new Pose2d(), 0.5, 0.0);
         });
     }
 
     @Test
     void testTwoItemsShouldBeEqual() {
-        DetectedValue valueA = createDetectedValueA();
-        DetectedValue valueB = createDetectedValueA();
+        DetectedValue valueA = CreateDetectedValueHelperA();
+        DetectedValue valueB = CreateDetectedValueHelperA();
 
         assertEquals(valueA, valueB, "Expected values to be equal");
     }
 
     @Test
     void testTwoItemsDiffTargetPoseShouldNotBeEqual() {
-        DetectedValue valueA = createDetectedValue(1, 1, 1);
-        DetectedValue valueB = createDetectedValue(2, 1, 1);
+        DetectedValue valueA = CreateDetectedValueHelper(1, 1, 1);
+        DetectedValue valueB = CreateDetectedValueHelper(2, 1, 1);
 
         assertNotEquals(valueA, valueB, "Expected values to be different");
     }
 
     @Test
     void testTwoItemsDiffRobotPoseShouldNotBeEqual() {
-        DetectedValue valueA = createDetectedValue(1, 1, 1);
-        DetectedValue valueB = createDetectedValue(1, 2, 1);
+        DetectedValue valueA = CreateDetectedValueHelper(1, 1, 1);
+        DetectedValue valueB = CreateDetectedValueHelper(1, 2, 1);
 
         assertNotEquals(valueA, valueB, "Expected values to be different");
     }
 
     @Test
     void testTwoItemsDiffTaShouldNotBeEqual() {
-        DetectedValue valueA = createDetectedValue(1, 1, 1);
-        DetectedValue valueB = createDetectedValue(1, 1, 2);
+        DetectedValue valueA = CreateDetectedValueHelper(1, 1, 1);
+        DetectedValue valueB = CreateDetectedValueHelper(1, 1, 2);
 
         assertNotEquals(valueA, valueB, "Expected values to be different");
     }
 
     @Test
     void testTwoItemsWithDifferentTimeStampShouldBeEqual() {
-        DetectedValue valueA = createDetectedValueA();
-        DetectedValue valueB = createDetectedValueA();
+        DetectedValue valueA = CreateDetectedValueHelperA();
+        DetectedValue valueB = CreateDetectedValueHelperA();
 
         assertNotEquals(valueA.getTimeStamp(), valueB.getTimeStamp(), "Expected timestamps to be different");
         assertEquals(valueA, valueB, "Expected values to be equal");
@@ -121,7 +115,7 @@ class DetectHistoryTest {
 
     @Test
     void testGetBestEmpty() {
-        DetectedValue best = m_detectHistory.getBestValue(getTestCurrentTime());
+        DetectedValue best = m_detectHistory.getBestValue();
         assertNull(best, "Expected null when history is empty");
     }
 
@@ -129,7 +123,7 @@ class DetectHistoryTest {
         return new Pose2d(1.0, 2.0, new Rotation2d(Math.toRadians(90)));
     }
 
-    private DetectedValue createDetectedValue(
+    private DetectedValue CreateDetectedValueHelper(
         int multiplierTargetPose,
         int multiplierRobotPose,
         int multiplierTa,
@@ -142,84 +136,84 @@ class DetectHistoryTest {
             currentTime);
     }
 
-    private DetectedValue createDetectedValue(
+    private DetectedValue CreateDetectedValueHelper(
         int multiplierTargetPose,
         int multiplierRobotPose,
         int multiplierTa) {
     
-        return createDetectedValue(multiplierTargetPose, multiplierRobotPose, multiplierTa, getTestCurrentTime());
+        return CreateDetectedValueHelper(multiplierTargetPose, multiplierRobotPose, multiplierTa, m_clockFake.getTime());
     }
 
-    private DetectedValue createDetectedValueA() {
-        return createDetectedValue(2, 3, 4);
+    private DetectedValue CreateDetectedValueHelperA() {
+        return CreateDetectedValueHelper(2, 3, 4);
     }
 
     private DetectedValue createDetectedValueB() {
-        return createDetectedValue(5, 6, 7);
+        return CreateDetectedValueHelper(5, 6, 7);
     }
 
     private DetectedValue createDetectedValueC() {
-        return createDetectedValue(8, 9, 10);
+        return CreateDetectedValueHelper(8, 9, 10);
     }
 
     @Test
     void testGetBestSingleValueShouldSucceed() {
-        DetectedValue value = createDetectedValueA();
+        DetectedValue value = CreateDetectedValueHelperA();
         m_detectHistory.add(value);
 
-        DetectedValue best = m_detectHistory.getBestValue(getTestCurrentTime());
-        assertEquals(createDetectedValueA(), best, "Expected best value to be the only value in history");
+        DetectedValue best = m_detectHistory.getBestValue();
+        assertEquals(CreateDetectedValueHelperA(), best, "Expected best value to be the only value in history");
     }
 
     @Test
     void testGetBestValueShouldNotRemoveThatValue() {
-        DetectedValue value = createDetectedValueA();
+        DetectedValue value = CreateDetectedValueHelperA();
         m_detectHistory.add(value);
 
-        DetectedValue best = m_detectHistory.getBestValue(getTestCurrentTime());
-        assertEquals(createDetectedValueA(), best, "Expected best value to be the only value in history");
+        DetectedValue best = m_detectHistory.getBestValue();
+        assertEquals(CreateDetectedValueHelperA(), best, "Expected best value to be the only value in history");
         assertEquals(1, m_detectHistory.getSize(), "Expected size to be 1 after getBestValue()");
     }
 
     @Test
     void testReturnLastItemIfItHasHighestTa() {
-        DetectedValue valueA = createDetectedValue(1, 2, 1);
-        DetectedValue valueB = createDetectedValue(2, 3, 2);
-        DetectedValue valueC = createDetectedValue(4, 5, 3);
+        DetectedValue valueA = CreateDetectedValueHelper(1, 2, 1);
+        DetectedValue valueB = CreateDetectedValueHelper(2, 3, 2);
+        DetectedValue valueC = CreateDetectedValueHelper(4, 5, 3);
 
         m_detectHistory.add(valueA);
         m_detectHistory.add(valueB);
         m_detectHistory.add(valueC);
 
-        DetectedValue best = m_detectHistory.getBestValue(getTestCurrentTime());
+        DetectedValue best = m_detectHistory.getBestValue();
         assertEquals(valueC, best, "Expected best value to be the last value in history");
     }
 
     @Test
     void testReturnMiddleItemIfItHasHighestTa() {
-        DetectedValue valueA = createDetectedValue(1, 2, 1);
-        DetectedValue valueB = createDetectedValue(2, 3, 3);
-        DetectedValue valueC = createDetectedValue(4, 5, 2);
+        DetectedValue valueA = CreateDetectedValueHelper(1, 2, 1);
+        DetectedValue valueB = CreateDetectedValueHelper(2, 3, 3);
+        DetectedValue valueC = CreateDetectedValueHelper(4, 5, 2);
 
         m_detectHistory.add(valueA);
         m_detectHistory.add(valueB);
         m_detectHistory.add(valueC);
 
-        DetectedValue best = m_detectHistory.getBestValue(getTestCurrentTime());
+        DetectedValue best = m_detectHistory.getBestValue();
         assertEquals(valueB, best, "Expected best value to be the last value in history");
     }
 
     @Test
     void testReturnFirstItemIfItHasHighestTa() {
-        DetectedValue valueA = createDetectedValue(1, 2, 3);
-        DetectedValue valueB = createDetectedValue(2, 3, 1);
-        DetectedValue valueC = createDetectedValue(4, 5, 2);
+        DetectedValue valueA = CreateDetectedValueHelper(1, 2, 3);
+        DetectedValue valueB = CreateDetectedValueHelper(2, 3, 1);
+        DetectedValue valueC = CreateDetectedValueHelper(4, 5, 2);
 
         m_detectHistory.add(valueA);
         m_detectHistory.add(valueB);
         m_detectHistory.add(valueC);
 
-        DetectedValue best = m_detectHistory.getBestValue(getTestCurrentTime());
+        DetectedValue best = m_detectHistory.getBestValue();
         assertEquals(valueA, best, "Expected best value to be the last value in history");
     }
 
@@ -227,7 +221,7 @@ class DetectHistoryTest {
     void testGetSingleStaleItemShouldReturnNull() {
         double itemTime = 0.0;
         double queryTime = 1.0;
-        DetectedValue value = createDetectedValue(1, 1, 1, itemTime);
+        DetectedValue value = CreateDetectedValueHelper(1, 1, 1, itemTime);
         m_detectHistory.add(value);
 
         DetectedValue best = m_detectHistory.getBestValue(queryTime);
@@ -237,10 +231,10 @@ class DetectHistoryTest {
     @Test
     void testGetStaleFirstItemShouldReturnSecond() {
         // This first item has a BIGGER area (ta)
-        DetectedValue valueA = createDetectedValue(1, 2, 2, 0.5);
+        DetectedValue valueA = CreateDetectedValueHelper(1, 2, 2, 0.5);
         m_detectHistory.add(valueA);
 
-        DetectedValue valueB = createDetectedValue(2, 3, 1, 1.0);
+        DetectedValue valueB = CreateDetectedValueHelper(2, 3, 1, 1.0);
         m_detectHistory.add(valueB);
 
         DetectedValue best = m_detectHistory.getBestValue(1.1);
@@ -250,10 +244,10 @@ class DetectHistoryTest {
     @Test
     void testItemAtExactStaleTimeShouldBeReturned() {
         // This first item has a BIGGER area (ta)
-        DetectedValue valueA = createDetectedValue(1, 2, 2, 0.5);
+        DetectedValue valueA = CreateDetectedValueHelper(1, 2, 2, 0.5);
         m_detectHistory.add(valueA);
 
-        DetectedValue valueB = createDetectedValue(2, 3, 1, 1.0);
+        DetectedValue valueB = CreateDetectedValueHelper(2, 3, 1, 1.0);
         m_detectHistory.add(valueB);
 
         DetectedValue best = m_detectHistory.getBestValue(1.0);
@@ -262,57 +256,58 @@ class DetectHistoryTest {
 
     @Test
     void testMultipleItemsWithSameTaShouldReturnLast() {
-        DetectedValue valueA = createDetectedValue(1, 2, 5);
+        DetectedValue valueA = CreateDetectedValueHelper(1, 2, 5);
         m_detectHistory.add(valueA);
 
-        DetectedValue valueB = createDetectedValue(3, 4, 5);
+        DetectedValue valueB = CreateDetectedValueHelper(3, 4, 5);
         m_detectHistory.add(valueB);
 
-        DetectedValue valuC = createDetectedValue(5, 6, 4);
+        DetectedValue valuC = CreateDetectedValueHelper(5, 6, 4);
         m_detectHistory.add(valuC);
 
-        DetectedValue best = m_detectHistory.getBestValue(getTestCurrentTime());
+        DetectedValue best = m_detectHistory.getBestValue();
         assertEquals(valueB, best, "Expected best value to be the second value in history");
     }
 
     @Test
     void testAddingBeyondCapacityEvictsOldest() {
-        DetectHistory customDetectHistory = new DetectHistory(2, 0.5);
+        // Override the default size
+        m_detectHistory = new DetectHistory(2, 0.5, m_clockFake);
  
-        DetectedValue valueA = createDetectedValueA();
+        DetectedValue valueA = CreateDetectedValueHelperA();
         DetectedValue valueB = createDetectedValueB();
         DetectedValue valueC = createDetectedValueC();
 
-        customDetectHistory.add(valueA);
-        customDetectHistory.add(valueB);
-        customDetectHistory.add(valueC);
+        m_detectHistory.add(valueA);
+        m_detectHistory.add(valueB);
+        m_detectHistory.add(valueC);
 
-        assertEquals(2, customDetectHistory.getSize(), "Expected size to be 2 after adding 3 items");
-        assertEquals(valueC, customDetectHistory.getBestValue(getTestCurrentTime()), "Expected best value to be the last value in history");
+        assertEquals(2, m_detectHistory.getSize(), "Expected size to be 2 after adding 3 items");
+        assertEquals(valueC, m_detectHistory.getBestValue(), "Expected best value to be the last value in history");
     }
 
     @Test
     void testAddingItemAlreadyInListRemovesItAndAddsItWithNewTimestamp() {
-        DetectedValue valueA = createDetectedValue(1, 2, 5);
+        DetectedValue valueA = CreateDetectedValueHelper(1, 2, 5);
         m_detectHistory.add(valueA);
 
-        DetectedValue valueB = createDetectedValue(3, 4, 7);
+        DetectedValue valueB = CreateDetectedValueHelper(3, 4, 7);
         m_detectHistory.add(valueB);
 
-        DetectedValue valueC = createDetectedValue(5, 6, 5);
+        DetectedValue valueC = CreateDetectedValueHelper(5, 6, 5);
         m_detectHistory.add(valueC);
 
         // At this point, B should be the best as it has highest ta
-        DetectedValue best = m_detectHistory.getBestValue(getTestCurrentTime());
+        DetectedValue best = m_detectHistory.getBestValue();
         assertEquals(3, m_detectHistory.getSize(), "Expected size to be 3");
         assertEquals(valueB, best, "Expected best value to be valueB");
 
         // Now add a new item with same ta as B
-        DetectedValue valueD = createDetectedValue(3, 4, 7);
+        DetectedValue valueD = CreateDetectedValueHelper(3, 4, 7);
         m_detectHistory.add(valueD);
 
         // At this point, D should be the best as it has highest ta
-        best = m_detectHistory.getBestValue(getTestCurrentTime());
+        best = m_detectHistory.getBestValue();
         assertEquals(3, m_detectHistory.getSize(), "Expected size to be 3");
         assertEquals(valueD, best, "Expected best value to be valueD");
 

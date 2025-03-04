@@ -4,23 +4,37 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.Constants.VisionConstants;
 
 public class DetectHistory {
     private int m_capacity;
     private double m_lookbackSec;
+    private ClockInterface m_clock;
     private Deque<DetectedValue> m_detectedValues;
 
     // Constructor
-    public DetectHistory(int capacity, double lookback_sec) {
+    public DetectHistory(int capacity, double lookback_sec, ClockInterface clock) {
+        if (clock == null) {
+            throw new IllegalArgumentException("clock cannot be null");
+        }
+
         m_capacity = capacity;
         m_lookbackSec = lookback_sec;
+        m_clock = clock;
         m_detectedValues = new ArrayDeque<>(m_capacity);
     }
 
     public DetectHistory() {
-        this(VisionConstants.kHistoryLength, VisionConstants.kHistoryLookbackSec);
+        this(
+            VisionConstants.kHistoryLength,
+            VisionConstants.kHistoryLookbackSec,
+            new ClockReal());
+    }
+
+    // Factory for DetectedValue
+    public DetectedValue createDetectedValue(Pose2d absoluteTargetPoseIn, Pose2d robotPoseIn, double taIn) {
+        return new DetectedValue(absoluteTargetPoseIn, robotPoseIn, taIn, m_clock.getTime());
     }
 
     private void addToQueueEnd(DetectedValue detectedValue) {
@@ -103,6 +117,6 @@ public class DetectHistory {
     }
 
     public DetectedValue getBestValue() {
-        return getBestValue(Timer.getFPGATimestamp());
+        return getBestValue(m_clock.getTime());
     }
 }

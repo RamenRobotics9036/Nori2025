@@ -1,7 +1,6 @@
 package frc.robot.subsystems.VisionHelpers;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.Timer;
 
 public class DetectedValue {
     private Pose2d m_absoluteTargetPose;
@@ -29,10 +28,6 @@ public class DetectedValue {
         m_robotPose = robotPoseIn;
         m_ta = taIn;
         m_timeStamp = currentTime;
-    }
-
-    public DetectedValue(Pose2d absoluteTargetPoseIn, Pose2d robotPoseIn, double taIn) {
-        this(absoluteTargetPoseIn, robotPoseIn, taIn, Timer.getFPGATimestamp());
     }
 
     //
