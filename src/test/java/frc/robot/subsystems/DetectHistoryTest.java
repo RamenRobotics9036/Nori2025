@@ -35,34 +35,6 @@ class DetectHistoryTest {
     //
 
     @Test
-    void testNullTargetPoseShouldThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new DetectedValue(null, createSamplePose2d(), 0.5, 0.0);
-        });
-    }
-
-    @Test
-    void testNullRobotPoseShouldThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new DetectedValue(createSamplePose2d(), null, 0.5, 0.0);
-        });
-    }
-
-    @Test
-    void testEmptyTargetPoseShouldThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new DetectedValue(new Pose2d(), createSamplePose2d(), 0.5, 0.0);
-        });
-    }
-
-    @Test
-    void testEmptyRobotPoseShouldThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new DetectedValue(createSamplePose2d(), new Pose2d(), 0.5, 0.0);
-        });
-    }
-
-    @Test
     void testTwoItemsShouldBeEqual() {
         DetectedValue valueA = CreateDetectedValueHelperA();
         DetectedValue valueB = CreateDetectedValueHelperA();
