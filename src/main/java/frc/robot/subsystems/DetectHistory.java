@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
+
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.VisionConstants;
 
@@ -34,8 +36,8 @@ class DetectHistory {
         // Note that we dont care if timestamp is different, we just check if it
         // describes the same target location
         for (DetectedValue detectedValueIter : m_detectedValues) {
-            if (detectedValueIter.absoluteTargetPose.equals(value.absoluteTargetPose)
-                    && detectedValueIter.robotPose.equals(value.robotPose)) {
+            if (detectedValueIter.getAbsoluteTargetPose().equals(value.getAbsoluteTargetPose())
+                    && detectedValueIter.getRobotPose().equals(value.getRobotPose())) {
                 return detectedValueIter;
             }
         }
@@ -56,10 +58,14 @@ class DetectHistory {
 
     public int getSize() {
         return m_detectedValues.size();
+        }
+
+    public List<DetectedValue> getAsList() {
+        return List.copyOf(m_detectedValues);
     }
 
     private boolean isRecent(DetectedValue value, double currentTime) {
-        double timeDiff = currentTime - value.timeStamp;
+        double timeDiff = currentTime - value.getTimeStamp();
 
         return timeDiff >= 0 && timeDiff <= m_lookbackSec;
     }
@@ -80,7 +86,7 @@ class DetectHistory {
             if (isRecent(detectedValueIter, currentTime)) {
 
                 // All things being equal, we want the most recent item, so use <=
-                if (bestValue == null || detectedValueIter.ta >= bestValue.ta) {
+                if (bestValue == null || detectedValueIter.getTa() >= bestValue.getTa()) {
                     bestValue = detectedValueIter;
                     bestIndex = index;
                 }
@@ -90,7 +96,7 @@ class DetectHistory {
         }
 
         if (bestValue != null) {
-            System.out.printf("Picked item: %d (time: %.2f)%n", bestIndex, bestValue.timeStamp);
+            System.out.printf("Picked item: %d (time: %.2f)%n", bestIndex, bestValue.getTimeStamp());
         }
 
         return bestValue;

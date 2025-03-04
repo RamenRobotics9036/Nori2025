@@ -260,7 +260,7 @@ public class SwerveSubsystem extends SubsystemBase
           return;
         }
 
-        Pose2d rawTargetPose = best.absoluteTargetPose;
+        Pose2d rawTargetPose = best.getAbsoluteTargetPose();
 
         // NOTE: The last parameter to Twist2d must be in RADIANS.  This
         // fixed an important bug.
@@ -281,7 +281,7 @@ public class SwerveSubsystem extends SubsystemBase
         // instead the vision system's estimation of robot location and pose on the field
         // is much better.  So we reset the robot position on the field to the vision
         // systems estimation.
-        swerveDrive.resetOdometry(best.robotPose);
+        swerveDrive.resetOdometry(best.getRobotPose());
 
         m_targetField.setRobotPose(m_targetPose);
 

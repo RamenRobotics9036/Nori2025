@@ -4,13 +4,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Timer;
 
 public class DetectedValue {
-    public Pose2d absoluteTargetPose;
-    public Pose2d robotPose;
-    public double ta; // Area / confidence
-    public double timeStamp;
+    private Pose2d m_absoluteTargetPose;
+    private Pose2d m_robotPose;
+    private double m_ta; // Area / confidence
+    private double m_timeStamp;
 
     // Constructor
-    public DetectedValue(Pose2d absoluteTargetPoseIn, Pose2d robotPoseIn, double taIn) {
+    // For testing, ability to override 'now'
+    public DetectedValue(Pose2d absoluteTargetPoseIn, Pose2d robotPoseIn, double taIn, double currentTime) {
         if (absoluteTargetPoseIn == null) {
             throw new IllegalArgumentException("absoluteTargetPoseIn cannot be null");
         }
@@ -24,10 +25,34 @@ public class DetectedValue {
             throw new IllegalArgumentException("robotPoseIn cannot be zero");
         }
 
-        absoluteTargetPose = absoluteTargetPoseIn;
-        robotPose = robotPoseIn;
-        ta = taIn;
-        timeStamp = Timer.getFPGATimestamp();
+        m_absoluteTargetPose = absoluteTargetPoseIn;
+        m_robotPose = robotPoseIn;
+        m_ta = taIn;
+        m_timeStamp = currentTime;
+    }
+
+    public DetectedValue(Pose2d absoluteTargetPoseIn, Pose2d robotPoseIn, double taIn) {
+        this(absoluteTargetPoseIn, robotPoseIn, taIn, Timer.getFPGATimestamp());
+    }
+
+    //
+    // Getters
+    //
+
+    public Pose2d getAbsoluteTargetPose() {
+        return m_absoluteTargetPose;
+    }
+
+    public Pose2d getRobotPose() {
+        return m_robotPose;
+    }
+
+    public double getTa() {
+        return m_ta;
+    }
+
+    public double getTimeStamp() {
+        return m_timeStamp;
     }
 
     @Override
@@ -39,8 +64,8 @@ public class DetectedValue {
             return false;
         }
         DetectedValue other = (DetectedValue) obj;
-        return absoluteTargetPose.equals(other.absoluteTargetPose) &&
-               robotPose.equals(other.robotPose) &&
-               Double.compare(other.ta, ta) == 0;
+        return m_absoluteTargetPose.equals(other.m_absoluteTargetPose) &&
+               m_robotPose.equals(other.m_robotPose) &&
+               Double.compare(other.m_ta, m_ta) == 0;
     }
 }
