@@ -19,6 +19,7 @@ import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -220,6 +221,40 @@ public class SwerveSubsystem extends SubsystemBase
         swerveDrive.addVisionMeasurement(m_vision.getRobotPose(), DriverStation.getMatchTime());
       }
       m_field.setRobotPose(getPose());
+
+      // Lets show target on the field
+      if (m_vision.isDetecting()) {
+        // First, get the ACTUAL target position that is detected (no vision error here)
+        Pose3d absoluteTargetPose3d = m_vision.getAbsoluteTargetPose();
+        Pose2d absoluteTargetPose = absoluteTargetPose3d.toPose2d();
+
+        // Move the target pose forward by 1 meter in the direction it's pointing 
+        Translation2d offset = new Translation2d(1, 0).rotateBy(absoluteTargetPose.getRotation()); 
+        absoluteTargetPose = new Pose2d( 
+          absoluteTargetPose.getTranslation().plus(offset), 
+          absoluteTargetPose.getRotation().rotateBy(Rotation2d.fromDegrees(180))
+        );
+
+        // Get where the robot is based on VISION (it will jerk around)
+        Pose2d actualRobotPose = getPose();
+        Pose2d visionRobotPose = m_vision.getRobotPose();
+
+        // Everything so far has been in field coordinates.  Now I want the
+        // position of absoluteTargetPose in robot coordinates based on actualRobotPose.
+        Translation2d targetInRobotCoordinates = absoluteTargetPose.getTranslation().minus(actualRobotPose.getTranslation());
+        targetInRobotCoordinates = targetInRobotCoordinates.rotateBy(actualRobotPose.getRotation().unaryMinus());
+
+        // And apply that translation to visionRobotPose
+        Pose2d estimatedVisionDriveToPose = new Pose2d(
+          visionRobotPose.getTranslation().plus(targetInRobotCoordinates),
+          visionRobotPose.getRotation().rotateBy(absoluteTargetPose.getRotation().unaryMinus())
+        );
+
+        m_field.getObject("TargetPose").setPose(estimatedVisionDriveToPose);
+      }
+      else {
+        m_field.getObject("TargetPose").setPose(new Pose2d());
+      }
     }
   }
 
