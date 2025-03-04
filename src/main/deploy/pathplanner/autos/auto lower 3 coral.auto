@@ -78,6 +78,50 @@
           "data": {
             "name": "Shoot From Intake"
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "auto close lower to pickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Set Arm Position To Top"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "auto pickup to close lower"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Set Arm Position To L1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot From Intake"
+          }
         }
       ]
     }
