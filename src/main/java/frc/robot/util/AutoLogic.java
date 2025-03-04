@@ -116,5 +116,6 @@ public class AutoLogic {
   public static void addAutoOptions() {
     autoPicker.setDefaultOption("auto far center l1", "auto far center l1");
     addOptionToPicker("auto lower l1");
+    addOptionToPicker("auto lower 2 coral");
   }
 }

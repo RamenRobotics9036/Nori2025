@@ -24,6 +24,50 @@
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "auto lower to pickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Set Arm Position To Top"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "auto pickup to close lower"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Set Arm Position To L1"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Shoot From Intake"
