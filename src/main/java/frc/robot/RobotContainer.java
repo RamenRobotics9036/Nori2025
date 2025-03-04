@@ -99,10 +99,10 @@ public class RobotContainer
   Command m_driveFieldOrientedAngularVelocity = m_swerveDrive.driveFieldOriented(driveAngularVelocity);
 
 
-  private final IntakeSystem m_intakeSystem = new IntakeSystem();
-  private IntakeArmSystem m_armSystem = new IntakeArmSystem();
-  private final OuttakeSystem m_outtakeSystem = new OuttakeSystem();
-  private final ElevatorSystem m_elevatorSystem = new ElevatorSystem();
+  //private final IntakeSystem m_intakeSystem = new IntakeSystem();
+  //private IntakeArmSystem m_armSystem = new IntakeArmSystem();
+  //private final OuttakeSystem m_outtakeSystem = new OuttakeSystem();
+  //private final ElevatorSystem m_elevatorSystem = new ElevatorSystem();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -121,14 +121,14 @@ public class RobotContainer
     m_swerveDrive.initShuffleboard();
     AutoLogic.initShuffleBoard();
 
-    NamedCommands.registerCommand("Set Arm Position To Bottom",  new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation));
-    NamedCommands.registerCommand("Set Arm Position To Top", new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
-    NamedCommands.registerCommand("Set Arm Position To L1", new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle));
+    // NamedCommands.registerCommand("Set Arm Position To Bottom",  new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation));
+    // NamedCommands.registerCommand("Set Arm Position To Top", new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
+    // NamedCommands.registerCommand("Set Arm Position To L1", new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle));
 
-    NamedCommands.registerCommand("Dispense Intake Into Bucket", new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed));
-    NamedCommands.registerCommand("Shoot From Intake", new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
+    // NamedCommands.registerCommand("Dispense Intake Into Bucket", new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed));
+    // NamedCommands.registerCommand("Shoot From Intake", new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
 
-    NamedCommands.registerCommand("Outtake from Bucket", new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed));
+    // NamedCommands.registerCommand("Outtake from Bucket", new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed));
     NamedCommands.registerCommand("Align to April Tag Left Side",
       m_swerveDrive.alignWithAprilTagCommand(
       AlignRobotConstants.transformDrive,
@@ -139,9 +139,9 @@ public class RobotContainer
     AlignRobotConstants.transformRightStrafe
   ));
 
-    NamedCommands.registerCommand("Set Elevator Position To Bottom", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
-    NamedCommands.registerCommand("Set Elevator Position To L2", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
-    NamedCommands.registerCommand("Set Elevator Position To L3", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
+    // NamedCommands.registerCommand("Set Elevator Position To Bottom", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
+    // NamedCommands.registerCommand("Set Elevator Position To L2", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
+    // NamedCommands.registerCommand("Set Elevator Position To L3", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
   }
   
   /**
@@ -173,20 +173,20 @@ public class RobotContainer
     // this is field relative, right stick controls rotation around z axis
     
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
-    m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
-    if (m_armSystem != null) {
-      m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
+    // m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
+    // if (m_armSystem != null) {
+    //   m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
 
-      m_armController.rightTrigger().onTrue(
-           new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation).alongWith(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition))
-          .andThen(
-            new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed)
-        )
-      );
-      m_armController.rightBumper().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.algaePreset).andThen(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed)));
-      m_armController.leftTrigger().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
-      m_armController.povRight().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle).andThen(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed)));
-    }
+    //   m_armController.rightTrigger().onTrue(
+    //        new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation).alongWith(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition))
+    //       .andThen(
+    //         new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed)
+    //     )
+    //   );
+      // m_armController.rightBumper().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.algaePreset).andThen(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed)));
+      // m_armController.leftTrigger().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
+      // m_armController.povRight().onTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle).andThen(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed)));
+    //}
   
   
     //D-pad drives straight (no gyro) for tests
@@ -212,15 +212,15 @@ public class RobotContainer
 
 
     // Command to spit out game pieces
-    m_armController.a().whileTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
+    // m_armController.a().whileTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
 
-    m_armController.b().whileTrue(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed));
+    // m_armController.b().whileTrue(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed));
 
-    m_armController.start().whileTrue(new OuttakeSpitCommand(m_outtakeSystem, -OuttakeSpitCommandConstants.speed));
+    // m_armController.start().whileTrue(new OuttakeSpitCommand(m_outtakeSystem, -OuttakeSpitCommandConstants.speed));
 
-    m_armController.povDown().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
-    m_armController.x().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
-    m_armController.y().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
+    // m_armController.povDown().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
+    // m_armController.x().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
+    // m_armController.y().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
 
     new Trigger(() -> (m_driverController.leftBumper().getAsBoolean() && m_swerveDrive.getVisionSystem().isDetecting())).onTrue(
       Commands.runOnce(() -> m_swerveDrive.trueResetPose())
