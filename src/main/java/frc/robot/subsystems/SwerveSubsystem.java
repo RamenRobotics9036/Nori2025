@@ -202,6 +202,26 @@ public class SwerveSubsystem extends SubsystemBase
     Pose2d actualTargetPosition,
     Pose2d visionCalcRobotPosition) {
 
+    // Imagine that absoluteTargetPose is the actual position (a Pose2d) of the target on the field.
+    // actualRobotPose (a Pose2d) is the actual position of the robot on the field.
+    // visionRobotPose (a Pose2d) is the position that the robot THINKS its at based on an innacurate
+    // vision measurement it made to the target.
+    // Now, I want to drive the robot to the exact position of the target - where will the robot
+    // drive to since it THINKS its positioned at visionRobotPose?  It should be near the absoluteTargetPose
+    // on the field, but a little off since the robot is not actually where it thinks it is.  This
+    // slightly off position that we would drive to should be stored in estimatedVisionTargetPosition (a Pose2d).
+
+    // Compute the offset between actual and vision pose
+    double offsetX = actualRobotPosition.getX() - visionCalcRobotPosition.getX();
+    double offsetY = actualRobotPosition.getY() - visionCalcRobotPosition.getY();
+    double offsetTheta = actualRobotPosition.getRotation().getRadians() - visionCalcRobotPosition.getRotation().getRadians();
+
+    // Apply the offset to the absolute target pose
+    double estimatedX = actualTargetPosition.getX() + offsetX;
+    double estimatedY = actualTargetPosition.getY() + offsetY;
+    double estimatedTheta = actualTargetPosition.getRotation().getRadians() + offsetTheta;
+
+    return new Pose2d(estimatedX, estimatedY, new Rotation2d(estimatedTheta));
   }
 
   @Override
@@ -247,39 +267,27 @@ public class SwerveSubsystem extends SubsystemBase
         Pose2d actualRobotPose = getPose();
         Pose2d visionRobotPose = m_vision.getRobotPose();
 
-        // Imagine that absoluteTargetPose is the actual position (a Pose2d) of the target on the field.
-        // actualRobotPose (a Pose2d) is the actual position of the robot on the field.
-        // visionRobotPose (a Pose2d) is the position that the robot THINKS its at based on an innacurate
-        // vision measurement it made to the target.
-        // Now, I want to drive the robot to the exact position of the target - where will the robot
-        // drive to since it THINKS its positioned at visionRobotPose?  It should be near the absoluteTargetPose
-        // on the field, but a little off since the robot is not actually where it thinks it is.  This
-        // slightly off position that we would drive to should be stored in estimatedVisionTargetPosition (a Pose2d).
-
-        // Compute the offset between actual and vision pose
-        double offsetX = actualRobotPose.getX() - visionRobotPose.getX();
-        double offsetY = actualRobotPose.getY() - visionRobotPose.getY();
-        double offsetTheta = actualRobotPose.getRotation().getRadians() - visionRobotPose.getRotation().getRadians();
-
-        // Apply the offset to the absolute target pose
-        double estimatedX = absoluteTargetPose.getX() + offsetX;
-        double estimatedY = absoluteTargetPose.getY() + offsetY;
-        double estimatedTheta = absoluteTargetPose.getRotation().getRadians() + offsetTheta;
-
-        Pose2d estimatedVisionTargetPosition = new Pose2d(estimatedX, estimatedY, new Rotation2d(estimatedTheta));
+        Pose2d estimatedVisionTargetPosition = getEstimatedTargetPose(
+          actualRobotPose,
+          absoluteTargetPose,
+          visionRobotPose);
 
         m_field.getObject("TargetPose").setPose(estimatedVisionTargetPosition);
 
         DetectedValue best = m_detectHistory.getBestValue();
-        Pose2d bestGuess;
+        Pose2d bestGuessTarget;
         if (best != null) {
-          bestGuess = best.getRobotPose();
+          Pose2d bestGuessRobot = best.getRobotPose();
+          bestGuessTarget = getEstimatedTargetPose(
+            actualRobotPose,
+            absoluteTargetPose,
+            bestGuessRobot);
         }
         else {
-          bestGuess = new Pose2d();
+          bestGuessTarget = new Pose2d();
         }
 
-        m_field.getObject("BestGuess").setPose(bestGuess);
+        m_field.getObject("BestGuess").setPose(bestGuessTarget);
       }
       else {
         m_field.getObject("TargetPose").setPose(new Pose2d());
