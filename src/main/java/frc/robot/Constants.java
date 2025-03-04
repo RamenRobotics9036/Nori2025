@@ -42,7 +42,7 @@ public final class Constants
     public static final int kArmPort = 1;
     public static final double kExpo = 4; //do not change this value
     public static final double kExpoRatio = 0.5; // change this 0..1 to add more exponential, 0 = no expo (linear)
-    public static final double kDeadband = 0.07;
+    public static final double kDeadband = 0.035;
     public static final Supplier<Alliance> kAlliance = () -> (DriverStation.getAlliance().isPresent()) ? DriverStation.getAlliance().get() : Alliance.Red;
   }
   /**
@@ -51,8 +51,8 @@ public final class Constants
   public static class SwerveConstants
   {
     // USe the directory matching the robot
-    // public static final String  kJsonDirectory = "pancake";
-    public static final String  kJsonDirectory = "nori";
+    public static final String  kJsonDirectory = "pancake";
+    //public static final String  kJsonDirectory = "nori";
     public static final double kMaxSpeedMetersPerSecond = 5.06;
     public static final double kRobotMass = Units.lbsToKilograms(115); // TODO: update
     public static final Matter kChassisMatter = new Matter(new Translation3d(0, 0, Units.inchesToMeters(7)), kRobotMass); // TODO: update
@@ -121,7 +121,7 @@ public final class Constants
       /**
        * How much the robot should be offset from the April tag pose x direction.
       */
-      public static final double transformDrive = 0.1; // Was 0.5
+      public static final double transformDrive = 0.0; // Was 0.5
 
       public static final double coralOffset = (13.25 / 2) * 0.0254;
       public static final double outTakeOffset = (3.25) * 0.0254;
@@ -185,10 +185,10 @@ public final class Constants
     public static final double kArmGearBoxRatio = 125 * (44/30);
 
     public static final double kMaxArmRotation = 3.7;
-    public static final double L1ArmAngle = 0.8;
+    public static final double L1ArmAngle = 1.1;
     public static final double kMinArmRotation = 0.9;
     
-    public static final double kAbsoluteEncoderOffset = 2.4;
+    public static final double kAbsoluteEncoderOffset = 2.2;
     public static final int kcurrentLimit = 20;
     public static final double tolerance = 0.1;
     public static final double setArmMaxTime = 10;

@@ -109,11 +109,12 @@ public class AutoLogic {
     return trajectory;
   }
 
+  public static void addOptionToPicker(String autoName) {
+    autoPicker.addOption(autoName, autoName);
+  }
+
   public static void addAutoOptions() {
-    autoPicker.setDefaultOption(" 1 DEFAULT PATH", "Test Path");
-    //Call autoPicker.addOption() with the name being name in shuffleboard and object being the pathplanner path name
-    autoPicker.addOption(" 2 Test2", "Test2at");
-   
- 
+    autoPicker.setDefaultOption("auto far center l1", "auto far center l1");
+    addOptionToPicker("auto lower l1");
   }
 }

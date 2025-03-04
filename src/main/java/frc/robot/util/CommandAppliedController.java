@@ -28,7 +28,8 @@ public class CommandAppliedController extends CommandXboxController {
 
     private double adjust(double rawInput)
     {
-        return expo(MathUtil.applyDeadband(rawInput, OperatorConstants.kDeadband), m_controllerExponent);
+        double output = MathUtil.applyDeadband(rawInput, OperatorConstants.kDeadband);
+        return Math.signum(output) * Math.pow(output, 2);
     }
 
     /**
