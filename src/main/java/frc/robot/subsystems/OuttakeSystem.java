@@ -9,6 +9,8 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.OuttakeConstants;
 
@@ -33,6 +35,18 @@ public class OuttakeSystem extends SubsystemBase {
         m_outtakeSparkFlex.configure(sparkFlexConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
+
+        initShuffleboard();
+    }
+
+    public void initShuffleboard() {
+        ShuffleboardTab tab = Shuffleboard.getTab("Outtake");
+
+        // Show current command on shuffleboard
+        tab.addString(
+        "OuttakeSystem Command",
+        () -> (this.getCurrentCommand() == null) ? "None"
+                : this.getCurrentCommand().getName());
     }
 
     public void setMotorSpeeds(double speed) {

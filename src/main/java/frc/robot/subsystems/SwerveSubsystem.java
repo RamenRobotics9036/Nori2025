@@ -184,7 +184,7 @@ public class SwerveSubsystem extends SubsystemBase
 
     // Show current command on shuffleboard
     tab.addString(
-      "Current Swerve Command",
+      "Swerve Command",
       () -> (this.getCurrentCommand() == null) ? "None"
               : this.getCurrentCommand().getName());
 

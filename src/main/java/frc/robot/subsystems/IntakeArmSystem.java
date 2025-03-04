@@ -86,6 +86,12 @@ public class IntakeArmSystem extends SubsystemBase{
         tab.addDouble("Arm Encoder", () -> getArmAngle());
         tab.addDouble("Desired Angle", () -> desiredAngle);
         tab.addBoolean("Encoder Is Connected", () -> m_armEncoder.isConnected());
+
+        // Show current command on shuffleboard
+        tab.addString(
+        "IntakeArmSystem Command",
+        () -> (this.getCurrentCommand() == null) ? "None"
+                : this.getCurrentCommand().getName());
   }
 
     public void setReference(double position) {
