@@ -44,6 +44,8 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.commands.testcommands.WheelTestContext;
+import frc.robot.subsystems.VisionHelpers.DetectHistory;
+import frc.robot.subsystems.VisionHelpers.DetectedValue;
 import frc.robot.util.CommandAppliedController;
 import frc.robot.vision.VisionSim;
 import frc.robot.vision.VisionSystem;
