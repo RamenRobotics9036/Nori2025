@@ -169,7 +169,7 @@ public final class Constants
   public static final class IntakeDefaultCommandConstants {
     public static final double speed = 0.3;
     public static final double pullSpeed = 0.5;
-  }
+  } 
 
   public static final class IntakeSpitCommandConstants {
     public static final int maxTime = 3;
@@ -186,9 +186,9 @@ public final class Constants
 
     public static final double kMaxArmRotation = 3.7;
     public static final double L1ArmAngle = 1.1;
-    public static final double kMinArmRotation = 0.9;
+    public static final double kMinArmRotation = 0.8;
     
-    public static final double kAbsoluteEncoderOffset = 2.2;
+    public static final double kAbsoluteEncoderOffset = 2.0;
     public static final int kcurrentLimit = 20;
     public static final double tolerance = 0.1;
     public static final double setArmMaxTime = 10;
