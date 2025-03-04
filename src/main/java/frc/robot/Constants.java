@@ -85,6 +85,8 @@ public final class Constants
     public static final double allowedAngleUncertaintyDegrees = 0.5;
     public static final double allowedAngleUncertaintyMetersDrive = 0.05;
     public static final double allowedAngleUncertaintyMetersStrafe = 0.025;
+    public static final int kHistoryLength = 20;
+    public static final double kHistoryLookbackSec = 0.5;
 
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout =

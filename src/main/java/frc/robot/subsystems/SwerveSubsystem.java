@@ -19,7 +19,9 @@ import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -42,6 +44,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.commands.testcommands.WheelTestContext;
+import frc.robot.util.CommandAppliedController;
 import frc.robot.vision.VisionSim;
 import frc.robot.vision.VisionSystem;
 import frc.robot.vision.VisionSystemInterface;
@@ -90,6 +93,8 @@ public class SwerveSubsystem extends SubsystemBase
   private WheelTestContext m_wheelTestContext = new WheelTestContext();
 
   private VisionSystemInterface m_vision = null;
+
+  private DetectHistory m_detectHistory = new DetectHistory();
 
   private boolean isUsingSimVision;
 
@@ -194,6 +199,33 @@ public class SwerveSubsystem extends SubsystemBase
     return m_wheelTestContext;
   }
 
+  private Pose2d getEstimatedTargetPose(
+    Pose2d actualRobotPosition,
+    Pose2d actualTargetPosition,
+    Pose2d visionCalcRobotPosition) {
+
+    // Imagine that absoluteTargetPose is the actual position (a Pose2d) of the target on the field.
+    // actualRobotPose (a Pose2d) is the actual position of the robot on the field.
+    // visionRobotPose (a Pose2d) is the position that the robot THINKS its at based on an innacurate
+    // vision measurement it made to the target.
+    // Now, I want to drive the robot to the exact position of the target - where will the robot
+    // drive to since it THINKS its positioned at visionRobotPose?  It should be near the absoluteTargetPose
+    // on the field, but a little off since the robot is not actually where it thinks it is.  This
+    // slightly off position that we would drive to should be stored in estimatedVisionTargetPosition (a Pose2d).
+
+    // Compute the offset between actual and vision pose
+    double offsetX = actualRobotPosition.getX() - visionCalcRobotPosition.getX();
+    double offsetY = actualRobotPosition.getY() - visionCalcRobotPosition.getY();
+    double offsetTheta = actualRobotPosition.getRotation().getRadians() - visionCalcRobotPosition.getRotation().getRadians();
+
+    // Apply the offset to the absolute target pose
+    double estimatedX = actualTargetPosition.getX() + offsetX;
+    double estimatedY = actualTargetPosition.getY() + offsetY;
+    double estimatedTheta = actualTargetPosition.getRotation().getRadians() + offsetTheta;
+
+    return new Pose2d(estimatedX, estimatedY, new Rotation2d(estimatedTheta));
+  }
+
   @Override
   public void periodic()
   {
@@ -201,15 +233,74 @@ public class SwerveSubsystem extends SubsystemBase
     if (trackOdometry)
     {
       swerveDrive.updateOdometry();
+
       if (m_vision.isDetecting()) {
+        // We constantly record the last N detections we had
+        Pose2d rawTargetPose = m_vision.getAbsoluteTargetPose().toPose2d();
+        Pose2d robotPose = m_vision.getRobotPose();
+        double ta = m_vision.getTA();
+        m_detectHistory.add(new DetectedValue(rawTargetPose, robotPose, ta));
+
         // $TODO - We originally thought that this call would update the swerve's location and
         // pose estimation whenever vision is detecting an apriltag.  We thought this would
         // help the swerve system adjust its own view of where the robot is on the field.
         // However, it doesnt seem to do that (otherwise when vision isdetecting, the robot
         // would slightly jump on the field).  So we should investigate this further.
+
+        // $TODO - Its possible this line is actually causing problems?
         swerveDrive.addVisionMeasurement(m_vision.getRobotPose(), DriverStation.getMatchTime());
       }
       m_field.setRobotPose(getPose());
+
+      // Lets show target on the field
+      if (m_vision.isDetecting()) {
+        // First, get the ACTUAL target position that is detected (no vision error here)
+        Pose3d absoluteTargetPose3d = m_vision.getAbsoluteTargetPose();
+        Pose2d absoluteTargetPose = absoluteTargetPose3d.toPose2d();
+
+        // Move the target pose forward by 1 meter in the direction it's pointing 
+        Translation2d offset = new Translation2d(1, 0).rotateBy(absoluteTargetPose.getRotation()); 
+        absoluteTargetPose = new Pose2d( 
+          absoluteTargetPose.getTranslation().plus(offset), 
+          absoluteTargetPose.getRotation().rotateBy(Rotation2d.fromDegrees(180))
+        );
+
+        // Get where the robot is based on VISION (it will jerk around)
+        Pose2d actualRobotPose = getPose();
+        Pose2d visionRobotPose = m_vision.getRobotPose();
+
+        Pose2d estimatedVisionTargetPosition = getEstimatedTargetPose(
+          actualRobotPose,
+          absoluteTargetPose,
+          visionRobotPose);
+
+        CommandAppliedController driverController =
+          new CommandAppliedController(OperatorConstants.kDriverPort);
+        if (driverController.a().getAsBoolean()) {
+          estimatedVisionTargetPosition = new Pose2d();
+        }
+
+        m_field.getObject("TargetPose").setPose(estimatedVisionTargetPosition);
+
+        DetectedValue best = m_detectHistory.getBestValue();
+        Pose2d bestGuessTarget;
+        if (best != null) {
+          Pose2d bestGuessRobot = best.getRobotPose();
+          bestGuessTarget = getEstimatedTargetPose(
+            actualRobotPose,
+            absoluteTargetPose,
+            bestGuessRobot);
+        }
+        else {
+          bestGuessTarget = new Pose2d();
+        }
+
+        m_field.getObject("BestGuess").setPose(bestGuessTarget);
+      }
+      else {
+        m_field.getObject("TargetPose").setPose(new Pose2d());
+        m_field.getObject("BestGuess").setPose(new Pose2d());
+      }
     }
   }
 
@@ -244,7 +335,13 @@ public class SwerveSubsystem extends SubsystemBase
           return;
         }
         
-        Pose2d rawTargetPose = m_vision.getAbsoluteTargetPose().toPose2d();
+        DetectedValue best = m_detectHistory.getBestValue();
+        if (best == null) {
+          System.out.println("Although were detecting a target, the queue with the best values is UNEXPECTEDLY empty");
+          return;
+        }
+
+        Pose2d rawTargetPose = best.getAbsoluteTargetPose();
 
         // NOTE: The last parameter to Twist2d must be in RADIANS.  This
         // fixed an important bug.
@@ -265,7 +362,7 @@ public class SwerveSubsystem extends SubsystemBase
         // instead the vision system's estimation of robot location and pose on the field
         // is much better.  So we reset the robot position on the field to the vision
         // systems estimation.
-        swerveDrive.resetOdometry(m_vision.getRobotPose());
+        swerveDrive.resetOdometry(best.getRobotPose());
 
         m_targetField.setRobotPose(m_targetPose);
 
