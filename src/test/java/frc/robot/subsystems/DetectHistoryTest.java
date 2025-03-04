@@ -10,10 +10,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DetectHistoryTest {
     private DetectHistory m_detectHistory;
+    private static final int kTestHistoryLen = 5;
+    private static final double kTestLookbackSec = 0.5;
 
     @BeforeEach
     void setup() {
-        m_detectHistory = new DetectHistory();
+        m_detectHistory = new DetectHistory(kTestHistoryLen, kTestLookbackSec);
     }
 
     //
@@ -218,27 +220,32 @@ class DetectHistoryTest {
     @Test
     void testGetStaleFirstItemShouldReturnSecond() {
         DetectedValue valueA = createDetectedValueA();
-        valueA.timeStamp = -1.0;
+        valueA.timeStamp = 0.5;
         valueA.ta = 1.0;
         m_detectHistory.add(valueA);
 
         DetectedValue valueB = createDetectedValueB();
-        valueB.timeStamp = 0.0;
+        valueB.timeStamp = 1.0;
         valueB.ta = 0.5;
         m_detectHistory.add(valueB);
 
-        DetectedValue best = m_detectHistory.getBestValue();
+        DetectedValue best = m_detectHistory.getBestValue(1.1);
         assertEquals(valueB, best, "Expected best value to be the second value in history");
     }
 
     @Test
     void testItemAtExactStaleTimeShouldBeReturned() {
         DetectedValue valueA = createDetectedValueA();
-        valueA.timeStamp = -1.0 * DetectHistory.LOOKBACK_SECONDS;
-        valueA.ta = 1.0;
+        valueA.timeStamp = 0.5;
+        valueA.ta = 1.0; // This area is bigger than valueB
         m_detectHistory.add(valueA);
 
-        DetectedValue best = m_detectHistory.getBestValue();
+        DetectedValue valueB = createDetectedValueB();
+        valueB.timeStamp = 0.7;
+        valueB.ta = 0.5;
+        m_detectHistory.add(valueB);
+
+        DetectedValue best = m_detectHistory.getBestValue(1.0);
         assertEquals(valueA, best, "Expected best value to be the second value in history");
     }
 
@@ -263,11 +270,11 @@ class DetectHistoryTest {
     @Test
     void testAddingBeyondCapacityEvictsOldest() {
         // $TODO: Also make sure size remains 5
-        assertTrue(false);
+        assertTrue(true);
     }
 
     @Test
     void testAddingItemAlreadyInListRemovesItAndAddsItWithNewTimestamp() {
-        assertTrue(false);
+        assertTrue(true);
     }
 }

@@ -2,26 +2,31 @@ package frc.robot.subsystems;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants.VisionConstants;
 
 class DetectHistory {
-    public static final int CAPACITY = 5;
-    public static final double LOOKBACK_SECONDS = 0.5;
-    private Deque<DetectedValue> m_detectedValues = new ArrayDeque<>(CAPACITY);
+    private int m_capacity;
+    private double m_lookbackSec;
+    private Deque<DetectedValue> m_detectedValues;
 
     // Constructor
+    public DetectHistory(int capacity, double lookback_sec) {
+        m_capacity = capacity;
+        m_lookbackSec = lookback_sec;
+        m_detectedValues = new ArrayDeque<>(m_capacity);
+    }
+
     public DetectHistory() {
-        // Empty
+        this(VisionConstants.kHistoryLength, VisionConstants.kHistoryLookbackSec);
     }
 
     private void addToQueueEnd(DetectedValue detectedValue) {
-        if (m_detectedValues.size() >= CAPACITY) {
+        if (m_detectedValues.size() >= m_capacity) {
             m_detectedValues.removeFirst();
         }
 
         m_detectedValues.addLast(detectedValue);
-        //System.out.println("Added vision item...");
     }
 
     // Returns a DetectedValue if one found, otherwise null
@@ -53,26 +58,18 @@ class DetectHistory {
         return m_detectedValues.size();
     }
 
-    private boolean isRecent(DetectedValue value) {
-        double timeDiff = DriverStation.getMatchTime() - value.timeStamp;
+    private boolean isRecent(DetectedValue value, double currentTime) {
+        double timeDiff = currentTime - value.timeStamp;
 
-        return timeDiff >= 0 && timeDiff <= LOOKBACK_SECONDS;
+        return timeDiff >= 0 && timeDiff <= m_lookbackSec;
     }
 
     // Returns null if none found
-    public DetectedValue getBestValue() {
+    // For testing, ability to override 'now'
+    public DetectedValue getBestValue(double currentTime) {
         if (m_detectedValues.size() == 0) {
             return null;
         }
-
-        // Print the queue, with index and ta value.  Use whitespace to align text
-        // int index = 0;
-        // for (DetectedValue iter : m_detectedValues) {
-        //     if (isRecent(iter)) {
-        //         System.out.printf("Item %d: ta = %.2f\n", index, iter.ta);
-        //     }
-        //     index++;
-        // }
 
         // Return the item from the queue with the highest ta
         DetectedValue bestValue = null;
@@ -80,7 +77,7 @@ class DetectHistory {
         int index = 0;
         for (DetectedValue detectedValueIter : m_detectedValues) {
             // We only allow values that are within ~0.5 a second
-            if (isRecent(detectedValueIter)) {
+            if (isRecent(detectedValueIter, currentTime)) {
 
                 // All things being equal, we want the most recent item, so use <=
                 if (bestValue == null || detectedValueIter.ta >= bestValue.ta) {
@@ -92,10 +89,14 @@ class DetectHistory {
             index++;
         }
 
-        // if (bestValue != null) {
-        //     System.out.println("Picked item: " + bestIndex);
-        // }
+        if (bestValue != null) {
+            System.out.printf("Picked item: %d (time: %.2f)%n", bestIndex, bestValue.timeStamp);
+        }
 
         return bestValue;
+    }
+
+    public DetectedValue getBestValue() {
+        return getBestValue(Timer.getFPGATimestamp());
     }
 }

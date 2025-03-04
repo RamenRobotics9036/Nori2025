@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 
 public class DetectedValue {
     public Pose2d absoluteTargetPose;
@@ -27,7 +27,7 @@ public class DetectedValue {
         absoluteTargetPose = absoluteTargetPoseIn;
         robotPose = robotPoseIn;
         ta = taIn;
-        timeStamp = DriverStation.getMatchTime();
+        timeStamp = Timer.getFPGATimestamp();
     }
 
     @Override
