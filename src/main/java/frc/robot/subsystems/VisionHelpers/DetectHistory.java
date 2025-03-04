@@ -7,7 +7,7 @@ import java.util.List;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.VisionConstants;
 
-class DetectHistory {
+public class DetectHistory {
     private int m_capacity;
     private double m_lookbackSec;
     private Deque<DetectedValue> m_detectedValues;
