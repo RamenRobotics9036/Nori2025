@@ -125,7 +125,7 @@ public class TestTurnWheel extends Command {
                 + ", Max allowed time: " + TestSwerveConstants.maxTimeSeconds);
         }
         if (m_timer.get() > TestSwerveConstants.maxTimeSeconds) {
-            System.out.println("WARNING: TestTurnWheel timed out!");
+            System.err.println("WARNING: TestTurnWheel timed out!");
             return true;
         }
 

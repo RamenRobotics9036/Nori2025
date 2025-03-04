@@ -334,13 +334,13 @@ public class SwerveSubsystem extends SubsystemBase
         }
     
         if (!m_isPathfinderWarmedUp) {
-          System.out.println("Pathfinder not warmed up yet!");
+          System.err.println("Pathfinder not warmed up yet!");
           return;
         }
         
         DetectedValue best = m_detectHistory.getBestValue();
         if (best == null) {
-          System.out.println("Although were detecting a target, the queue with the best values is UNEXPECTEDLY empty");
+          System.err.println("Although were detecting a target, the queue with the best values is UNEXPECTEDLY empty");
           return;
         }
 

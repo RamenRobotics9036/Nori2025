@@ -35,12 +35,12 @@ public class IntakeSpitCommand extends Command {
     public boolean isFinished(){
         //checks if command has been running for too long...
         // if (m_timer.get() > IntakeSpitCommandConstants.maxTime) {
-        //     System.out.println("WARNING: IntakeSpitCommand timed out!");
+        //     System.err.println("WARNING: IntakeSpitCommand timed out!");
         //     return true;
         // }
         // //...or for too many rotations.
         // if (Math.abs((m_intake.getPullMotorPosition() - m_startingRotations)) / IntakeConstants.pullMotorGearBoxFactor > IntakeSpitCommandConstants.numRotations) {
-        //     System.out.println("WARNING: IntakeSpitCommand ROTATED motor too many times!");
+        //     System.err.println("WARNING: IntakeSpitCommand ROTATED motor too many times!");
         //     return true;
         // }
         return false;
