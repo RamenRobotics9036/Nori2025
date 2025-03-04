@@ -6,6 +6,7 @@ import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.util.Utils;
 
 public class DetectHistory {
     private int m_capacity;
@@ -16,7 +17,7 @@ public class DetectHistory {
     // Constructor
     public DetectHistory(int capacity, double lookback_sec, ClockInterface clock) {
         if (clock == null) {
-            throw new IllegalArgumentException("clock cannot be null");
+            Utils.throwGeneric("clock cannot be null");
         }
 
         m_capacity = capacity;

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.VisionHelpers;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.util.Utils;
 
 public class DetectedValue {
     private Pose2d m_absoluteTargetPose;
@@ -12,16 +13,16 @@ public class DetectedValue {
     // For testing, ability to override 'now'
     public DetectedValue(Pose2d absoluteTargetPoseIn, Pose2d robotPoseIn, double taIn, double currentTime) {
         if (absoluteTargetPoseIn == null) {
-            throw new IllegalArgumentException("absoluteTargetPoseIn cannot be null");
+            Utils.throwGeneric("absoluteTargetPoseIn cannot be null");
         }
         if (robotPoseIn == null) {
-            throw new IllegalArgumentException("robotPoseIn cannot be null");
+            Utils.throwGeneric("robotPoseIn cannot be null");
         }
         if (absoluteTargetPoseIn.equals(new Pose2d())) {
-            throw new IllegalArgumentException("absoluteTargetPoseIn cannot be zero");
+            Utils.throwGeneric("absoluteTargetPoseIn cannot be zero");
         }
         if (robotPoseIn.equals(new Pose2d())) {
-            throw new IllegalArgumentException("robotPoseIn cannot be zero");
+            Utils.throwGeneric("robotPoseIn cannot be zero");
         }
 
         m_absoluteTargetPose = absoluteTargetPoseIn;
