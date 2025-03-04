@@ -44,6 +44,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.commands.testcommands.WheelTestContext;
+import frc.robot.util.CommandAppliedController;
 import frc.robot.vision.VisionSim;
 import frc.robot.vision.VisionSystem;
 import frc.robot.vision.VisionSystemInterface;
@@ -271,6 +272,12 @@ public class SwerveSubsystem extends SubsystemBase
           actualRobotPose,
           absoluteTargetPose,
           visionRobotPose);
+
+        CommandAppliedController driverController =
+          new CommandAppliedController(OperatorConstants.kDriverPort);
+        if (driverController.a().getAsBoolean()) {
+          estimatedVisionTargetPosition = new Pose2d();
+        }
 
         m_field.getObject("TargetPose").setPose(estimatedVisionTargetPosition);
 
