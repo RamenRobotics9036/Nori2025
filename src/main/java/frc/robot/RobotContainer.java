@@ -41,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -129,7 +130,7 @@ public class RobotContainer
     NamedCommands.registerCommand("Dispense Intake Into Bucket", new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed, true));
     NamedCommands.registerCommand("Shoot From Intake", new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true));
 
-    NamedCommands.registerCommand("Idle Intake", new IntakeDefaultCommand(m_intakeSystem).withTimeout(2));
+    NamedCommands.registerCommand("Idle Intake", new IntakeDefaultCommand(m_intakeSystem).until(() -> m_intakeSystem.isHoldingCoral()).andThen(new WaitCommand(0.5)).withTimeout(2));
 
 
     NamedCommands.registerCommand("Outtake from Bucket", new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed));
@@ -150,7 +151,7 @@ public class RobotContainer
 
   public void configureDefaultCommands() {
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
-    m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
+    // m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
     m_elevatorSystem.setDefaultCommand(new ElevatorDefaultCommand(m_elevatorSystem, () -> m_armController.getRightY()));
 
     m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
