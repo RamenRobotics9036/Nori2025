@@ -21,6 +21,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -196,6 +197,13 @@ public class SwerveSubsystem extends SubsystemBase
     return m_wheelTestContext;
   }
 
+  private Pose2d getEstimatedTargetPose(
+    Pose2d actualRobotPosition,
+    Pose2d actualTargetPosition,
+    Pose2d visionCalcRobotPosition) {
+
+  }
+
   @Override
   public void periodic()
   {
@@ -239,21 +247,43 @@ public class SwerveSubsystem extends SubsystemBase
         Pose2d actualRobotPose = getPose();
         Pose2d visionRobotPose = m_vision.getRobotPose();
 
-        // Everything so far has been in field coordinates.  Now I want the
-        // position of absoluteTargetPose in robot coordinates based on actualRobotPose.
-        Translation2d targetInRobotCoordinates = absoluteTargetPose.getTranslation().minus(actualRobotPose.getTranslation());
-        targetInRobotCoordinates = targetInRobotCoordinates.rotateBy(actualRobotPose.getRotation().unaryMinus());
+        // Imagine that absoluteTargetPose is the actual position (a Pose2d) of the target on the field.
+        // actualRobotPose (a Pose2d) is the actual position of the robot on the field.
+        // visionRobotPose (a Pose2d) is the position that the robot THINKS its at based on an innacurate
+        // vision measurement it made to the target.
+        // Now, I want to drive the robot to the exact position of the target - where will the robot
+        // drive to since it THINKS its positioned at visionRobotPose?  It should be near the absoluteTargetPose
+        // on the field, but a little off since the robot is not actually where it thinks it is.  This
+        // slightly off position that we would drive to should be stored in estimatedVisionTargetPosition (a Pose2d).
 
-        // And apply that translation to visionRobotPose
-        Pose2d estimatedVisionDriveToPose = new Pose2d(
-          visionRobotPose.getTranslation().plus(targetInRobotCoordinates),
-          visionRobotPose.getRotation().rotateBy(absoluteTargetPose.getRotation().unaryMinus())
-        );
+        // Compute the offset between actual and vision pose
+        double offsetX = actualRobotPose.getX() - visionRobotPose.getX();
+        double offsetY = actualRobotPose.getY() - visionRobotPose.getY();
+        double offsetTheta = actualRobotPose.getRotation().getRadians() - visionRobotPose.getRotation().getRadians();
 
-        m_field.getObject("TargetPose").setPose(estimatedVisionDriveToPose);
+        // Apply the offset to the absolute target pose
+        double estimatedX = absoluteTargetPose.getX() + offsetX;
+        double estimatedY = absoluteTargetPose.getY() + offsetY;
+        double estimatedTheta = absoluteTargetPose.getRotation().getRadians() + offsetTheta;
+
+        Pose2d estimatedVisionTargetPosition = new Pose2d(estimatedX, estimatedY, new Rotation2d(estimatedTheta));
+
+        m_field.getObject("TargetPose").setPose(estimatedVisionTargetPosition);
+
+        DetectedValue best = m_detectHistory.getBestValue();
+        Pose2d bestGuess;
+        if (best != null) {
+          bestGuess = best.getRobotPose();
+        }
+        else {
+          bestGuess = new Pose2d();
+        }
+
+        m_field.getObject("BestGuess").setPose(bestGuess);
       }
       else {
         m_field.getObject("TargetPose").setPose(new Pose2d());
+        m_field.getObject("BestGuess").setPose(new Pose2d());
       }
     }
   }
