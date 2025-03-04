@@ -220,6 +220,11 @@ public final class Constants
     public static final double maxTime = 8;
     public static final double tolerance = 0.01;
   }
+
+  public static final class ElevatorDefaultCommandConstants{
+    // In centimeters
+    public static final double kElevatorSpeed = 0.5; //TODO: placeholder
+  }
   
   public static final class OuttakeConstants {
     public static final int sparkflexID = 32;
