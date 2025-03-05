@@ -17,6 +17,9 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
+
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -26,6 +29,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -136,7 +141,12 @@ public class SwerveSubsystem extends SubsystemBase
                                                                   new Pose2d(new Translation2d(Meter.of(1),
                                                                                                Meter.of(4)),
                                                                              Rotation2d.fromDegrees(0)));
-    } catch (Exception e)
+
+      // Define the standard deviations for vision measurements
+      Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1, 0.1); // Example values, adjust based on your vision system accuracy
+
+      swerveDrive.setVisionMeasurementStdDevs(visionMeasurementStdDevs);
+    } catch (Exception e) 
     {
       throw new RuntimeException(e);
     }
@@ -364,7 +374,9 @@ public class SwerveSubsystem extends SubsystemBase
         // instead the vision system's estimation of robot location and pose on the field
         // is much better.  So we reset the robot position on the field to the vision
         // systems estimation.
-        swerveDrive.resetOdometry(best.getRobotPose());
+        // Disabling this line now that we're correctly initializing the YAGSL SwerveDrive
+        // with StdDevs, so that it will use the VisionMeasurements we give it.
+        //swerveDrive.resetOdometry(m_vision.getRobotPose());
 
         m_targetField.setRobotPose(m_targetPose);
 
