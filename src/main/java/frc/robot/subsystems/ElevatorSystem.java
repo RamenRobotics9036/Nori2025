@@ -45,9 +45,9 @@ public class ElevatorSystem extends SubsystemBase{
     public ElevatorSystem() {
         ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig();
         closedLoopConfig
-            .p(2)
+            .p(4)
             .i(0)
-            .d(8);
+            .d(0);
         closedLoopConfig.positionWrappingEnabled(false);
         closedLoopConfig.outputRange(-ElevatorConstants.elevatorMaxSpeed, ElevatorConstants.elevatorMaxSpeed);
         //closedLoopConfig.minOutput();
