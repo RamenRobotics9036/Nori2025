@@ -78,6 +78,12 @@
           "data": {
             "name": "Shoot From Intake"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "auto close lower to pickup"
+          }
         }
       ]
     }
