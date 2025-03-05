@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "auto lower l1"
+                  "pathName": "auto upper l1"
                 }
               },
               {
@@ -36,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "auto lower to pickup"
+                  "pathName": "auto pickup to upper"
                 }
               },
               {
@@ -61,7 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "auto pickup to close lower"
+                  "pathName": "auto pickup to close upper"
                 }
               },
               {
