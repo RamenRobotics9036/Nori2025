@@ -119,9 +119,9 @@ public class IntakeArmSystem extends SubsystemBase{
     //     return m_armEncoder.getAbsolutePosition();
     // }
 
-    // public void resetArmAngle() {
-    //     m_armEncoder.reset();
-    // }
+    public void setArmAngle(double angle){
+        m_armRelativeEncoder.setPosition(angle);
+    }
 
     //stops everything
     public void stopSystem(){
