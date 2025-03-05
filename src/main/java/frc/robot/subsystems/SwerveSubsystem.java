@@ -107,6 +107,8 @@ public class SwerveSubsystem extends SubsystemBase
 
   private boolean m_isPathfinderWarmedUp = false;
 
+  private boolean m_useVisionOdometry = true;
+
   //
   // Simulated Vision
   //
@@ -264,7 +266,9 @@ public class SwerveSubsystem extends SubsystemBase
         if (best != null) {
             Pose2d bestGuessTarget = best.getRobotPose();
 
-            swerveDrive.addVisionMeasurement(bestGuessTarget, DriverStation.getMatchTime());
+            if (m_useVisionOdometry) {
+              swerveDrive.addVisionMeasurement(bestGuessTarget, DriverStation.getMatchTime());
+            }
         }
       }
       m_field.setRobotPose(getPose());
@@ -293,11 +297,14 @@ public class SwerveSubsystem extends SubsystemBase
 
         CommandAppliedController driverController =
           new CommandAppliedController(OperatorConstants.kDriverPort);
-        if (driverController.a().getAsBoolean()) {
-          System.out.println("hi");
-        }
+        boolean showRawTarget = !driverController.a().getAsBoolean();
 
-        m_field.getObject("TargetPose").setPose(estimatedVisionTargetPosition);
+        if (showRawTarget) {
+          m_field.getObject("TargetPose").setPose(estimatedVisionTargetPosition);
+        }
+        else {
+          m_field.getObject("TargetPose").setPose(new Pose2d());
+        }
 
         DetectedValue best = m_detectHistory.getBestValue();
         Pose2d bestGuessTarget;
@@ -362,17 +369,19 @@ public class SwerveSubsystem extends SubsystemBase
 
         // NOTE: The last parameter to Twist2d must be in RADIANS.  This
         // fixed an important bug.
-        Twist2d twistPose = new Twist2d(
-          transformDrive,
-          transformStrafe,
-          rawTargetPose.getRotation().getRadians());
 
-        Pose2d tempTargetPose = rawTargetPose.exp(twistPose);
-        m_targetPose = new Pose2d(
-          tempTargetPose.getX(),
-          tempTargetPose.getY(),
-          Rotation2d.fromDegrees(rawTargetPose.getRotation().getDegrees() + 180)
-        );
+        // Commenting this out.  For now, lets just try to center on the target for simplicity.
+        // Twist2d twistPose = new Twist2d(
+        //   transformDrive,
+        //   transformStrafe,
+        //   rawTargetPose.getRotation().getRadians());
+
+        // Pose2d tempTargetPose = rawTargetPose.exp(twistPose);
+        // m_targetPose = new Pose2d(
+        //   tempTargetPose.getX(),
+        //   tempTargetPose.getY(),
+        //   Rotation2d.fromDegrees(rawTargetPose.getRotation().getDegrees() + 180)
+        // );
 
         // Note: The idea here is that when we are aligning the robot based off of vision,
         // there's the possibility that the swerve pose on the field is innacurate, and
@@ -381,8 +390,18 @@ public class SwerveSubsystem extends SubsystemBase
         // systems estimation.
         // Disabling this line now that we're correctly initializing the YAGSL SwerveDrive
         // with StdDevs, so that it will use the VisionMeasurements we give it.
-        //swerveDrive.resetOdometry(m_vision.getRobotPose());
+        // $TODO - Bad.  At-least it's fixed now for using 'best' to get RobotPose.
+        if (!m_useVisionOdometry) {
+          swerveDrive.resetOdometry(best.getRobotPose());
+        }
 
+        // Move the target pose forward by 1 meter in the direction it's pointing 
+        Translation2d offset = new Translation2d(1, 0).rotateBy(rawTargetPose.getRotation()); 
+        m_targetPose = new Pose2d( 
+          rawTargetPose.getTranslation().plus(offset), 
+          rawTargetPose.getRotation().rotateBy(Rotation2d.fromDegrees(180))
+        );
+        
         m_targetField.setRobotPose(m_targetPose);
 
         System.out.println("Driving to alignment with AprilTag");
