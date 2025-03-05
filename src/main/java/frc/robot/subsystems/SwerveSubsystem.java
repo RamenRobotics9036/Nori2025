@@ -108,6 +108,10 @@ public class SwerveSubsystem extends SubsystemBase
   private boolean m_isPathfinderWarmedUp = false;
 
   private boolean m_useVisionOdometry = true;
+  private boolean m_useFakeVisionOdometryData = false;
+  private boolean m_setStdDevVision = false; // Doesnt seem to matter
+  private boolean m_useTwistCode = true;
+  private boolean m_exaggerateStrafe = true;
 
   //
   // Simulated Vision
@@ -145,9 +149,11 @@ public class SwerveSubsystem extends SubsystemBase
                                                                              Rotation2d.fromDegrees(0)));
 
       // Define the standard deviations for vision measurements
-      Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1, 0.1); // Example values, adjust based on your vision system accuracy
+      if (m_setStdDevVision) {
+        Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.01, 0.01, 0.01); // Example values, adjust based on your vision system accuracy
 
-      swerveDrive.setVisionMeasurementStdDevs(visionMeasurementStdDevs);
+        swerveDrive.setVisionMeasurementStdDevs(visionMeasurementStdDevs);
+      }
     } catch (Exception e) 
     {
       throw new RuntimeException(e);
@@ -267,7 +273,12 @@ public class SwerveSubsystem extends SubsystemBase
             Pose2d bestGuessTarget = best.getRobotPose();
 
             if (m_useVisionOdometry) {
-              swerveDrive.addVisionMeasurement(bestGuessTarget, DriverStation.getMatchTime());
+              if (m_useFakeVisionOdometryData) {
+                addFakeVisionReading();
+              }
+              else {
+                swerveDrive.addVisionMeasurement(bestGuessTarget, DriverStation.getMatchTime());
+              }
             }
         }
       }
@@ -279,7 +290,7 @@ public class SwerveSubsystem extends SubsystemBase
         Pose3d absoluteTargetPose3d = m_vision.getAbsoluteTargetPose();
         Pose2d absoluteTargetPose = absoluteTargetPose3d.toPose2d();
 
-        // Move the target pose forward by 1 meter in the direction it's pointing 
+        // Move the target pose forward by 1 meter in the direction it's pointing
         Translation2d offset = new Translation2d(1, 0).rotateBy(absoluteTargetPose.getRotation()); 
         absoluteTargetPose = new Pose2d( 
           absoluteTargetPose.getTranslation().plus(offset), 
@@ -370,18 +381,45 @@ public class SwerveSubsystem extends SubsystemBase
         // NOTE: The last parameter to Twist2d must be in RADIANS.  This
         // fixed an important bug.
 
-        // Commenting this out.  For now, lets just try to center on the target for simplicity.
-        // Twist2d twistPose = new Twist2d(
-        //   transformDrive,
-        //   transformStrafe,
-        //   rawTargetPose.getRotation().getRadians());
+        double finalTransformDrive = transformDrive;
+        double finalTransformStrafe = transformStrafe;
+        if (m_exaggerateStrafe) {
+          finalTransformDrive = 0;
+          finalTransformStrafe = -1;
+        }
 
-        // Pose2d tempTargetPose = rawTargetPose.exp(twistPose);
-        // m_targetPose = new Pose2d(
-        //   tempTargetPose.getX(),
-        //   tempTargetPose.getY(),
-        //   Rotation2d.fromDegrees(rawTargetPose.getRotation().getDegrees() + 180)
-        // );
+        if (m_useTwistCode) {
+          // Without rotation
+          Translation2d offset = new Translation2d(1, 0).rotateBy(rawTargetPose.getRotation()); 
+          rawTargetPose = new Pose2d( 
+            rawTargetPose.getTranslation().plus(offset), 
+            rawTargetPose.getRotation()
+          );
+
+          Twist2d twistPose = new Twist2d(
+            finalTransformDrive,
+            finalTransformStrafe,
+            rawTargetPose.getRotation().getRadians());
+
+          Pose2d tempTargetPose = rawTargetPose.exp(twistPose);
+
+          // Recalc rawTargetPose
+          m_targetPose = new Pose2d(
+            tempTargetPose.getX(),
+            tempTargetPose.getY(),
+            Rotation2d.fromDegrees(rawTargetPose.getRotation().getDegrees() + 180)
+          );
+        }
+        else {
+          // With rotation
+          Translation2d offset = new Translation2d(1, 0).rotateBy(rawTargetPose.getRotation()); 
+          rawTargetPose = new Pose2d( 
+            rawTargetPose.getTranslation().plus(offset), 
+            rawTargetPose.getRotation().rotateBy(Rotation2d.fromDegrees(180))
+          );
+  
+          m_targetPose = rawTargetPose;
+        }
 
         // Note: The idea here is that when we are aligning the robot based off of vision,
         // there's the possibility that the swerve pose on the field is innacurate, and
@@ -394,13 +432,6 @@ public class SwerveSubsystem extends SubsystemBase
         if (!m_useVisionOdometry) {
           swerveDrive.resetOdometry(best.getRobotPose());
         }
-
-        // Move the target pose forward by 1 meter in the direction it's pointing 
-        Translation2d offset = new Translation2d(1, 0).rotateBy(rawTargetPose.getRotation()); 
-        m_targetPose = new Pose2d( 
-          rawTargetPose.getTranslation().plus(offset), 
-          rawTargetPose.getRotation().rotateBy(Rotation2d.fromDegrees(180))
-        );
         
         m_targetField.setRobotPose(m_targetPose);
 
@@ -1014,10 +1045,10 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Add a fake vision reading for testing purposes.
    */
-  // public void addFakeVisionReading()
-  // {
-  //   swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
-  // }
+  public void addFakeVisionReading()
+  {
+    swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
+  }
 
   /**
    * Gets the swerve drive object.
