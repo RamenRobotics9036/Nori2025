@@ -209,7 +209,7 @@ public final class Constants
     public static final double kRotationToElevatorRatio = (5.625 * 0.0254) / 12;
     //Physical limit is 43.75 in (1.1112 m)
     public static final double kMarginOfError = 0.06;
-    public static final double elevatorMaxSpeed = 1;
+    public static final double elevatorMaxSpeed = 2.5;
 
     public static final double kDownElevatorPosition = 0.0;
     public static final double kMaxElevatorPosition = -0.6;
