@@ -43,6 +43,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.commands.testcommands.WheelTestContext;
+import frc.robot.util.AutoLogic;
 import frc.robot.vision.VisionSim;
 import frc.robot.vision.VisionSystem;
 import frc.robot.vision.VisionSystemInterface;
@@ -330,7 +331,7 @@ public class SwerveSubsystem extends SubsystemBase
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            return OperatorConstants.kAlliance.get() == Alliance.Red;
+            return (OperatorConstants.kAlliance.get() == Alliance.Red);
           },
           this
           // Reference to this subsystem to set requirements

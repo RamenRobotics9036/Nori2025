@@ -113,10 +113,19 @@ public class AutoLogic {
     autoPicker.addOption(autoName, autoName);
   }
 
+  public static String getSelectedName() {
+    return autoPicker.getSelected();
+  }
+
+  public static boolean selectedAutoIsMirror() {
+    return getSelectedName().startsWith("auto mirror");
+  }
+
   public static void addAutoOptions() {
     autoPicker.setDefaultOption("auto far center l1", "auto far center l1");
     addOptionToPicker("auto lower l1");
     addOptionToPicker("auto lower 2 coral");
     addOptionToPicker("auto lower 3 coral");
+    addOptionToPicker("auto mirror lower 2 coral");
   }
 }
