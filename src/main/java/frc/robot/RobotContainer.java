@@ -151,7 +151,7 @@ public class RobotContainer
 
   public void configureDefaultCommands() {
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
-    // m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
+    m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
     m_elevatorSystem.setDefaultCommand(new ElevatorDefaultCommand(m_elevatorSystem, () -> m_armController.getRightY()));
 
     m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
