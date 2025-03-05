@@ -260,7 +260,12 @@ public class SwerveSubsystem extends SubsystemBase
         // would slightly jump on the field).  So we should investigate this further.
 
         // $TODO - Its possible this line is actually causing problems?
-        swerveDrive.addVisionMeasurement(m_vision.getRobotPose(), DriverStation.getMatchTime());
+        DetectedValue best = m_detectHistory.getBestValue();
+        if (best != null) {
+            Pose2d bestGuessTarget = best.getRobotPose();
+
+            swerveDrive.addVisionMeasurement(bestGuessTarget, DriverStation.getMatchTime());
+        }
       }
       m_field.setRobotPose(getPose());
 
