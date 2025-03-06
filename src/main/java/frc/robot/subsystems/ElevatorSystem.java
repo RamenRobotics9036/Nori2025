@@ -67,7 +67,7 @@ public class ElevatorSystem extends SubsystemBase{
 
         m_followConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
         m_followConfig.smartCurrentLimit(IntakeConstants.kStallLimit);
-        m_followConfig.inverted(true);
+        m_followConfig.inverted(false);
         m_followConfig.follow(ElevatorConstants.kLeaderMotorID);
         m_followMotor.configure(m_followConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
