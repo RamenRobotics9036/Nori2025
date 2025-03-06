@@ -130,7 +130,7 @@ public class RobotContainer
     NamedCommands.registerCommand("Dispense Intake Into Bucket", new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed, true));
     NamedCommands.registerCommand("Shoot From Intake", new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true));
 
-    NamedCommands.registerCommand("Idle Intake", new IntakeDefaultCommand(m_intakeSystem).until(() -> m_intakeSystem.isHoldingCoral()).andThen(new WaitCommand(0.5)).withTimeout(2));
+    NamedCommands.registerCommand("Idle Intake", new IntakeDefaultCommand(m_intakeSystem).withTimeout(1));
 
 
     NamedCommands.registerCommand("Outtake from Bucket", new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed));
