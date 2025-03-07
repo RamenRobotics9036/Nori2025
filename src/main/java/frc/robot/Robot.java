@@ -6,8 +6,17 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+
 import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -28,6 +37,7 @@ public class Robot extends TimedRobot {
 
   private DoubleLogEntry m_voltageLog;
   private DoubleLogEntry m_canBusUtilizationLog;
+  private StringLogEntry m_commandsLog;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -44,6 +54,63 @@ public class Robot extends TimedRobot {
     enableLogging();
   }
 
+  private String getSimpleCommandName(Command command) {
+    String name = command.getName();
+    if (name == null || name.isEmpty()) {
+      return "[UNKNOWN]";
+    }
+
+    return "[" + name + "]";
+  }
+
+  private String getCommandDescription(Command command) {
+    StringBuilder sb = new StringBuilder();
+
+    String name = getSimpleCommandName(command);
+    sb.append(name);
+
+    Set<Subsystem> requirements = command.getRequirements();
+    if (requirements != null && !requirements.isEmpty()) {
+      sb.append(" (");
+      sb.append(requirements.stream()
+          .map(Subsystem::getName)
+          .collect(Collectors.joining(",")));
+      sb.append(")");
+    }
+
+    InterruptionBehavior cancelBehavior = command.getInterruptionBehavior();
+    if (cancelBehavior == InterruptionBehavior.kCancelIncoming) {
+      sb.append(" (cancels incoming)");
+    }
+
+    return sb.toString();
+  }
+
+  private void enableCommandSchedulerLogging() {
+    m_commandsLog = new StringLogEntry(DataLogManager.getLog(), "/my/CommandLog");
+
+    CommandScheduler.getInstance().onCommandInitialize(
+      command -> {
+        // Log when a command is initialized
+        m_commandsLog.append("Initialized: " + getCommandDescription(command));
+      });
+
+    CommandScheduler.getInstance().onCommandInterrupt(
+      (command, interruptingCommand) -> {
+        String message = "Interrupted: " + getCommandDescription(command);
+        if (interruptingCommand.isPresent()) {
+          message += " by " + getSimpleCommandName(interruptingCommand.get());
+        }
+        m_commandsLog.append(message);
+      });
+
+    CommandScheduler.getInstance().onCommandFinish(
+      command -> {
+        // Log when a command is finished
+        m_commandsLog.append("Finished: " + getCommandDescription(command));
+      });
+  }
+
   private void enableLogging() {
     // Enable logging of all NetworkTables data
     DataLogManager.logNetworkTables(true);
@@ -57,6 +124,8 @@ public class Robot extends TimedRobot {
     // Custom logging
     m_voltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/my/Voltage");
     m_canBusUtilizationLog = new DoubleLogEntry(DataLogManager.getLog(), "/my/CAN_Bus_Utilization");
+
+    enableCommandSchedulerLogging();
 
     System.out.println("Logging enabled with canbus and NT!");
   }
