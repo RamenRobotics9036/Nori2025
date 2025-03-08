@@ -747,7 +747,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public void zeroGyroWithAlliance()
   {
-    if (isRedAlliance())
+    if (!isRedAlliance())
     {
       zeroGyro();
       //Set the pose 180 degrees
