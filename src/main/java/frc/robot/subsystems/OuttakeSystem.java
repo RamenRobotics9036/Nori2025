@@ -36,7 +36,7 @@ public class OuttakeSystem extends SubsystemBase {
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
 
-        initShuffleboard();
+        // initShuffleboard();
     }
 
     public void initShuffleboard() {

@@ -63,7 +63,7 @@ public class IntakeSystem extends SubsystemBase{
         m_canAndColorB.setMaxPeriod(1);
         m_canAndColorB.setSamplesToAverage(5);
 
-        initShuffleboard();
+        // initShuffleboard();
     }
 
     public void initShuffleboard() {

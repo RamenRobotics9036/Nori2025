@@ -70,7 +70,7 @@ public class IntakeArmSystem extends SubsystemBase{
         // }
         desiredAngle = getArmAngleRelative();
 
-        initShuffleboard();
+        // initShuffleboard();
     }
 
     @Override

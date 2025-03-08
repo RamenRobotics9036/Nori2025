@@ -73,7 +73,7 @@ public class ElevatorSystem extends SubsystemBase{
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
 
-        initShuffleboard();
+        // initShuffleboard();
     }
 
     private void initShuffleboard(){
