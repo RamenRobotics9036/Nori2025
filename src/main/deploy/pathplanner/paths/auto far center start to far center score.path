@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 7.1,
-        "y": 7.5
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.35,
-        "y": 7.5
+        "y": 4.0
       },
       "isLocked": false,
-      "linkedName": "far center start"
+      "linkedName": null
     },
     {
       "anchor": {
         "x": 5.303999999999999,
-        "y": 5.34125
+        "y": 4.0
       },
       "prevControl": {
         "x": 5.053999999999817,
-        "y": 5.34125
+        "y": 4.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "far center score"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
