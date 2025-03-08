@@ -174,7 +174,7 @@ public final class Constants
   public static final class IntakeSpitCommandConstants {
     public static final int maxTime = 3;
     public static final double speed = 0.8;
-    public static final double numRotations = 15;
+    public static final double numRotations = 30;
     public static final double bucketSpeed = 0.5;
   }
 
