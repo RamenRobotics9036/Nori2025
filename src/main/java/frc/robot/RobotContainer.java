@@ -205,7 +205,7 @@ public class RobotContainer
     m_driverController.povRight().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> -0.3, () -> 0, false)));
     */
     // Start button resets the gyro
-    m_driverController.start().onTrue((Commands.runOnce(m_swerveDrive::zeroGyro)));
+    m_driverController.start().onTrue((Commands.runOnce(m_swerveDrive::zeroGyroWithAlliance)));
 
     // A button aligns the robot using the AprilTag
     //m_driverController.a().onTrue(new AimAtLimeLightV2(m_swerveDrive));
