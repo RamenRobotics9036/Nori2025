@@ -45,7 +45,7 @@ public class ElevatorSystem extends SubsystemBase{
     public ElevatorSystem() {
         ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig();
         closedLoopConfig
-            .p(2)
+            .p(4)
             .i(0)
             .d(0);
         closedLoopConfig.positionWrappingEnabled(false);
@@ -84,6 +84,12 @@ public class ElevatorSystem extends SubsystemBase{
         tab.addNumber("Relative Encoder Position", () -> m_encoder.getPosition());
         tab.addNumber("Motor Speeds", this::getSpeed);
         tab.addString("Elevator State", () -> m_state.toString());
+
+        // Show current command on shuffleboard
+        tab.addString(
+        "Elevator Command",
+        () -> (this.getCurrentCommand() == null) ? "None"
+                : this.getCurrentCommand().getName());
     }
 
     @Override

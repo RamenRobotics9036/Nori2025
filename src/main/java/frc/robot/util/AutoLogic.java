@@ -113,8 +113,23 @@ public class AutoLogic {
     autoPicker.addOption(autoName, autoName);
   }
 
+  public static void addOptionToPicker(String displayName, String autoName) {
+    autoPicker.addOption(displayName, autoName);
+  }
+
+  public static String getSelectedName() {
+    return autoPicker.getSelected();
+  }
+
+  public static boolean selectedAutoIsMirror() {
+    return getSelectedName().startsWith("auto mirror");
+  }
+
   public static void addAutoOptions() {
-    autoPicker.setDefaultOption("auto far center l1", "auto far center l1");
-    addOptionToPicker("auto lower l1");
+    autoPicker.setDefaultOption("CENTER 1 Coral L1", "auto far center l1");
+    // addOptionToPicker("auto lower l1");
+    addOptionToPicker("RIGHT 2 Coral L1 Robot Should Be next to Barge with OPPOSITE Color of Team Alliance", "auto lower 2 coral");
+    // addOptionToPicker("auto lower 3 coral");
+    addOptionToPicker("LEFT 2 Coral L1 Robot Should Be next to Barge with SAME Color of Team Alliance", "auto mirror lower 2 coral");
   }
 }

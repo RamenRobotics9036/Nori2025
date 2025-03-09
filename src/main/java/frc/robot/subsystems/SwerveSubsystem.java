@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.CommandConstants.AlignRobotConstants;
@@ -42,6 +43,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.commands.testcommands.WheelTestContext;
+import frc.robot.util.AutoLogic;
 import frc.robot.vision.VisionSim;
 import frc.robot.vision.VisionSystem;
 import frc.robot.vision.VisionSystemInterface;
@@ -183,7 +185,7 @@ public class SwerveSubsystem extends SubsystemBase
 
     // Show current command on shuffleboard
     tab.addString(
-      "Current Swerve Command",
+      "Swerve Command",
       () -> (this.getCurrentCommand() == null) ? "None"
               : this.getCurrentCommand().getName());
 
@@ -317,7 +319,7 @@ public class SwerveSubsystem extends SubsystemBase
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0),
+              new PIDConstants(3.5, 0.0, 0.0),
               // Translation PID constants
               new PIDConstants(5.0, 0.0, 0.0)
               // Rotation PID constants
@@ -329,7 +331,7 @@ public class SwerveSubsystem extends SubsystemBase
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            return OperatorConstants.kAlliance.get() == Alliance.Red;
+            return (OperatorConstants.kAlliance.get() == Alliance.Red);
           },
           this
           // Reference to this subsystem to set requirements
@@ -745,7 +747,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public void zeroGyroWithAlliance()
   {
-    if (isRedAlliance())
+    if (!isRedAlliance())
     {
       zeroGyro();
       //Set the pose 180 degrees

@@ -163,7 +163,7 @@ public final class Constants
     public static final int kCanAndColorSensorAPort = 2;
     public static final int kCanAndColorSensorBPort = 3;
     public static final double canAndColorScalar = 10_000;
-    public static final double canAndColorThreshold = 0.3;
+    public static final double canAndColorThreshold = 0.5;
   }
 
   public static final class IntakeDefaultCommandConstants {
@@ -188,7 +188,7 @@ public final class Constants
     public static final double L1ArmAngle = 1.1;
     public static final double kMinArmRotation = 0.8;
     
-    public static final double kAbsoluteEncoderOffset = 2.0;
+    public static final double kAbsoluteEncoderOffset = 2.0 - 0.2;
     public static final int kcurrentLimit = 20;
     public static final double tolerance = 0.1;
     public static final double setArmMaxTime = 10;
@@ -209,7 +209,7 @@ public final class Constants
     public static final double kRotationToElevatorRatio = (5.625 * 0.0254) / 12;
     //Physical limit is 43.75 in (1.1112 m)
     public static final double kMarginOfError = 0.06;
-    public static final double elevatorMaxSpeed = 1;
+    public static final double elevatorMaxSpeed = 2.5;
 
     public static final double kDownElevatorPosition = 0.0;
     public static final double kMaxElevatorPosition = -0.6;
@@ -219,6 +219,11 @@ public final class Constants
     //Tested with robot with 2024 bumpers, will need to adjust for new bumpers
     public static final double maxTime = 8;
     public static final double tolerance = 0.01;
+  }
+
+  public static final class ElevatorDefaultCommandConstants{
+    // In centimeters
+    public static final double kElevatorSpeed = 0.5; //TODO: placeholder
   }
   
   public static final class OuttakeConstants {

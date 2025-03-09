@@ -11,6 +11,14 @@ public class IntakeSpitCommand extends Command {
     private Timer m_timer = new Timer();
     private double m_startingRotations;
     private double m_speed;
+    private boolean canFinish = false;
+
+    public IntakeSpitCommand(IntakeSystem intake, double speed, boolean canFinish){
+        m_speed = speed;
+        m_intake = intake;
+        this.canFinish = canFinish;
+        addRequirements(m_intake);
+    }
 
     public IntakeSpitCommand(IntakeSystem intake, double speed){
         m_speed = speed;
@@ -33,16 +41,16 @@ public class IntakeSpitCommand extends Command {
 
     @Override
     public boolean isFinished(){
-        //checks if command has been running for too long...
-        // if (m_timer.get() > IntakeSpitCommandConstants.maxTime) {
-        //     System.out.println("WARNING: IntakeSpitCommand timed out!");
-        //     return true;
-        // }
-        // //...or for too many rotations.
-        // if (Math.abs((m_intake.getPullMotorPosition() - m_startingRotations)) / IntakeConstants.pullMotorGearBoxFactor > IntakeSpitCommandConstants.numRotations) {
-        //     System.out.println("WARNING: IntakeSpitCommand ROTATED motor too many times!");
-        //     return true;
-        // }
+        if (canFinish) {
+            if (m_timer.get() > IntakeSpitCommandConstants.maxTime) {
+                System.out.println("WARNING: IntakeSpitCommand timed out!");
+                return true;
+            }
+            if (Math.abs((m_intake.getPullMotorPosition() - m_startingRotations)) / IntakeConstants.pullMotorGearBoxFactor > IntakeSpitCommandConstants.numRotations) {
+                System.out.println("WARNING: IntakeSpitCommand ROTATED motor too many times!");
+                return true;
+            }
+        }
         return false;
     }
 
