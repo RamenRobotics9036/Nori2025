@@ -18,6 +18,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IntakeConstants;
 
@@ -77,19 +78,21 @@ public class ElevatorSystem extends SubsystemBase{
     }
 
     private void initShuffleboard(){
-        ShuffleboardTab tab = Shuffleboard.getTab("Elevator");
-        tab.addNumber("Desired Position", () ->  m_desiredPosition);
-        tab.addNumber("Position", this::getPosition);
-        tab.addBoolean("Limit Switch Value", () -> isLimitReached());
-        tab.addNumber("Relative Encoder Position", () -> m_encoder.getPosition());
-        tab.addNumber("Motor Speeds", this::getSpeed);
-        tab.addString("Elevator State", () -> m_state.toString());
+        if (!OperatorConstants.kCompetitionMode){
+            ShuffleboardTab tab = Shuffleboard.getTab("Elevator");
+            tab.addNumber("Desired Position", () ->  m_desiredPosition);
+            tab.addNumber("Position", this::getPosition);
+            tab.addBoolean("Limit Switch Value", () -> isLimitReached());
+            tab.addNumber("Relative Encoder Position", () -> m_encoder.getPosition());
+            tab.addNumber("Motor Speeds", this::getSpeed);
+            tab.addString("Elevator State", () -> m_state.toString());
 
-        // Show current command on shuffleboard
-        tab.addString(
-        "Elevator Command",
-        () -> (this.getCurrentCommand() == null) ? "None"
-                : this.getCurrentCommand().getName());
+            // Show current command on shuffleboard
+            tab.addString(
+            "Elevator Command",
+            () -> (this.getCurrentCommand() == null) ? "None"
+                    : this.getCurrentCommand().getName());
+        }
     }
 
     @Override

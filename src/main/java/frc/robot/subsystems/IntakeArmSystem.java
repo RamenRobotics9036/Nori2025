@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ArmConstants;
 
 
@@ -81,17 +83,19 @@ public class IntakeArmSystem extends SubsystemBase{
     }
 
     public void initShuffleboard() {
-        ShuffleboardTab tab = Shuffleboard.getTab("Arm");
-        tab.addDouble("Arm Relative Encoder", () -> getArmAngleRelative());
-        tab.addDouble("Arm Encoder", () -> getArmAngle());
-        tab.addDouble("Desired Angle", () -> desiredAngle);
-        tab.addBoolean("Encoder Is Connected", () -> m_armEncoder.isConnected());
+        if (!OperatorConstants.kCompetitionMode) {
+            ShuffleboardTab tab = Shuffleboard.getTab("Arm");
+            tab.addDouble("Arm Relative Encoder", () -> getArmAngleRelative());
+            tab.addDouble("Arm Encoder", () -> getArmAngle());
+            tab.addDouble("Desired Angle", () -> desiredAngle);
+            tab.addBoolean("Encoder Is Connected", () -> m_armEncoder.isConnected());
 
-        // Show current command on shuffleboard
-        tab.addString(
-        "IntakeArmSystem Command",
-        () -> (this.getCurrentCommand() == null) ? "None"
-                : this.getCurrentCommand().getName());
+            // Show current command on shuffleboard
+            tab.addString(
+            "IntakeArmSystem Command",
+            () -> (this.getCurrentCommand() == null) ? "None"
+                    : this.getCurrentCommand().getName());
+        }
   }
 
     public void setReference(double position) {

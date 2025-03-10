@@ -7,6 +7,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.VisionConstants;
 
 public class VisionSystem implements VisionSystemInterface {
@@ -24,15 +25,16 @@ public class VisionSystem implements VisionSystemInterface {
 
     // Constructor
     public VisionSystem() {
-        // Empty
         initShuffleboad();
     }
 
     public void initShuffleboad() {
-        ShuffleboardTab tab = Shuffleboard.getTab("Vision");
-        tab.addDouble("Robot Pose X", () -> getRobotPose().getX());
-        tab.addDouble("Robot Pose Y", () -> getRobotPose().getY());
-        tab.addDouble("Robot Pose Rot", () -> getRobotPose().getRotation().getDegrees());
+        if (!OperatorConstants.kCompetitionMode){
+            ShuffleboardTab tab = Shuffleboard.getTab("Vision");
+            tab.addDouble("Robot Pose X", () -> getRobotPose().getX());
+            tab.addDouble("Robot Pose Y", () -> getRobotPose().getY());
+            tab.addDouble("Robot Pose Rot", () -> getRobotPose().getRotation().getDegrees());
+        }
     }
 
     @Override

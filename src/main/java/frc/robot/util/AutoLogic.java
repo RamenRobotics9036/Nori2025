@@ -1,7 +1,5 @@
 package frc.robot.util;
 
-
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -69,6 +67,8 @@ public class AutoLogic {
   }
 
   public static void initShuffleBoard() {
+    // Leave these options available for kCompetitionMode
+
     addAutoOptions();
 
     tab.add("Auto Selector", autoPicker)
