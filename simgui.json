@@ -16,6 +16,11 @@
       "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
     },
     "windows": {
+      "/Shuffleboard/Autos/Auto Selector": {
+        "window": {
+          "visible": true
+        }
+      },
       "/Shuffleboard/Field/Robot Position on Field": {
         "bottom": 1638,
         "builtin": "2025 Reefscape",
@@ -165,6 +170,9 @@
   },
   "NetworkTables Info": {
     "visible": true
+  },
+  "NetworkTables View": {
+    "visible": false
   },
   "Plot": {
     "Plot <0>": {

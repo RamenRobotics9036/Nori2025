@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.CommandConstants;
 import frc.robot.Constants.IntakeSpitCommandConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.OuttakeSpitCommandConstants;
@@ -19,6 +20,11 @@ import frc.robot.commands.IntakeDefaultCommand;
 import frc.robot.commands.IntakeSpitCommand;
 import frc.robot.commands.OuttakeSpitCommand;
 import frc.robot.commands.SetArmToAngleCommand;
+import frc.robot.commands.pretend.PretendCommandElevatorSystem;
+import frc.robot.commands.pretend.PretendCommandIntakeArmSystem;
+import frc.robot.commands.pretend.PretendCommandIntakeSystem;
+import frc.robot.commands.pretend.PretendCommandOuttakeSystem;
+import frc.robot.commands.pretend.UnexpectedCommand;
 import frc.robot.commands.testcommands.TestTurnWheel;
 import frc.robot.commands.testcommands.WheelTestContext;
 import frc.robot.subsystems.ElevatorSystem;
@@ -36,6 +42,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -123,30 +130,80 @@ public class RobotContainer
     m_swerveDrive.initShuffleboard();
     AutoLogic.initShuffleBoard();
 
-    NamedCommands.registerCommand("Set Arm Position To Bottom",  new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation));
-    NamedCommands.registerCommand("Set Arm Position To Top", new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation));
-    NamedCommands.registerCommand("Set Arm Position To L1", new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle));
+    NamedCommands.registerCommand("Set Arm Position To Bottom", CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation)));
+    NamedCommands.registerCommand("Set Arm Position To Top", CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation)));
+    NamedCommands.registerCommand("Set Arm Position To L1", CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)));
 
-    NamedCommands.registerCommand("Dispense Intake Into Bucket", new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed, true));
-    NamedCommands.registerCommand("Shoot From Intake", new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true));
+    NamedCommands.registerCommand("Dispense Intake Into Bucket", CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed, true)));
+    NamedCommands.registerCommand("Shoot From Intake", CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
+    NamedCommands.registerCommand("Idle Intake", CmdWrapperIntakeSystem(new IntakeDefaultCommand(m_intakeSystem).withTimeout(1)));
 
-    NamedCommands.registerCommand("Idle Intake", new IntakeDefaultCommand(m_intakeSystem).withTimeout(1));
+    NamedCommands.registerCommand("Outtake from Bucket", CmdWrapperOuttakeSystem(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed)));
 
-
-    NamedCommands.registerCommand("Outtake from Bucket", new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed));
-    NamedCommands.registerCommand("Align to April Tag Left Side",
-      m_swerveDrive.alignWithAprilTagCommand(
+    NamedCommands.registerCommand("Align to April Tag Left Side", CmdWrapperUnexpectedCommand(m_swerveDrive.alignWithAprilTagCommand(
       AlignRobotConstants.transformDrive,
       AlignRobotConstants.transformLeftStrafe
-    ));
-    NamedCommands.registerCommand("Align to April Tag Right Side", m_swerveDrive.alignWithAprilTagCommand(
-    AlignRobotConstants.transformDrive,
-    AlignRobotConstants.transformRightStrafe
-  ));
+    ), "alignAprilLeft"));
+    NamedCommands.registerCommand("Align to April Tag Right Side", CmdWrapperUnexpectedCommand(m_swerveDrive.alignWithAprilTagCommand(
+      AlignRobotConstants.transformDrive,
+      AlignRobotConstants.transformRightStrafe
+    ), "alignAprilRight"));
 
-    NamedCommands.registerCommand("Set Elevator Position To Bottom", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
-    NamedCommands.registerCommand("Set Elevator Position To L2", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
-    NamedCommands.registerCommand("Set Elevator Position To L3", new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
+    NamedCommands.registerCommand("Set Elevator Position To Bottom", CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition)));
+    NamedCommands.registerCommand("Set Elevator Position To L2", CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition)));
+    NamedCommands.registerCommand("Set Elevator Position To L3", CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition)));
+  }
+
+  private Command CmdWrapperIntakeArmSystem(Command command) {
+    if (disableCommandsInSim()) {
+      return new PretendCommandIntakeArmSystem(m_armSystem);
+    } else {
+      return command;
+    }
+  }
+
+  private Command CmdWrapperIntakeSystem(Command command) {
+    if (disableCommandsInSim()) {
+      return new PretendCommandIntakeSystem(m_intakeSystem);
+    } else {
+      return command;
+    }
+  }
+
+  private Command CmdWrapperOuttakeSystem(Command command) {
+    if (disableCommandsInSim()) {
+      return new PretendCommandOuttakeSystem(m_outtakeSystem);
+    } else {
+      return command;
+    }
+  }
+
+  private Command CmdWrapperElevatorSystem(Command command) {
+    if (disableCommandsInSim()) {
+      return new PretendCommandElevatorSystem(m_elevatorSystem);
+    } else {
+      return command;
+    }
+  }
+
+  private Command CmdWrapperUnexpectedCommand(Command command, String name) {
+    if (disableCommandsInSim()) {
+      return new UnexpectedCommand(name);
+    } else {
+      return command;
+    }
+  }
+
+  // In simulation, not all Subsystems are simulated yet.  Therefore, in simulation,
+  // we disable most registerCommand() that pathplanner calls, so that those commands
+  // don't do anything. That lets us run the simulation for auto for the subsystems
+  // that ARE currently simulated, such as Swerve.
+  private boolean disableCommandsInSim() {
+    if (!RobotBase.isSimulation()) {
+      return false;
+    }
+
+    return CommandConstants.kDisableMostCommandsInSim;
   }
 
   public void configureDefaultCommands() {

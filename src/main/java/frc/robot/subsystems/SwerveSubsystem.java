@@ -96,6 +96,7 @@ public class SwerveSubsystem extends SubsystemBase
   private boolean isUsingSimVision;
 
   private boolean m_isPathfinderWarmedUp = false;
+  private boolean m_hasWarnedOnce = false;
 
   //
   // Simulated Vision
@@ -304,6 +305,12 @@ public class SwerveSubsystem extends SubsystemBase
           this::getRobotVelocity,
           // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
           (speedsRobotRelative, moduleFeedForwards) -> {
+
+            if (!m_isPathfinderWarmedUp && !m_hasWarnedOnce) {
+              System.out.println("ERROR: Auto Pathplanner called, but not yet warmed up!");
+              m_hasWarnedOnce = true;
+            }
+
             if (enableFeedforward)
             {
               swerveDrive.drive(
