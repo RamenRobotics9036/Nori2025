@@ -37,15 +37,26 @@
             "/NT/CameraPublisher/limelight",
             "/NT/SmartDashboard/VisionSystemSim-main",
             "/NT/SmartDashboard/VisionSystemSim-main/Sim Field",
-            "/NT/Shuffleboard/Field",
             "/NT/Shuffleboard/Field/Target Position on Field/Robot",
             "/NT/limelight/targetpose_cameraspace",
             "/NT/limelight/rawfiducials",
             "/NT/limelight/targetpose_robotspace",
             "/NT/Shuffleboard",
-            "/NT/Shuffleboard/Vision",
             "/NT",
-            "/NT/Shuffleboard/Field/Robot Position on Field"
+            "/NT/Shuffleboard/Field/Robot Position on Field",
+            "/NT/SmartDashboard/Swerve Drive",
+            "/NT/SmartDashboard/Alerts",
+            "/NT/SmartDashboard",
+            "/NT/SmartDashboard/swerve",
+            "/NT/SmartDashboard/swerve/advantagescope/currentStates",
+            "/NT/SmartDashboard/swerve/advantagescope/currentStates/1",
+            "/NT/PathPlanner/vel",
+            "/NT/SmartDashboard/swerve/advantagescope/currentStates/2",
+            "/NT/SmartDashboard/Pigeon 2 (v6) [18]",
+            "/my",
+            "/NT/PathPlanner",
+            "/DS",
+            "/NT/Shuffleboard/Outtake"
           ]
         },
         "tabs": {
@@ -155,14 +166,29 @@
                     }
                   },
                   {
-                    "type": "arrowLegacy",
-                    "logKey": "NT:/Shuffleboard/Field/Target Position on Field/Robot",
-                    "logType": "NumberArray",
+                    "type": "robot",
+                    "logKey": "NT:/PathPlanner/currentPose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:/PathPlanner/targetPose",
+                    "logType": "Pose2d",
                     "visible": true,
                     "options": {
-                      "position": "center",
-                      "format": "Pose2d",
-                      "units": "degrees"
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/PathPlanner/targetPose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00"
                     }
                   }
                 ],
@@ -174,7 +200,150 @@
               },
               "controllerUUID": "do16zjk5mnqjpehsbef4jc5s9qzpoxec",
               "renderer": null,
+              "controlsHeight": 356
+            },
+            {
+              "type": 1,
+              "title": "LineGraph",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SmartDashboard/Pigeon 2 (v6) [18]/Value",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/my/Voltage",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/my/CAN_Bus_Utilization",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#5f4528",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [
+                  {
+                    "type": "graph",
+                    "logKey": "DS:estop",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437"
+                    }
+                  },
+                  {
+                    "type": "graph",
+                    "logKey": "DS:autonomous",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#858584"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "DS:enabled",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Shuffleboard/Field/Swerve Command",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Shuffleboard/Intake/IntakeSystem Command",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Shuffleboard/Arm/IntakeArmSystem Command",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Shuffleboard/Elevator/Elevator Command",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#d993aa"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Shuffleboard/Outtake/OuttakeSystem Command",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "ohkjphw3e68yc11fk55n1legfh4curq6",
+              "renderer": null,
               "controlsHeight": 200
+            },
+            {
+              "type": 8,
+              "title": "Joysticks",
+              "controller": [
+                "Xbox Controller (White)",
+                "None",
+                "None",
+                "None",
+                "None",
+                "None"
+              ],
+              "controllerUUID": "iwvk830tgz6e6ogqrz0wqhyfe846zxop",
+              "renderer": null,
+              "controlsHeight": 85
             },
             {
               "type": 1,
@@ -189,6 +358,16 @@
                     "options": {
                       "color": "#2b66a2",
                       "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Shuffleboard/Elevator/Position",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
                     }
                   }
                 ],
@@ -222,6 +401,24 @@
                     "options": {
                       "color": "#e5b31b"
                     }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Shuffleboard/Elevator/Elevator Command",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Shuffleboard/Elevator/Elevator State",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32"
+                    }
                   }
                 ],
                 "leftLockedRange": null,
@@ -240,176 +437,6 @@
               "controllerUUID": "csn85bvbcly4fey3nup2dh3xsmfvsrou",
               "renderer": null,
               "controlsHeight": 200
-            },
-            {
-              "type": 1,
-              "title": "Voltage",
-              "controller": {
-                "leftSources": [
-                  {
-                    "type": "stepped",
-                    "logKey": "/my/Voltage",
-                    "logType": "Number",
-                    "visible": true,
-                    "options": {
-                      "color": "#80588e",
-                      "size": "normal"
-                    }
-                  }
-                ],
-                "rightSources": [
-                  {
-                    "type": "stepped",
-                    "logKey": "/my/CAN_Bus_Utilization",
-                    "logType": "Number",
-                    "visible": false,
-                    "options": {
-                      "color": "#e48b32",
-                      "size": "normal"
-                    }
-                  }
-                ],
-                "discreteSources": [
-                  {
-                    "type": "stripes",
-                    "logKey": "DS:estop",
-                    "logType": "Boolean",
-                    "visible": true,
-                    "options": {
-                      "color": "#af2437"
-                    }
-                  },
-                  {
-                    "type": "stripes",
-                    "logKey": "DS:autonomous",
-                    "logType": "Boolean",
-                    "visible": true,
-                    "options": {
-                      "color": "#858584"
-                    }
-                  },
-                  {
-                    "type": "stripes",
-                    "logKey": "DS:enabled",
-                    "logType": "Boolean",
-                    "visible": true,
-                    "options": {
-                      "color": "#2b66a2"
-                    }
-                  },
-                  {
-                    "type": "stripes",
-                    "logKey": "NT:/Shuffleboard/Field/Current Swerve Command",
-                    "logType": "String",
-                    "visible": true,
-                    "options": {
-                      "color": "#e5b31b"
-                    }
-                  }
-                ],
-                "leftLockedRange": null,
-                "rightLockedRange": null,
-                "leftUnitConversion": {
-                  "type": null,
-                  "factor": 1
-                },
-                "rightUnitConversion": {
-                  "type": null,
-                  "factor": 1
-                },
-                "leftFilter": 0,
-                "rightFilter": 0
-              },
-              "controllerUUID": "ohkjphw3e68yc11fk55n1legfh4curq6",
-              "renderer": null,
-              "controlsHeight": 200
-            },
-            {
-              "type": 1,
-              "title": "CAN Utilization",
-              "controller": {
-                "leftSources": [
-                  {
-                    "type": "stepped",
-                    "logKey": "/my/CAN_Bus_Utilization",
-                    "logType": "Number",
-                    "visible": true,
-                    "options": {
-                      "color": "#2b66a2",
-                      "size": "normal"
-                    }
-                  }
-                ],
-                "rightSources": [],
-                "discreteSources": [
-                  {
-                    "type": "stripes",
-                    "logKey": "DS:estop",
-                    "logType": "Boolean",
-                    "visible": true,
-                    "options": {
-                      "color": "#af2437"
-                    }
-                  },
-                  {
-                    "type": "stripes",
-                    "logKey": "DS:autonomous",
-                    "logType": "Boolean",
-                    "visible": true,
-                    "options": {
-                      "color": "#858584"
-                    }
-                  },
-                  {
-                    "type": "stripes",
-                    "logKey": "DS:enabled",
-                    "logType": "Boolean",
-                    "visible": true,
-                    "options": {
-                      "color": "#2b66a2"
-                    }
-                  },
-                  {
-                    "type": "stripes",
-                    "logKey": "NT:/Shuffleboard/Field/Current Swerve Command",
-                    "logType": "String",
-                    "visible": true,
-                    "options": {
-                      "color": "#e5b31b"
-                    }
-                  }
-                ],
-                "leftLockedRange": null,
-                "rightLockedRange": null,
-                "leftUnitConversion": {
-                  "type": null,
-                  "factor": 1
-                },
-                "rightUnitConversion": {
-                  "type": null,
-                  "factor": 1
-                },
-                "leftFilter": 0,
-                "rightFilter": 0
-              },
-              "controllerUUID": "sv52afrqcqc5udl5l1sub49b4uccej4j",
-              "renderer": null,
-              "controlsHeight": 200
-            },
-            {
-              "type": 8,
-              "title": "Joysticks",
-              "controller": [
-                "Xbox Controller (White)",
-                "None",
-                "None",
-                "None",
-                "None",
-                "None"
-              ],
-              "controllerUUID": "iwvk830tgz6e6ogqrz0wqhyfe846zxop",
-              "renderer": null,
-              "controlsHeight": 85
             }
           ]
         }
@@ -417,5 +444,5 @@
     }
   ],
   "satellites": [],
-  "version": "4.1.1"
+  "version": "4.1.2"
 }

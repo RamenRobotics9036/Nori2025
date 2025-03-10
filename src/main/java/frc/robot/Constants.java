@@ -108,6 +108,8 @@ public final class Constants
   }
 
   public static final class CommandConstants {
+    public static final boolean kDisableMostCommandsInSim = true;
+
     public static final class AlignRobotConstants {
       public static final double maxTimeSeconds = 10;
       public static final double maxSpeed = 0.4;
