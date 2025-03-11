@@ -99,7 +99,8 @@ public class ElevatorSystem extends SubsystemBase{
                 if (isLimitReached()) {
                     m_state = states.READYLOW;
                     resetEncoder();
-                    initializeMotorConfig(false); // Set to false so we can set the elevator down
+                    // initializeMotorConfig is a no-op since we do not use the brake to keep the elevator in place
+                    // initializeMotorConfig(false); // Set to false so we can set the elevator down
                 }
                 break;
             case READYLOW:
@@ -111,7 +112,8 @@ public class ElevatorSystem extends SubsystemBase{
                 if (isLimitReached()) {
                     m_leaderMotor.stopMotor(); // we are at the bottom, stop for safety
                     m_state = states.INIT;
-                    initializeMotorConfig(false);
+                    // initializeMotorConfig is a no-op since we do not use the brake to keep the elevator in place
+                    // initializeMotorConfig(false);
                 }
         }
     }
