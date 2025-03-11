@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSystem extends SubsystemBase{
@@ -67,16 +69,18 @@ public class IntakeSystem extends SubsystemBase{
     }
 
     public void initShuffleboard() {
-        ShuffleboardTab tab = Shuffleboard.getTab("Intake");
-        tab.addDouble("Can Encoder A", this::getCanAndColorAPeriod);
-        tab.addDouble("Can Encoder B", this::getCanAndColorBPeriod);
-        tab.addBoolean("Is Holding Coral", this::isHoldingCoral);
+        if (!OperatorConstants.kCompetitionMode){
+            ShuffleboardTab tab = Shuffleboard.getTab("Intake");
+            tab.addDouble("Can Encoder A", this::getCanAndColorAPeriod);
+            tab.addDouble("Can Encoder B", this::getCanAndColorBPeriod);
+            tab.addBoolean("Is Holding Coral", this::isHoldingCoral);
 
-        // Show current command on shuffleboard
-        tab.addString(
-        "IntakeSystem Command",
-        () -> (this.getCurrentCommand() == null) ? "None"
-                : this.getCurrentCommand().getName());
+            // Show current command on shuffleboard
+            tab.addString(
+            "IntakeSystem Command",
+            () -> (this.getCurrentCommand() == null) ? "None"
+                    : this.getCurrentCommand().getName());
+        }
     }
 
     //sets the speed of m_pullMotor. Cannot exceed maxOutputPercentage

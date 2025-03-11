@@ -12,6 +12,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.OuttakeConstants;
 
 public class OuttakeSystem extends SubsystemBase {
@@ -42,11 +44,13 @@ public class OuttakeSystem extends SubsystemBase {
     public void initShuffleboard() {
         ShuffleboardTab tab = Shuffleboard.getTab("Outtake");
 
-        // Show current command on shuffleboard
-        tab.addString(
-        "OuttakeSystem Command",
-        () -> (this.getCurrentCommand() == null) ? "None"
-                : this.getCurrentCommand().getName());
+        if (!OperatorConstants.kCompetitionMode){
+            // Show current command on shuffleboard
+            tab.addString(
+            "OuttakeSystem Command",
+            () -> (this.getCurrentCommand() == null) ? "None"
+                    : this.getCurrentCommand().getName());
+        }
     }
 
     public void setMotorSpeeds(double speed) {
