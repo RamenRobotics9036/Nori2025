@@ -23,8 +23,14 @@ public class SetArmToAngleCommand extends Command {
         m_armSystem.setReference(m_desiredAngle);
     }
 
+    private int loop = 0;
+
     @Override
     public void execute() {
+        loop += 1;
+        if(loop % 50 == 0) {
+            System.out.println("##### Arm encoder desire=" + m_desiredAngle + ", actual=" +  m_armSystem.getArmAngleRelative());
+        }
     }
 
     @Override

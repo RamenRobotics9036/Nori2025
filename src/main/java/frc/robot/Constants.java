@@ -41,12 +41,13 @@ public final class Constants
     public static final int kDriverPort = 0;
     public static final int kArmPort = 1;
     public static final double kExpo = 4; //do not change this value, ever!
-    public static final double kExpoRatio = 0.5; // change this 0..1 to add more exponential, 0 = no expo (linear)
+    public static final double kExpoRatio = 0.75; // change this 0..1 to add more exponential, 0 = no expo (linear)
     public static final double kDeadband = 0.01;
     public static final Supplier<Alliance> kAlliance = () -> (DriverStation.getAlliance().isPresent()) ? DriverStation.getAlliance().get() : Alliance.Red;
     public static final boolean kCompetitionMode = false; // Set to true the day of competition to turn off extras (max performance)
   }
   /**
+   * 
    * Constants for the swerve system.
    */
   public static class SwerveConstants
@@ -185,13 +186,19 @@ public final class Constants
     public static final int kArmMotorID = 22;
     public static final double maxOutput = 1.0;
     public static final int kArmEncoderID = 9;
-    public static final double kArmGearBoxRatio = 125 * (44/30);
+    //public static final double kArmGearBoxRatio = 125 * (44/30);
+    //125 is 3-stage gearbox, 38 and 18 are the numbers of teeth on the two gears.
+    public static final double kArmGearBoxRatio = 125 * (38/18);
 
-    public static final double kMaxArmRotation = 3.7;
-    public static final double L1ArmAngle = 1.1;
-    public static final double kMinArmRotation = 0.8;
+    // Make sure the abolute encoder does NOT cross zero as the arm moves from top to bottom
+    // This is the position of the arm in the up position, it should ALMOST be touching the endstop
+    public static final double kMinArmRotation = 1.8;
+    // This is the postition of the arm against the ground
+    public static final double kMaxArmRotation = 6.10;
+    public static final double L1ArmAngle = 2.68;
     
-    public static final double kAbsoluteEncoderOffset = 2.0 - 0.2;
+    public static final double kAbsoluteEncoderOffset = 0;
+
     public static final int kcurrentLimit = 20;
     public static final double tolerance = 0.1;
     public static final double setArmMaxTime = 10;

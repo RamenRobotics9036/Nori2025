@@ -40,9 +40,9 @@ public class IntakeArmSystem extends SubsystemBase{
             .p(1)
             .i(0)
             .d(0);
-        closedLoopConfig.positionWrappingEnabled(true);
-        closedLoopConfig.positionWrappingMinInput(0);
-        closedLoopConfig.positionWrappingMaxInput(Math.PI * 2);
+        // closedLoopConfig.positionWrappingEnabled(true);
+        // closedLoopConfig.positionWrappingMinInput(0);
+        // closedLoopConfig.positionWrappingMaxInput(Math.PI * 2);
 
         EncoderConfig encoderConfig = new EncoderConfig();
         encoderConfig.positionConversionFactor((Math.PI * 2) / ArmConstants.kArmGearBoxRatio);
@@ -75,8 +75,14 @@ public class IntakeArmSystem extends SubsystemBase{
         initShuffleboard();
     }
 
+private int loop = 0;
+
     @Override
     public void periodic() {
+        loop += 1;
+        if (loop % 50 == 0) {
+            System.out.println("@@@@ Arm encoder=" + getArmAngleRelative() + ", desired="+desiredAngle);
+        }
         if (m_armEncoder.isConnected()) {
             m_armRelativeEncoder.setPosition(getArmAngle());
         }

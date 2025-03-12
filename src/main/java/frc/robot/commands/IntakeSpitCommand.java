@@ -14,6 +14,7 @@ public class IntakeSpitCommand extends Command {
     private boolean canFinish = false;
 
     public IntakeSpitCommand(IntakeSystem intake, double speed, boolean canFinish){
+        System.out.print("##### Intake1");
         m_speed = speed;
         m_intake = intake;
         this.canFinish = canFinish;
@@ -21,6 +22,7 @@ public class IntakeSpitCommand extends Command {
     }
 
     public IntakeSpitCommand(IntakeSystem intake, double speed){
+        System.out.print("##### Intake2");
         m_speed = speed;
         m_intake = intake;
         addRequirements(m_intake);
@@ -28,6 +30,7 @@ public class IntakeSpitCommand extends Command {
 
     @Override
     public void initialize(){
+        System.out.print("##### Intake3");
         m_timer.restart();
         m_startingRotations = m_intake.getPullMotorPosition();
     }
