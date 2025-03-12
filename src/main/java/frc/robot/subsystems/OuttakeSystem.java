@@ -23,7 +23,7 @@ public class OuttakeSystem extends SubsystemBase {
 
     public OuttakeSystem() {
         SparkMaxConfig sparkMaxConfig = new SparkMaxConfig();
-        sparkMaxConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
+        sparkMaxConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
         sparkMaxConfig.inverted(true);
         sparkMaxConfig.smartCurrentLimit(OuttakeConstants.currentLimit);
         m_outtakeSparkMax.configure(sparkMaxConfig, 
@@ -31,7 +31,7 @@ public class OuttakeSystem extends SubsystemBase {
             SparkBase.PersistMode.kPersistParameters);
 
         SparkFlexConfig sparkFlexConfig = new SparkFlexConfig();
-        sparkFlexConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
+        sparkFlexConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
         sparkFlexConfig.inverted(false);
         sparkFlexConfig.smartCurrentLimit(OuttakeConstants.currentLimit);
         m_outtakeSparkFlex.configure(sparkFlexConfig, 
