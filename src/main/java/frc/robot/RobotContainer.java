@@ -23,6 +23,7 @@ import frc.robot.commands.SetArmToAngleCommand;
 import frc.robot.commands.pretend.PretendCommandElevatorSystem;
 import frc.robot.commands.pretend.PretendCommandIntakeArmSystem;
 import frc.robot.commands.pretend.PretendCommandIntakeSystem;
+import frc.robot.commands.pretend.PretendCommandNoSystem;
 import frc.robot.commands.pretend.PretendCommandOuttakeSystem;
 import frc.robot.commands.pretend.UnexpectedCommand;
 import frc.robot.commands.testcommands.TestTurnWheel;
@@ -181,6 +182,14 @@ public class RobotContainer
   private Command CmdWrapperElevatorSystem(Command command) {
     if (disableCommandsInSim()) {
       return new PretendCommandElevatorSystem(m_elevatorSystem);
+    } else {
+      return command;
+    }
+  }
+
+  private Command CmdWrapperNoSystem(Command command) {
+    if (disableCommandsInSim()) {
+      return new PretendCommandNoSystem();
     } else {
       return command;
     }

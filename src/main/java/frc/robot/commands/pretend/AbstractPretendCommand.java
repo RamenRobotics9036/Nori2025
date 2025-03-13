@@ -11,7 +11,9 @@ public abstract class AbstractPretendCommand extends Command {
     private final boolean doPrint = false;
 
     public AbstractPretendCommand(Subsystem system) {
-        addRequirements(system);
+        if (system != null) {
+            addRequirements(system);
+        }
     }
 
     public abstract String getSystemName();
