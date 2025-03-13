@@ -153,6 +153,12 @@ public class RobotContainer
     NamedCommands.registerCommand("Set Elevator Position To Bottom", CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition)));
     NamedCommands.registerCommand("Set Elevator Position To L2", CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition)));
     NamedCommands.registerCommand("Set Elevator Position To L3", CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition)));
+
+    //
+    // Heres the Commands that we dont mock in simulation, since they work just fine in sim.
+    //
+
+    NamedCommands.registerCommand("waitFiveSeconds", waitFiveSeconds);
   }
 
   private Command CmdWrapperIntakeArmSystem(Command command) {
@@ -315,9 +321,9 @@ public class RobotContainer
     }
   }
 
-private Command waitFiveSeconds = new WaitCommand(5)
-  .beforeStarting(() -> System.out.println("Auto wait 5 seconds start"))
-  .andThen(() -> System.out.println("Auto end wait"));
+  private Command waitFiveSeconds = new WaitCommand(5)
+    .beforeStarting(() -> System.out.println("Auto wait 5 seconds start"))
+    .andThen(() -> System.out.println("Auto end wait"));
 
   private Command testSequence() {
     return new SequentialCommandGroup(
