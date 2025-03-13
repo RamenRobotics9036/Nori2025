@@ -51,7 +51,8 @@ public class IntakeArmSystem extends SubsystemBase{
 
         // m_armConfig.inverted(true);
 
-        m_armConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+        m_armConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
+        //m_armConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
         m_armConfig.smartCurrentLimit(ArmConstants.kcurrentLimit);
 
         m_armConfig.apply(closedLoopConfig);
@@ -75,14 +76,14 @@ public class IntakeArmSystem extends SubsystemBase{
         initShuffleboard();
     }
 
-private int loop = 0;
+// private int loop = 0;
 
     @Override
     public void periodic() {
-        loop += 1;
-        if (loop % 50 == 0) {
-            System.out.println("@@@@ Arm encoder=" + getArmAngleRelative() + ", desired="+desiredAngle);
-        }
+        // loop += 1;
+        // if (loop % 50 == 0) {
+        //     System.out.println("@@@@ Arm encoder=" + getArmAngleRelative() + ", desired="+desiredAngle);
+        // }
         if (m_armEncoder.isConnected()) {
             m_armRelativeEncoder.setPosition(getArmAngle());
         }

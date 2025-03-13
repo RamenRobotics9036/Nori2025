@@ -171,14 +171,14 @@ public final class Constants
   }
 
   public static final class IntakeDefaultCommandConstants {
-    public static final double speed = 0.3;
+    public static final double speed = 0.5;
     public static final double pullSpeed = 0.5;
   } 
 
   public static final class IntakeSpitCommandConstants {
     public static final int maxTime = 3;
     public static final double speed = 0.8;
-    public static final double numRotations = 15;
+    public static final double numRotations = 100;
     public static final double bucketSpeed = 0.5;
   }
 
@@ -192,16 +192,16 @@ public final class Constants
 
     // Make sure the abolute encoder does NOT cross zero as the arm moves from top to bottom
     // This is the position of the arm in the up position, it should ALMOST be touching the endstop
-    public static final double kMinArmRotation = 1.8;
+    public static final double kMinArmRotation = 1.5;
     // This is the postition of the arm against the ground
-    public static final double kMaxArmRotation = 6.10;
+    public static final double kMaxArmRotation = 5.9;
     public static final double L1ArmAngle = 2.68;
     
     public static final double kAbsoluteEncoderOffset = 0;
 
     public static final int kcurrentLimit = 20;
     public static final double tolerance = 0.1;
-    public static final double setArmMaxTime = 10;
+    public static final double setArmMaxTime = 4;
     public static final double algaePreset = 1.849222;
   }
 

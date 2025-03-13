@@ -363,6 +363,7 @@ public class SwerveSubsystem extends SubsystemBase
     // NOTE: We cant use RunOnce() to set m_isPathfinderWarmedUp, since it
     // creates a dependency on the subsystem, and thus blocks the default comman d
     // from running (which means we cant drive the robot until warmup would be complete).
+    m_isPathfinderWarmedUp = false;
     Command warmCommand =
       Commands.print("[--> START PATHFINDER WARMUP]")
       .andThen(PathfindingCommand.warmupCommand())
@@ -902,7 +903,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Gets the swerve drive object.
    *
-   * @return {@link SwerveDrive}
+   * @return {@link SwerveDrive}  
    */
   public SwerveDrive getSwerveDrive()
   {
