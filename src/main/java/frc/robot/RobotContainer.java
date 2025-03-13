@@ -306,6 +306,10 @@ public class RobotContainer
     }
   }
 
+private Command waitFiveSeconds = new WaitCommand(5)
+  .beforeStarting(() -> System.out.println("Auto wait 5 seconds start"))
+  .andThen(() -> System.out.println("Auto end wait"));
+
   private Command testSequence() {
     return new SequentialCommandGroup(
         new InstantCommand(() -> m_swerveDrive.getWheelTestContext().reset()),
