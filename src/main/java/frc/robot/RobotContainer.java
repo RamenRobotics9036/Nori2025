@@ -44,6 +44,9 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -130,6 +133,7 @@ public class RobotContainer
 
     m_swerveDrive.initShuffleboard();
     AutoLogic.initShuffleBoard();
+    addTestButtonsToShuffleboard();
 
     NamedCommands.registerCommand("Set Arm Position To Bottom", CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation)));
     NamedCommands.registerCommand("Set Arm Position To Top", CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation)));
@@ -159,6 +163,24 @@ public class RobotContainer
     //
 
     NamedCommands.registerCommand("waitFiveSeconds", waitFiveSeconds);
+  }
+
+  private Command printStartStop(Command command, String name) {
+    return command.beforeStarting(() -> System.out.println(">--> " + name + " start"))
+                  .andThen(() -> System.out.println(">--> " + name + " end"));
+  }
+
+  private void addTestButtonsToShuffleboard() {
+    Command spinCmd = printStartStop(
+      m_swerveDrive.sysIdDriveMotorCommand(true), "Spin test");
+
+    ShuffleboardTab tabTest = Shuffleboard.getTab("Test");
+    tabTest.add("Spin Test", spinCmd).withWidget("Command");
+
+    Command angleTest = printStartStop(
+      m_swerveDrive.sysIdAngleMotorCommand(), "Angle test");
+
+    tabTest.add("Angle Test", angleTest).withWidget("Command");
   }
 
   private Command CmdWrapperIntakeArmSystem(Command command) {
@@ -276,6 +298,9 @@ public class RobotContainer
     m_driverController.povLeft().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> 0.3, () -> 0, false)));
     m_driverController.povRight().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> -0.3, () -> 0, false)));
     */
+
+    // $TODO m_swerveDrive.sysIdDriveMotorCommand()
+
     // Start button resets the gyro
     m_driverController.start().onTrue((Commands.runOnce(m_swerveDrive::zeroGyroWithAlliance)));
 

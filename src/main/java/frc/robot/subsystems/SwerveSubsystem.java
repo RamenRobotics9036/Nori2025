@@ -517,19 +517,19 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
 
-  // /**
-  //  * Command to characterize the robot drive motors using SysId
-  //  *
-  //  * @return SysId Drive Command
-  //  */
-  // public Command sysIdDriveMotorCommand()
-  // {
-  //   return SwerveDriveTest.generateSysIdCommand(
-  //       SwerveDriveTest.setDriveSysIdRoutine(
-  //           new Config(),
-  //           this, swerveDrive, 12),
-  //       3.0, 5.0, 3.0);
-  // }
+  /**
+   * Command to characterize the robot drive motors using SysId
+   *
+   * @return SysId Drive Command
+   */
+  public Command sysIdDriveMotorCommand(boolean spin)
+  {
+    return SwerveDriveTest.generateSysIdCommand(
+        SwerveDriveTest.setDriveSysIdRoutine(
+            new Config(),
+            this, swerveDrive, 12, spin),
+        3.0, 5.0, 3.0);
+  }
 
   /**
    * Command to characterize the robot angle motors using SysId
