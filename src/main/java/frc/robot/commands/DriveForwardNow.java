@@ -4,19 +4,14 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.CommandConstants.AimAtLimeLightV2Constants;
-import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
-import java.util.List;
-import java.util.function.DoubleSupplier;
-import swervelib.SwerveController;
-import swervelib.math.SwerveMath;
 
 /**
  * An example command that uses an example subsystem.
@@ -25,6 +20,7 @@ public class DriveForwardNow extends Command
 {
   private final SwerveSubsystem m_swerve;
   private Timer m_timer = new Timer();
+  private double startX;
 
   public DriveForwardNow(SwerveSubsystem swerve)
   {
@@ -36,7 +32,10 @@ public class DriveForwardNow extends Command
   @Override
   public void initialize()
   {
+    final double resetToAngle = (OperatorConstants.kAlliance.get() == Alliance.Red) ? 90 : 270;
+    m_swerve.resetOdometry(new Pose2d(m_swerve.getPose().getTranslation(), Rotation2d.fromDegrees(resetToAngle)));
     m_timer.restart();
+    startX = m_swerve.getPose().getX();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -61,6 +60,9 @@ public class DriveForwardNow extends Command
   {
     if (m_timer.get() > 1.0) {
         return true;
+    }
+    if (m_swerve.getPose().getX() - startX > 1.4) {
+      return true;
     }
 
     return false;

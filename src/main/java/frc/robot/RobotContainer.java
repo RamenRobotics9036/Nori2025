@@ -383,7 +383,9 @@ public class RobotContainer
    */
   public Command getAutonomousCommand()
   {
-    return new DriveForwardNow(m_swerveDrive);
+    return new DriveForwardNow(m_swerveDrive).
+      andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
+      .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
     // return AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
   }
 
