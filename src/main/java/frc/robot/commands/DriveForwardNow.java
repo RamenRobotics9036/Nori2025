@@ -45,8 +45,8 @@ public class DriveForwardNow extends Command
 
     this.m_swerve.drive(
         ChassisSpeeds.fromFieldRelativeSpeeds(
-            1.0, // Forward speed in meters per second
-            0.0, // Sideways speed in meters per second
+            0.0, // Forward speed in meters per second
+            -1.0, // Sideways speed in meters per second
             0.0, // Rotational speed in radians per second
             new Rotation2d(0) // Robot's current rotation
         )
@@ -61,9 +61,9 @@ public class DriveForwardNow extends Command
     if (m_timer.get() > 1.0) {
         return true;
     }
-    if (m_swerve.getPose().getX() - startX > 1.4) {
-      return true;
-    }
+    // if (m_swerve.getPose().getX() - startX > 1.4) {
+    //   return true;
+    // }
 
     return false;
   }
