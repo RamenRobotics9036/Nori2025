@@ -556,6 +556,12 @@ public class SwerveSubsystem extends SubsystemBase
                            .forEach(it -> it.setAngle(0.0)));
   }
 
+  public Command driveForward() {
+    final double gyroAngle = (OperatorConstants.kAlliance.get() == Alliance.Red) ? 270 : 90;
+    Command resetGyroCommand = Commands.runOnce(() -> resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(gyroAngle))));
+    return resetGyroCommand.andThen(centerModulesCommand()).andThen(driveToDistanceCommand(1.4, 2));
+  }
+
   /**
    * Returns a Command that drives the swerve drive to a specific distance at a given speed.
    *

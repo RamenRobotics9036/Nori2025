@@ -382,7 +382,8 @@ public class RobotContainer
    */
   public Command getAutonomousCommand()
   {
-    return AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
+    return m_swerveDrive.driveForward();
+    // return AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
   }
 
   public void setMotorBrake(boolean brake)
