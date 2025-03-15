@@ -32,7 +32,8 @@ public class DriveForwardNow extends Command
   @Override
   public void initialize()
   {
-    final double resetToAngle = (OperatorConstants.kAlliance.get() == Alliance.Red) ? 90 : 270;
+    // final double resetToAngle = (OperatorConstants.kAlliance.get() == Alliance.Red) ? 90 : 270;
+    final double resetToAngle = 90;
     m_swerve.resetOdometry(new Pose2d(m_swerve.getPose().getTranslation(), Rotation2d.fromDegrees(resetToAngle)));
     m_timer.restart();
     startX = m_swerve.getPose().getX();
@@ -44,11 +45,11 @@ public class DriveForwardNow extends Command
   {
 
     this.m_swerve.drive(
-        ChassisSpeeds.fromFieldRelativeSpeeds(
+        ChassisSpeeds.fromRobotRelativeSpeeds(
             1.0, // Forward speed in meters per second
             0.0, // Sideways speed in meters per second
             0.0, // Rotational speed in radians per second
-            new Rotation2d(0) // Robot's current rotation
+            m_swerve.getPose().getRotation() // Robot's current rotation
         )
     );
 
