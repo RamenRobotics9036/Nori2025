@@ -11,6 +11,7 @@ import frc.robot.Constants.IntakeSpitCommandConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.OuttakeSpitCommandConstants;
 import frc.robot.commands.ArmDefaultCommand;
+import frc.robot.commands.DriveForwardNow;
 import frc.robot.commands.ElevatorDefaultCommand;
 import frc.robot.commands.ElevatorToPositionCommand;
 import frc.robot.Constants.SwerveConstants;
@@ -382,7 +383,7 @@ public class RobotContainer
    */
   public Command getAutonomousCommand()
   {
-    return m_swerveDrive.driveForward();
+    return new DriveForwardNow(m_swerveDrive);
     // return AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
   }
 
