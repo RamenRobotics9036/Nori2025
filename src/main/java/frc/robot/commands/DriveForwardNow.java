@@ -61,7 +61,7 @@ public class DriveForwardNow extends Command
   @Override
   public boolean isFinished()
   {
-    if (m_timer.get() > 4) {
+    if (m_timer.get() > 15) {
       System.out.println("auto timed out");
         return true;
     }
