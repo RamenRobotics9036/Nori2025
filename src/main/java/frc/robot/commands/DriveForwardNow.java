@@ -21,6 +21,7 @@ public class DriveForwardNow extends Command
   private final SwerveSubsystem m_swerve;
   private Timer m_timer = new Timer();
   private double startX;
+  private double startY;
 
   public DriveForwardNow(SwerveSubsystem swerve)
   {
@@ -37,6 +38,7 @@ public class DriveForwardNow extends Command
     m_swerve.resetOdometry(new Pose2d(m_swerve.getPose().getTranslation(), Rotation2d.fromDegrees(resetToAngle)));
     m_timer.restart();
     startX = m_swerve.getPose().getX();
+    startY = m_swerve.getPose().getY();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -59,12 +61,12 @@ public class DriveForwardNow extends Command
   @Override
   public boolean isFinished()
   {
-    if (m_timer.get() > 1.5) {
+    if (m_timer.get() > 4) {
       System.out.println("auto timed out");
         return true;
     }
-    if (Math.abs(m_swerve.getPose().getX() - startX) > 1.4) {
-      System.out.println("auto hit time limit");
+    if (Math.abs(m_swerve.getPose().getX() - startX) + Math.abs(m_swerve.getPose().getY() - startY) > 1.4) {
+      System.out.println("auto hit distance limit");
       return true;
     }
 
