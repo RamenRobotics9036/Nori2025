@@ -11,6 +11,7 @@ import frc.robot.Constants.IntakeSpitCommandConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.OuttakeSpitCommandConstants;
 import frc.robot.commands.ArmDefaultCommand;
+import frc.robot.commands.DriveForwardNow;
 import frc.robot.commands.ElevatorDefaultCommand;
 import frc.robot.commands.ElevatorToPositionCommand;
 import frc.robot.Constants.SwerveConstants;
@@ -382,7 +383,10 @@ public class RobotContainer
    */
   public Command getAutonomousCommand()
   {
-    return AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
+    return new DriveForwardNow(m_swerveDrive).
+      andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
+      .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
+    // return AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
   }
 
   public void setMotorBrake(boolean brake)

@@ -556,6 +556,15 @@ public class SwerveSubsystem extends SubsystemBase
                            .forEach(it -> it.setAngle(0.0)));
   }
 
+  public Supplier<Command> driveMeters(double distanceInMeters, double speedInMetersPerSecond) {
+    return () -> {
+      double startX = getPose().getX();
+      return run(() -> drive(new ChassisSpeeds(speedInMetersPerSecond, 0, 0)))
+      .until(() -> swerveDrive.getPose().getX() - startX >
+                   distanceInMeters);
+    };
+  }
+
   /**
    * Returns a Command that drives the swerve drive to a specific distance at a given speed.
    *
