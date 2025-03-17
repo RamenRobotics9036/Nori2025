@@ -2,12 +2,14 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Arm/Go Up2": "Command",
       "/Shuffleboard/Autos/Auto Selector": "String Chooser",
       "/Shuffleboard/Field/Robot Position on Field": "Field2d",
       "/Shuffleboard/Field/Target Position on Field": "Field2d",
       "/Shuffleboard/Test/Angle Test": "Command",
       "/Shuffleboard/Test/Spin Test": "Command",
       "/SmartDashboard/Alerts": "Alerts",
+      "/SmartDashboard/Arm Sim": "Mechanism2d",
       "/SmartDashboard/Encoders": "Alerts",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/IMU": "Alerts",

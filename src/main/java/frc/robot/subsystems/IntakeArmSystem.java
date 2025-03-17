@@ -21,16 +21,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.commands.SetArmToAngleCommand;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import frc.robot.subsystems.armsimulation.ArmSimulation;
+import frc.robot.subsystems.armsimulation.IOArmSim;
+import frc.robot.subsystems.armsimulation.IOArmSimInterface;
+import frc.robot.util.RelativeEncoderSim;
+import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj.RobotBase;
 
 public class IntakeArmSystem extends SubsystemBase{
@@ -41,16 +37,8 @@ public class IntakeArmSystem extends SubsystemBase{
     private SparkClosedLoopController m_armPIDController = m_armMotor.getClosedLoopController();
     private final DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(ArmConstants.kArmEncoderID);
     private double desiredAngle;
-    private PIDController m_simController = new PIDController(1.0, 0.0, 0.0);
 
-    // The arm gearbox represents a gearbox containing two Vex 775pro motors.
-    private final DCMotor m_armGearbox = DCMotor.getVex775Pro(2);
-
-    private SingleJointedArmSim m_armSim;
-    private Mechanism2d m_mech2d;
-    private MechanismRoot2d m_armPivot;
-    private MechanismLigament2d m_armTower;
-    private MechanismLigament2d m_armLigament;
+    private ArmSimulation m_armSimulation = null;
 
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit
     public IntakeArmSystem(){
@@ -95,38 +83,24 @@ public class IntakeArmSystem extends SubsystemBase{
         // }
         desiredAngle = getArmAngleRelative();
 
-        double kArmReduction = 200;
-        double kArmLength = Units.inchesToMeters(30);
-        double kArmMass = 8.0; // Kilograms
-        double kMinAngleRads = Units.degreesToRadians(-75);
-        double kMaxAngleRads = Units.degreesToRadians(255);
-
-        // distance per pulse = (angle per revolution) / (pulses per revolution)
-        //  = (2 * PI rads) / (4096 pulses)
-        double kArmEncoderDistPerPulse = 2.0 * Math.PI / 4096;
-
-        m_armSim = new SingleJointedArmSim(
-            m_armGearbox,
-            kArmReduction,
-            SingleJointedArmSim.estimateMOI(kArmLength, kArmMass),
-            kArmLength,
-            kMinAngleRads,
-            kMaxAngleRads,
-            true,
-            0,
-            kArmEncoderDistPerPulse,
-            0.0 // Add noise with a std-dev of 1 tick
-        );
-
-        m_mech2d = new Mechanism2d(60, 60);
-        m_armPivot = m_mech2d.getRoot("ArmPivot", 30, 30);
-        m_armTower = m_armPivot.append(new MechanismLigament2d("ArmTower", 30, -90));
-        m_armLigament = m_armPivot.append(
-            new MechanismLigament2d("Arm", 30, 0, 6, new Color8Bit(Color.kYellow))
-        );
-        SmartDashboard.putData("Arm Sim", m_mech2d);
+        if (RobotBase.isSimulation()) {
+            m_armSimulation = createSim();
+        }
 
         initShuffleboard();
+    }
+
+    private ArmSimulation createSim() {
+        // Create sim wrappers for devices
+        DutyCycleEncoderSim absEncoderSim = new DutyCycleEncoderSim(m_armEncoder);
+        RelativeEncoderSim relEncoderSim = new RelativeEncoderSim(m_armRelativeEncoder);
+
+        IOArmSimInterface ioArmSim = new IOArmSim(
+            absEncoderSim,
+            relEncoderSim,
+            () -> desiredAngle);
+
+        return new ArmSimulation(ioArmSim);
     }
 
 // private int loop = 0;
@@ -144,13 +118,9 @@ public class IntakeArmSystem extends SubsystemBase{
 
     @Override
     public void simulationPeriodic() {
-        double currentAngle = m_armSim.getAngleRads();
-        double simOutput = m_simController.calculate(currentAngle, desiredAngle);
-        double motorVolts = MathUtil.clamp(simOutput, -1.0, 1.0) * 12.0;
-        m_armSim.setInput(motorVolts);
-        m_armSim.update(0.02);
-
-        m_armLigament.setAngle(Units.radiansToDegrees(m_armSim.getAngleRads()));
+        if (m_armSimulation != null) {
+            m_armSimulation.simulationPeriodic();
+        }
     }
 
     public void initShuffleboard() {
@@ -167,20 +137,19 @@ public class IntakeArmSystem extends SubsystemBase{
             () -> (this.getCurrentCommand() == null) ? "None"
                     : this.getCurrentCommand().getName());
 
-            // Add a button to test moving arm up
-            Command goUp = new SetArmToAngleCommand(this, ArmConstants.kMinArmRotation);
-            tab.add("Go Up2", goUp).withWidget("Command");            
+            if (m_armSimulation != null) {
+                SmartDashboard.putData("Arm Sim", m_armSimulation.getMech2d());
+
+                // Add a button to test moving arm up
+                Command goUp = new SetArmToAngleCommand(this, ArmConstants.kMinArmRotation);
+                tab.add("Go Up2", goUp).withWidget("Command");
+            }
         }
   }
 
     public void setReference(double position) {
         desiredAngle = position;
-        if (RobotBase.isSimulation()) {
-            System.out.println("Setting arm position to " + position);
-            m_simController.setSetpoint(position);
-        } else {
-            m_armPIDController.setReference(position, ControlType.kPosition);
-        }
+        m_armPIDController.setReference(position, ControlType.kPosition);
     }
 
     //sets the speed of m_armMotor. Cannot exceed maxOutputPercentage
