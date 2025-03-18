@@ -12,6 +12,18 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
+// This class internally simulates an arm using a min-simulation-degrees to max-simulation-degrees
+// range.  This was chosen for one primary reason:
+//   1. Since the arm simulation uses gravity, its important that it simulate the exact
+//      range that we DISPLAY in mech2d.  Otherwise, the gravity will be wrong.
+//
+// Net-net: IOArmSim is always dealing in the PHYSICAL range of the arm.  But the arm
+// simulation is always dealing with the SIMULATION range.
+//
+// NOTE: When the robot is PHYSICALLY running, we re-use the mech2d to display the current
+// arm position.  So even in this case, we convert the phyical arm position to the
+// simulated range.
+//
 public class ArmSimulation {
     private IOArmSimInterface m_ioArmSimInterface;
  
