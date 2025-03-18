@@ -99,7 +99,7 @@ public class IntakeArmSystem extends SubsystemBase{
         IOArmSimInterface ioArmSim = new IOArmSim(
             absEncoderSim,
             relEncoderSim,
-            () -> 20); // $TODO Units.radiansToDegrees(desiredAngleRads));
+            () -> Units.radiansToDegrees(desiredAngleRads));
 
         return new ArmSimulation(ioArmSim);
     }
@@ -146,7 +146,7 @@ public class IntakeArmSystem extends SubsystemBase{
                 tab.add("Go Up2", goUp).withWidget("Command");
             }
         }
-  }
+    }
 
     public void setReferenceRads(double newReferencePositionRads) {
         desiredAngleRads = newReferencePositionRads;

@@ -38,12 +38,18 @@ public class ArmSimulation {
     }
 
     public void simulationPeriodic() {
-        // Read the setpoint from the IO interface
+        // Read the setpoint from the IO 
         double desiredAngleDegrees = m_ioArmSimInterface.getSetpointDegrees();
-        double currentAngleDegrees = Units.radiansToDegrees(m_armSim.getAngleRads());
+        //System.out.println("##### Arm setpoint=" + desiredAngleDegrees);
 
-        // Use PID controller to get motor voltage
-        double simOutput = m_pidController.calculate(currentAngleDegrees, desiredAngleDegrees);
+        double desiredAngleRads = Units.degreesToRadians(desiredAngleDegrees);
+        double currentAngleRads = m_armSim.getAngleRads();
+
+        // Use PID controller to get motor voltage.
+        //
+        // NOTE: The PID Controller assumes Radians for how it was tuned.  I didnt
+        // think it would matter, but when I tried using Degrees, the arm jittered around.
+        double simOutput = m_pidController.calculate(currentAngleRads, desiredAngleRads);
         double motorVolts = MathUtil.clamp(simOutput, -1.0, 1.0) * 12.0;
 
         // Run the simulation with a particular motor voltage
