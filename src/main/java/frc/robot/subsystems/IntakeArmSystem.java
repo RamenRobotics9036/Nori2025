@@ -99,9 +99,14 @@ public class IntakeArmSystem extends SubsystemBase{
         IOArmSimInterface ioArmSim = new IOArmSim(
             absEncoderSim,
             relEncoderSim,
-            () -> Units.radiansToDegrees(desiredAngleRads));
+            () -> Units.radiansToDegrees(desiredAngleRads)); // $TODO - This is wrong
 
-        return new ArmSimulation(ioArmSim);
+        return new ArmSimulation(
+            ioArmSim,
+            ArmConstants.kMinArmRotation,
+            ArmConstants.kMaxArmRotation,
+            -45.0,
+            45.0);
     }
 
 // private int loop = 0;

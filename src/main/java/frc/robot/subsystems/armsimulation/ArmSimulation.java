@@ -31,13 +31,35 @@ public class ArmSimulation {
 
     private SingleJointedArmSim m_armSim;
     private Mechanism2d m_mech2d;
-    private MechanismLigament2d m_armLigament; 
+    private MechanismLigament2d m_armLigament;
 
+    private double m_minPhysicalArmDegrees;
+    private double m_maxPhysicalArmDegrees;
+    private double m_minSimDegrees;
+    private double m_maxSimDegrees;
+    
     // Constructor
-    public ArmSimulation(IOArmSimInterface ioArmSimInterface) {
+    public ArmSimulation(
+        IOArmSimInterface ioArmSimInterface,
+        double minPhysicalArmRads,
+        double maxPhysicalArmRads,
+        double minSimDegrees,
+        double maxSimDegrees) {
+
         if (!RobotBase.isSimulation()) {
             System.out.println("ERROR: ArmSimulation is only available in simulation mode.");
             return;
+        }
+
+        m_minPhysicalArmDegrees = Units.radiansToDegrees(minPhysicalArmRads);
+        m_maxPhysicalArmDegrees = Units.radiansToDegrees(maxPhysicalArmRads);
+        m_minSimDegrees = minSimDegrees;
+        m_maxSimDegrees = maxSimDegrees;
+        if (m_minPhysicalArmDegrees >= m_maxPhysicalArmDegrees) {
+            throw new IllegalArgumentException("m_minArmDegrees must be less than m_maxArmDegrees");
+        }
+        if (m_minSimDegrees >= m_maxSimDegrees) {
+            throw new IllegalArgumentException("m_minMechDisplayDegrees must be less than m_maxMechDisplayDegrees");
         }
 
         m_ioArmSimInterface = ioArmSimInterface;
@@ -52,7 +74,7 @@ public class ArmSimulation {
     public void simulationPeriodic() {
         // Read the setpoint from the IO 
         double desiredAngleDegrees = m_ioArmSimInterface.getSetpointDegrees();
-        //System.out.println("##### Arm setpoint=" + desiredAngleDegrees);
+        // System.out.println("##### Arm setpoint degrees = " + desiredAngleDegrees);
 
         double desiredAngleRads = Units.degreesToRadians(desiredAngleDegrees);
         double currentAngleRads = m_armSim.getAngleRads();
@@ -87,8 +109,6 @@ public class ArmSimulation {
         double kArmReduction = 200;
         double kArmLength = Units.inchesToMeters(20);
         double kArmMass = 4.0; // Kilograms
-        double kMinAngleRads = Units.degreesToRadians(-45);
-        double kMaxAngleRads = Units.degreesToRadians(45);
  
         // distance per pulse = (angle per revolution) / (pulses per revolution)
         //  = (2 * PI rads) / (4096 pulses)
@@ -99,8 +119,8 @@ public class ArmSimulation {
             kArmReduction, 
             SingleJointedArmSim.estimateMOI(kArmLength, kArmMass),
             kArmLength,
-            kMinAngleRads,
-            kMaxAngleRads,
+            Units.degreesToRadians(m_minSimDegrees),
+            Units.degreesToRadians(m_maxSimDegrees),
             true,
             0,
             kArmEncoderDistPerPulse,

@@ -39,6 +39,7 @@ public class IOArmSim implements IOArmSimInterface {
     }
 
     @Override
+    // $TODO - This should be in the radians from the original range
     public double getSetpointDegrees() {
         return m_setpointSupplier.getAsDouble();
     }
@@ -47,6 +48,7 @@ public class IOArmSim implements IOArmSimInterface {
     public void setOutputArmDegreesAbsolute(double angleDegrees) {
         // NOTE: Normally, encoders use Rotations for units.  But conversion factor
         // was configured on the encoders to use radians.
+        // $TODO - This is wrong.  Needs to convert from degrees for mech2d into the original radians
         double angleRads = Units.degreesToRadians(angleDegrees);
 
         // Set it on the absolute encoder sim object.
