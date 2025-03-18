@@ -12,6 +12,12 @@ public class RangeConvert {
         double minSimDegrees,
         double maxSimDegrees) {
 
+        if (minPhysicalArmDegrees < 0 || maxPhysicalArmDegrees < 0 || minSimDegrees < 0 || maxSimDegrees < 0) {
+            System.out.println("ERROR: Degrees must be non-negative");
+        }
+        if (minPhysicalArmDegrees >= 360.0 || maxPhysicalArmDegrees >= 360.0 || minSimDegrees >= 360.0 || maxSimDegrees >= 360.0) {
+            System.out.println("ERROR: Degrees must be less than 360");
+        }
         if (minPhysicalArmDegrees >= maxPhysicalArmDegrees) {
             System.out.println("ERROR: m_minPhysicalArmDegrees must be less than m_maxPhysicalArmDegrees");
         }

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.util.RangeConvert;
 
 // This class internally simulates an arm using a min-simulation-degrees to max-simulation-degrees
 // range.  This was chosen for one primary reason:
@@ -33,28 +34,19 @@ public class ArmSimulation {
     private Mechanism2d m_mech2d;
     private MechanismLigament2d m_armLigament;
 
-    private double m_minPhysicalArmDegrees;
-    private double m_maxPhysicalArmDegrees;
-    private double m_minSimDegrees;
-    private double m_maxSimDegrees;
+    private RangeConvert m_rangesPhysicalAndSim;
     
     // Constructor
     public ArmSimulation(
         IOArmSimInterface ioArmSimInterface,
-        double minPhysicalArmRads,
-        double maxPhysicalArmRads,
-        double minSimDegrees,
-        double maxSimDegrees) {
+        RangeConvert rangesPhysicalAndSim) {
 
         if (!RobotBase.isSimulation()) {
             System.out.println("ERROR: ArmSimulation is only available in simulation mode.");
             return;
         }
 
-        m_minPhysicalArmDegrees = Units.radiansToDegrees(minPhysicalArmRads);
-        m_maxPhysicalArmDegrees = Units.radiansToDegrees(maxPhysicalArmRads);
-        m_minSimDegrees = minSimDegrees;
-        m_maxSimDegrees = maxSimDegrees;
+        m_rangesPhysicalAndSim = rangesPhysicalAndSim;
         if (m_minPhysicalArmDegrees >= m_maxPhysicalArmDegrees) {
             throw new IllegalArgumentException("m_minArmDegrees must be less than m_maxArmDegrees");
         }

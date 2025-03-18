@@ -25,6 +25,7 @@ import frc.robot.commands.SetArmToAngleCommand;
 import frc.robot.subsystems.armsimulation.ArmSimulation;
 import frc.robot.subsystems.armsimulation.IOArmSim;
 import frc.robot.subsystems.armsimulation.IOArmSimInterface;
+import frc.robot.util.RangeConvert;
 import frc.robot.util.RelativeEncoderSim;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -96,6 +97,12 @@ public class IntakeArmSystem extends SubsystemBase{
         DutyCycleEncoderSim absEncoderSim = new DutyCycleEncoderSim(m_armEncoder);
         RelativeEncoderSim relEncoderSim = new RelativeEncoderSim(m_armRelativeEncoder);
 
+        RangeConvert rangesPhysicalAndSim = new RangeConvert(
+            Units.radiansToDegrees(ArmConstants.kMinArmRotation),
+            Units.radiansToDegrees(ArmConstants.kMaxArmRotation),
+            -45.0,
+            45.0);
+
         IOArmSimInterface ioArmSim = new IOArmSim(
             absEncoderSim,
             relEncoderSim,
@@ -103,10 +110,7 @@ public class IntakeArmSystem extends SubsystemBase{
 
         return new ArmSimulation(
             ioArmSim,
-            ArmConstants.kMinArmRotation,
-            ArmConstants.kMaxArmRotation,
-            -45.0,
-            45.0);
+            rangesPhysicalAndSim);
     }
 
 // private int loop = 0;
