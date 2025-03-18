@@ -52,7 +52,8 @@ public class ArmSimulation {
 
         // Set the output
         double newAngle = m_armSim.getAngleRads();
-        m_armLigament.setAngle(Units.radiansToDegrees(newAngle));
+        double newAngleDegrees = Units.radiansToDegrees(newAngle);
+        m_armLigament.setAngle(newAngleDegrees);
 
         // Write the new position into the absolute encoder
         m_ioArmSimInterface.setOutputArmAngleAbsolute(newAngle);
@@ -67,10 +68,10 @@ public class ArmSimulation {
         DCMotor armGearbox = DCMotor.getVex775Pro(2);
 
         double kArmReduction = 200;
-        double kArmLength = Units.inchesToMeters(30);
-        double kArmMass = 8.0; // Kilograms
-        double kMinAngleRads = Units.degreesToRadians(-75);
-        double kMaxAngleRads = Units.degreesToRadians(255);
+        double kArmLength = Units.inchesToMeters(20);
+        double kArmMass = 4.0; // Kilograms
+        double kMinAngleRads = Units.degreesToRadians(-45);
+        double kMaxAngleRads = Units.degreesToRadians(45);
  
         // distance per pulse = (angle per revolution) / (pulses per revolution)
         //  = (2 * PI rads) / (4096 pulses)
@@ -92,9 +93,9 @@ public class ArmSimulation {
 
     private MechanismLigament2d createArmLigament(Mechanism2d mech2d) {
         MechanismRoot2d armPivot = mech2d.getRoot("ArmPivot", 30, 30); 
-        MechanismLigament2d armTower = armPivot.append(new MechanismLigament2d("ArmTower", 30, -90));
+        MechanismLigament2d armTower = armPivot.append(new MechanismLigament2d("ArmTower", 20, -90));
         MechanismLigament2d armLigament = armPivot.append( 
-            new MechanismLigament2d("Arm", 30, 0, 6, new Color8Bit(Color.kYellow)) 
+            new MechanismLigament2d("Arm", 15, 0, 6, new Color8Bit(Color.kYellow)) 
         );
 
         return armLigament;

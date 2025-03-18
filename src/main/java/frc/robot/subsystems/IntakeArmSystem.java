@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -98,7 +99,7 @@ public class IntakeArmSystem extends SubsystemBase{
         IOArmSimInterface ioArmSim = new IOArmSim(
             absEncoderSim,
             relEncoderSim,
-            () -> desiredAngle);
+            () -> Units.degreesToRadians(20)); // $TODO desiredAngle);
 
         return new ArmSimulation(ioArmSim);
     }
