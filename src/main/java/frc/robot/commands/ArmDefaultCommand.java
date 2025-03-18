@@ -21,12 +21,12 @@ public class ArmDefaultCommand extends Command {
 
     @Override
     public void initialize() {
-        desiredAngle = m_armSystem.getArmAngleRelative();
+        desiredAngle = m_armSystem.getArmAngleRelativeRads();
     }
 
     @Override
     public void execute() {
-        setArmAngle(m_armSystem.getArmAngleRelative() + (m_deltaArmAngleFromController.get() / ArmDefaultCommandConstants.armAngleChangeRate));
+        setArmAngle(m_armSystem.getArmAngleRelativeRads() + (m_deltaArmAngleFromController.get() / ArmDefaultCommandConstants.armAngleChangeRate));
     }
 
     @Override
@@ -42,6 +42,6 @@ public class ArmDefaultCommand extends Command {
     private void setArmAngle(double value) {
         value = MathUtil.clamp(value, ArmConstants.kMinArmRotation, ArmConstants.kMaxArmRotation);
         desiredAngle = value;
-        m_armSystem.setReference(desiredAngle);
+        m_armSystem.setReferenceRads(desiredAngle);
     }
 }

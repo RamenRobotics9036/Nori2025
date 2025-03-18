@@ -37,7 +37,7 @@ public class IntakeArmSystem extends SubsystemBase{
     private double maxOutput = ArmConstants.maxOutput;
     private SparkClosedLoopController m_armPIDController = m_armMotor.getClosedLoopController();
     private final DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(ArmConstants.kArmEncoderID);
-    private double desiredAngle;
+    private double desiredAngleRads;
 
     private ArmSimulation m_armSimulation = null;
 
@@ -76,13 +76,13 @@ public class IntakeArmSystem extends SubsystemBase{
         if (!m_armEncoder.isConnected()) {
             m_armRelativeEncoder.setPosition(0.0);
         } else {
-            m_armRelativeEncoder.setPosition(getArmAngle());
+            m_armRelativeEncoder.setPosition(getArmAngleRads());
         }
 
         // if (!m_armEncoder.isConnected()) {
         //     throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get());
         // }
-        desiredAngle = getArmAngleRelative();
+        desiredAngleRads = getArmAngleRelativeRads();
 
         if (RobotBase.isSimulation()) {
             m_armSimulation = createSim();
@@ -99,7 +99,7 @@ public class IntakeArmSystem extends SubsystemBase{
         IOArmSimInterface ioArmSim = new IOArmSim(
             absEncoderSim,
             relEncoderSim,
-            () -> Units.degreesToRadians(20)); // $TODO desiredAngle);
+            () -> 20); // $TODO Units.radiansToDegrees(desiredAngleRads));
 
         return new ArmSimulation(ioArmSim);
     }
@@ -113,7 +113,7 @@ public class IntakeArmSystem extends SubsystemBase{
         //     System.out.println("@@@@ Arm encoder=" + getArmAngleRelative() + ", desired="+desiredAngle);
         // }
         if (m_armEncoder.isConnected()) {
-            m_armRelativeEncoder.setPosition(getArmAngle());
+            m_armRelativeEncoder.setPosition(getArmAngleRads());
         }
     }
 
@@ -127,9 +127,9 @@ public class IntakeArmSystem extends SubsystemBase{
     public void initShuffleboard() {
         if (!OperatorConstants.kCompetitionMode) {
             ShuffleboardTab tab = Shuffleboard.getTab("Arm");
-            tab.addDouble("Arm Relative Encoder", () -> getArmAngleRelative());
-            tab.addDouble("Arm Encoder", () -> getArmAngle());
-            tab.addDouble("Desired Angle", () -> desiredAngle);
+            tab.addDouble("Arm Relative Encoder Rads", () -> getArmAngleRelativeRads());
+            tab.addDouble("Arm Encoder Rads", () -> getArmAngleRads());
+            tab.addDouble("Desired Angle Rads", () -> desiredAngleRads);
             tab.addBoolean("Encoder Is Connected", () -> m_armEncoder.isConnected());
 
             // Show current command on shuffleboard
@@ -148,9 +148,9 @@ public class IntakeArmSystem extends SubsystemBase{
         }
   }
 
-    public void setReference(double position) {
-        desiredAngle = position;
-        m_armPIDController.setReference(position, ControlType.kPosition);
+    public void setReferenceRads(double newReferencePositionRads) {
+        desiredAngleRads = newReferencePositionRads;
+        m_armPIDController.setReference(newReferencePositionRads, ControlType.kPosition);
     }
 
     //sets the speed of m_armMotor. Cannot exceed maxOutputPercentage
@@ -164,24 +164,16 @@ public class IntakeArmSystem extends SubsystemBase{
         return m_armMotor.get();
     }
 
-
-
     // get encoder value
-    private double getArmAngle() {
+    private double getArmAngleRads() {
+        // $TODO - Is there a bug here?  Isnt m_armEncoder.get() already returning in radians since
+        // we configured the encoders to use a conversion factor above?
         return Math.max(0, (m_armEncoder.get() * 2 * Math.PI) + ArmConstants.kAbsoluteEncoderOffset) % (Math.PI * 2);
     }
 
-    public double getArmAngleRelative() {
+    public double getArmAngleRelativeRads() {
         return m_armRelativeEncoder.getPosition();
     }
-
-    // public double getAbsoluteArmAngle() {
-    //     return m_armEncoder.getAbsolutePosition();
-    // }
-
-    // public void resetArmAngle() {
-    //     m_armEncoder.reset();
-    // }
 
     //stops everything
     public void stopSystem(){

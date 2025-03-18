@@ -2,6 +2,7 @@ package frc.robot.subsystems.armsimulation;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import frc.robot.util.AbsToRelEncoderCalc;
@@ -38,12 +39,16 @@ public class IOArmSim implements IOArmSimInterface {
     }
 
     @Override
-    public double getSetpoint() {
+    public double getSetpointDegrees() {
         return m_setpointSupplier.getAsDouble();
     }
 
     @Override
-    public void setOutputArmAngleAbsolute(double angleRads) {
+    public void setOutputArmDegreesAbsolute(double angleDegrees) {
+        // NOTE: Normally, encoders use Rotations for units.  But conversion factor
+        // was configured on the encoders to use radians.
+        double angleRads = Units.degreesToRadians(angleDegrees);
+
         // Set it on the absolute encoder sim object.
         m_absEncoderSim.set(angleRads);
 

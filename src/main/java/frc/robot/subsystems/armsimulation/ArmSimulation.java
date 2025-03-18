@@ -39,11 +39,11 @@ public class ArmSimulation {
 
     public void simulationPeriodic() {
         // Read the setpoint from the IO interface
-        double desiredAngle = m_ioArmSimInterface.getSetpoint();
-        double currentAngle = m_armSim.getAngleRads();
+        double desiredAngleDegrees = m_ioArmSimInterface.getSetpointDegrees();
+        double currentAngleDegrees = Units.radiansToDegrees(m_armSim.getAngleRads());
 
         // Use PID controller to get motor voltage
-        double simOutput = m_pidController.calculate(currentAngle, desiredAngle);
+        double simOutput = m_pidController.calculate(currentAngleDegrees, desiredAngleDegrees);
         double motorVolts = MathUtil.clamp(simOutput, -1.0, 1.0) * 12.0;
 
         // Run the simulation with a particular motor voltage
@@ -51,12 +51,11 @@ public class ArmSimulation {
         m_armSim.update(0.02);
 
         // Set the output
-        double newAngle = m_armSim.getAngleRads();
-        double newAngleDegrees = Units.radiansToDegrees(newAngle);
+        double newAngleDegrees = Units.radiansToDegrees(m_armSim.getAngleRads());
         m_armLigament.setAngle(newAngleDegrees);
 
         // Write the new position into the absolute encoder
-        m_ioArmSimInterface.setOutputArmAngleAbsolute(newAngle);
+        m_ioArmSimInterface.setOutputArmDegreesAbsolute(newAngleDegrees);
     }
 
     public Mechanism2d getMech2d() {

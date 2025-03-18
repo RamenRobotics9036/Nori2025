@@ -20,7 +20,7 @@ public class SetArmToAngleCommand extends Command {
     @Override
     public void initialize() {
         m_timer.restart();
-        m_armSystem.setReference(m_desiredAngle);
+        m_armSystem.setReferenceRads(m_desiredAngle);
     }
 
     // private int loop = 0;
@@ -39,7 +39,7 @@ public class SetArmToAngleCommand extends Command {
             System.out.println("WARNING: SetArmToAngleCommand timed out!");
             return true;
         }
-        if (MathUtil.applyDeadband(m_desiredAngle - m_armSystem.getArmAngleRelative(), ArmConstants.tolerance) == 0) {
+        if (MathUtil.applyDeadband(m_desiredAngle - m_armSystem.getArmAngleRelativeRads(), ArmConstants.tolerance) == 0) {
             return true;
         }
         return false;
