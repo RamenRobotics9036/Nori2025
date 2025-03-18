@@ -47,11 +47,11 @@ public class ArmSimulation {
         }
 
         m_rangesPhysicalAndSim = rangesPhysicalAndSim;
-        if (m_minPhysicalArmDegrees >= m_maxPhysicalArmDegrees) {
-            throw new IllegalArgumentException("m_minArmDegrees must be less than m_maxArmDegrees");
+        if (m_rangesPhysicalAndSim.getMinPhysicalArmDegrees() >= m_rangesPhysicalAndSim.getMaxPhysicalArmDegrees()) {
+            throw new IllegalArgumentException("getMinPhysicalArmDegrees must be less than getMaxPhysicalArmDegrees");
         }
-        if (m_minSimDegrees >= m_maxSimDegrees) {
-            throw new IllegalArgumentException("m_minMechDisplayDegrees must be less than m_maxMechDisplayDegrees");
+        if (m_rangesPhysicalAndSim.getMinSimDegrees() >= m_rangesPhysicalAndSim.getMaxSimDegrees()) {
+            throw new IllegalArgumentException("getMinSimDegrees must be less than getMaxSimDegrees");
         }
 
         m_ioArmSimInterface = ioArmSimInterface;
@@ -111,8 +111,8 @@ public class ArmSimulation {
             kArmReduction, 
             SingleJointedArmSim.estimateMOI(kArmLength, kArmMass),
             kArmLength,
-            Units.degreesToRadians(m_minSimDegrees),
-            Units.degreesToRadians(m_maxSimDegrees),
+            Units.degreesToRadians(m_rangesPhysicalAndSim.getMinSimDegrees()),
+            Units.degreesToRadians(m_rangesPhysicalAndSim.getMaxSimDegrees()),
             true,
             0,
             kArmEncoderDistPerPulse,
