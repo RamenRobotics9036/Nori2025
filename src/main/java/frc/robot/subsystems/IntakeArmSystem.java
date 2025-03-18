@@ -106,7 +106,7 @@ public class IntakeArmSystem extends SubsystemBase{
         IOArmSimInterface ioArmSim = new IOArmSim(
             absEncoderSim,
             relEncoderSim,
-            () -> Units.radiansToDegrees(desiredAngleRads)); // $TODO - This is wrong
+            () -> Units.radiansToDegrees(desiredAngleRads));
 
         return new ArmSimulation(
             ioArmSim,

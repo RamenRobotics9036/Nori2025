@@ -65,7 +65,7 @@ public class ArmSimulation {
 
     public void simulationPeriodic() {
         // Read the setpoint from the IO 
-        double desiredAngleDegrees = m_ioArmSimInterface.getSetpointDegrees();
+        double desiredAngleDegrees = m_ioArmSimInterface.getPhysicalSetpointDegrees();
         // System.out.println("##### Arm setpoint degrees = " + desiredAngleDegrees);
 
         double desiredAngleRads = Units.degreesToRadians(desiredAngleDegrees);
@@ -87,7 +87,7 @@ public class ArmSimulation {
         m_armLigament.setAngle(newAngleDegrees);
 
         // Write the new position into the absolute encoder
-        m_ioArmSimInterface.setOutputArmDegreesAbsolute(newAngleDegrees);
+        m_ioArmSimInterface.setPhysicalOutputArmDegreesAbsolute(newAngleDegrees);
     }
 
     public Mechanism2d getMech2d() {
