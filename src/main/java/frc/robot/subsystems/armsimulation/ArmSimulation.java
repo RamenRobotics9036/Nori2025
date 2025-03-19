@@ -65,17 +65,18 @@ public class ArmSimulation {
 
     public void simulationPeriodic() {
         // Read the setpoint from the IO 
-        double desiredAngleDegrees = m_ioArmSimInterface.getPhysicalSetpointDegrees();
-        // System.out.println("##### Arm setpoint degrees = " + desiredAngleDegrees);
+        double physicalDesiredAngleDegrees = m_ioArmSimInterface.getPhysicalSetpointDegrees();
+        double simDesiredAngleDegrees = m_rangesPhysicalAndSim.physicalToSim(physicalDesiredAngleDegrees);
+        // System.out.println("##### Arm setpoint degrees = " + simDesiredAngleDegrees);
 
-        double desiredAngleRads = Units.degreesToRadians(desiredAngleDegrees);
+        double simDesiredAngleRads = Units.degreesToRadians(simDesiredAngleDegrees);
         double currentAngleRads = m_armSim.getAngleRads();
 
         // Use PID controller to get motor voltage.
         //
         // NOTE: The PID Controller assumes Radians for how it was tuned.  I didnt
         // think it would matter, but when I tried using Degrees, the arm jittered around.
-        double simOutput = m_pidController.calculate(currentAngleRads, desiredAngleRads);
+        double simOutput = m_pidController.calculate(currentAngleRads, simDesiredAngleRads);
         double motorVolts = MathUtil.clamp(simOutput, -1.0, 1.0) * 12.0;
 
         // Run the simulation with a particular motor voltage
@@ -83,11 +84,12 @@ public class ArmSimulation {
         m_armSim.update(0.02);
 
         // Set the output
-        double newAngleDegrees = Units.radiansToDegrees(m_armSim.getAngleRads());
-        m_armLigament.setAngle(newAngleDegrees);
+        double newSimAngleDegrees = Units.radiansToDegrees(m_armSim.getAngleRads());
+        m_armLigament.setAngle(newSimAngleDegrees);
 
         // Write the new position into the absolute encoder
-        m_ioArmSimInterface.setPhysicalOutputArmDegreesAbsolute(newAngleDegrees);
+        double newPhysiclAngleDegrees = m_rangesPhysicalAndSim.simToPhysical(newSimAngleDegrees);
+        m_ioArmSimInterface.setPhysicalOutputArmDegreesAbsolute(newPhysiclAngleDegrees);
     }
 
     public Mechanism2d getMech2d() {

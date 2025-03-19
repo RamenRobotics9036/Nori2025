@@ -151,7 +151,7 @@ public class IntakeArmSystem extends SubsystemBase{
                 SmartDashboard.putData("Arm Sim", m_armSimulation.getMech2d());
 
                 // Add a button to test moving arm up
-                Command goUp = new SetArmToAngleCommand(this, ArmConstants.kMinArmRotation);
+                Command goUp = new SetArmToAngleCommand(this, ArmConstants.kMaxArmRotation); // $TODO - Should this be MIN?
                 tab.add("Go Up2", goUp).withWidget("Command");
             }
         }

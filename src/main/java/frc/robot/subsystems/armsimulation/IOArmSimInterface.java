@@ -12,5 +12,5 @@ public interface IOArmSimInterface {
     //
     // Outputs that the simulation calculates
     //
-    void setPhysicalOutputArmDegreesAbsolute(double angleDegrees);
+    void setPhysicalOutputArmDegreesAbsolute(double physicalAngleDegrees);
 }

@@ -45,17 +45,17 @@ public class IOArmSim implements IOArmSimInterface {
     }
 
     @Override
-    public void setPhysicalOutputArmDegreesAbsolute(double angleDegrees) {
+    public void setPhysicalOutputArmDegreesAbsolute(double physicalAngleDegrees) {
         // NOTE: Normally, encoders use Rotations for units.  But conversion factor
         // was configured on the encoders to use radians.
         // $TODO - This is wrong.  Needs to convert from degrees for mech2d into the original radians
-        double angleRads = Units.degreesToRadians(angleDegrees);
+        double physicalAngleRads = Units.degreesToRadians(physicalAngleDegrees);
 
         // Set it on the absolute encoder sim object.
-        m_absEncoderSim.set(angleRads);
+        m_absEncoderSim.set(physicalAngleRads);
 
         // Update our relative encoder calculator.
-        m_absToRelEncoderCalc.setAbsolutePosition(angleRads);
+        m_absToRelEncoderCalc.setAbsolutePosition(physicalAngleRads);
 
         // Set it on the relative encoder sim object.
         m_relEncoderSim.setPosition(m_absToRelEncoderCalc.getRelativePosition());
