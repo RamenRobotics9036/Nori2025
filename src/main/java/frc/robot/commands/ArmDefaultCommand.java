@@ -22,11 +22,27 @@ public class ArmDefaultCommand extends Command {
     @Override
     public void initialize() {
         desiredAngle = m_armSystem.getArmAngleRelativeRads();
+
+        // Call setPoint to set the arm-motor PID loop to the desired angle.
+        setArmAngle(desiredAngle);
     }
 
     @Override
     public void execute() {
-        setArmAngle(m_armSystem.getArmAngleRelativeRads() + (m_deltaArmAngleFromController.get() / ArmDefaultCommandConstants.armAngleChangeRate));
+        // NOTE: Fixed a bug where the desiredAngle was being updated based on the CURRENT position
+        // of the arm.  That means every time execute() was called, it was setting a new setpoint
+        // in the arm-motor.  The problem is that the arm-motor was already in a closed-loop PID control mode.
+        // So we should ONLY set the SetPoint if the joystick is moved.
+        // Also, we don't want things like gravity on the arm to cause it to slowly change the setpoint
+        // downward.  Instead, the setpoint should remain constant until the joystick is moved.
+        double deltaControllerValue = m_deltaArmAngleFromController.get() / ArmDefaultCommandConstants.armAngleChangeRate;
+
+        // Only tell arm (which already uses a closed loop PID controller) to move if
+        // joystick is moved
+        if (deltaControllerValue != 0) {
+            desiredAngle += deltaControllerValue;
+            setArmAngle(desiredAngle);
+        }
     }
 
     @Override
