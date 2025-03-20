@@ -115,18 +115,14 @@ public class IntakeArmSystem extends SubsystemBase{
             rangesPhysicalAndSim);
     }
 
-// private int loop = 0;
-
     @Override
     public void periodic() {
-        // loop += 1;
-        // if (loop % 50 == 0) {
-        //     System.out.println("@@@@ Arm encoder=" + getArmAngleRelative() + ", desired="+desiredAngle);
-        // }
-        // $TODO - Commented this out as a temporary workaround:
-        // if (m_armEncoder.isConnected()) {
-        //     m_armRelativeEncoder.setPosition(getArmAngleRads());
-        // }
+        // We used to have code in periodic that would get the current arm position,
+        // and set it right back.  But now that we used a CLOSED Pid loop to set
+        // arm target position, we dont need to do anything else to tell the arm
+        // where to go.  The PID loop will do that for us.
+        //
+        // m_armRelativeEncoder.setPosition(getArmAngleRads());
     }
 
     @Override
