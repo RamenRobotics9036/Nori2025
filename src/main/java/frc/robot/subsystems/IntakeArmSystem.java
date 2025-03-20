@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.commands.SetArmToAngleCommand;
+import frc.robot.subsystems.armsimulation.ArmDisplay;
 import frc.robot.subsystems.armsimulation.ArmSimulation;
 import frc.robot.subsystems.armsimulation.IOArmSim;
 import frc.robot.subsystems.armsimulation.IOArmSimInterface;
@@ -39,6 +40,7 @@ public class IntakeArmSystem extends SubsystemBase{
     private double m_desiredAngleRads;
 
     private ArmSimulation m_armSimulation = null;
+    private ArmDisplay m_armDisplay = null;
 
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit
     public IntakeArmSystem(){
@@ -73,7 +75,15 @@ public class IntakeArmSystem extends SubsystemBase{
             SparkBase.PersistMode.kPersistParameters);
 
         if (RobotBase.isSimulation()) {
-            m_armSimulation = createSim();
+            RangeConvert rangesPhysicalAndSim = new RangeConvert(
+                Units.radiansToDegrees(ArmConstants.kMinArmRotation),
+                Units.radiansToDegrees(ArmConstants.kMaxArmRotation),
+                -45.0,
+                45.0,
+                true);
+    
+            m_armSimulation = createSim(rangesPhysicalAndSim);
+            m_armDisplay = new ArmDisplay(rangesPhysicalAndSim);
         }    
 
         if (!m_armEncoder.isConnected()) {
@@ -88,17 +98,10 @@ public class IntakeArmSystem extends SubsystemBase{
         initShuffleboard();
     }
 
-    private ArmSimulation createSim() {
+    private ArmSimulation createSim(RangeConvert rangesPhysicalAndSim) {
         // Create sim wrappers for devices
         DutyCycleEncoderSim absEncoderSim = new DutyCycleEncoderSim(m_armEncoder);
         RelativeEncoderSim relEncoderSim = new RelativeEncoderSim(m_armRelativeEncoder);
-
-        RangeConvert rangesPhysicalAndSim = new RangeConvert(
-            Units.radiansToDegrees(ArmConstants.kMinArmRotation),
-            Units.radiansToDegrees(ArmConstants.kMaxArmRotation),
-            -45.0,
-            45.0,
-            true);
 
         IOArmSimInterface ioArmSim = new IOArmSim(
             absEncoderSim,
@@ -124,6 +127,7 @@ public class IntakeArmSystem extends SubsystemBase{
     public void simulationPeriodic() {
         if (m_armSimulation != null) {
             m_armSimulation.simulationPeriodic();
+            m_armDisplay.setAngle(getArmAngleRads());
         }
     }
 
@@ -142,7 +146,7 @@ public class IntakeArmSystem extends SubsystemBase{
                     : this.getCurrentCommand().getName());
 
             if (m_armSimulation != null) {
-                SmartDashboard.putData("Arm Sim", m_armSimulation.getMech2d());
+                SmartDashboard.putData("Arm Sim", m_armDisplay.getMech2d());
 
                 // Add a button to test moving arm up
                 Command goUp = new SetArmToAngleCommand(this, ArmConstants.kMinArmRotation);

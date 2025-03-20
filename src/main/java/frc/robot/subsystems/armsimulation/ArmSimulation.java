@@ -6,11 +6,6 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units; 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.util.RangeConvert;
 
 // This class internally simulates an arm using a min-simulation-degrees to max-simulation-degrees
@@ -31,8 +26,6 @@ public class ArmSimulation {
     private PIDController m_pidController = new PIDController(1.0, 0.0, 0.0);
 
     private SingleJointedArmSim m_armSim;
-    private Mechanism2d m_mech2d;
-    private MechanismLigament2d m_armLigament;
 
     private RangeConvert m_rangesPhysicalAndSim;
     
@@ -59,10 +52,6 @@ public class ArmSimulation {
         m_armSim = createSingleJointedArmSim();
 
         initArmPosition();
-
-        // Create the arm display in ShuffleBoard
-        m_mech2d = new Mechanism2d(60, 60);
-        m_armLigament = createArmLigament(m_mech2d);
     }
 
     // In simulation, the arm encoder is at 0, rather than at some reasonable
@@ -98,15 +87,10 @@ public class ArmSimulation {
 
         // Set the output
         double newSimAngleDegrees = Units.radiansToDegrees(m_armSim.getAngleRads());
-        m_armLigament.setAngle(newSimAngleDegrees);
 
         // Write the new position into the absolute encoder
         double newPhysiclAngleDegrees = m_rangesPhysicalAndSim.simToPhysical(newSimAngleDegrees);
         m_ioArmSimInterface.setPhysicalOutputArmDegreesAbsolute(newPhysiclAngleDegrees);
-    }
-
-    public Mechanism2d getMech2d() {
-        return m_mech2d;
     }
 
     private SingleJointedArmSim createSingleJointedArmSim() {
@@ -133,15 +117,5 @@ public class ArmSimulation {
             kArmEncoderDistPerPulse,
             0.0 // Add noise with a std-dev of 1 tick
         ); 
-    }
-
-    private MechanismLigament2d createArmLigament(Mechanism2d mech2d) {
-        MechanismRoot2d armPivot = mech2d.getRoot("ArmPivot", 30, 30); 
-        MechanismLigament2d armTower = armPivot.append(new MechanismLigament2d("ArmTower", 20, -90));
-        MechanismLigament2d armLigament = armPivot.append( 
-            new MechanismLigament2d("Arm", 15, 0, 6, new Color8Bit(Color.kYellow)) 
-        );
-
-        return armLigament;
     }
 }
