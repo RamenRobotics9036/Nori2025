@@ -80,6 +80,7 @@ public class IntakeArmSystem extends SubsystemBase{
                 Units.radiansToDegrees(ArmConstants.kMaxArmRotation),
                 -45.0,
                 45.0,
+                5.0,
                 true);
     
             m_armSimulation = createSim(rangesPhysicalAndSim);

@@ -7,11 +7,16 @@ public class RangeConvert {
     private final double m_maxSimDegrees;
     private final boolean m_inverted;
     
+    // NOTE: We allow for a buffer in the min and max degrees to allow for a little bit of wiggle
+    // room in the simulation.  For example, the simulation has gravity pulling down on the arm, so
+    // if the robot purposefully moves the arm to the lowwest point, the simulated arm will actually
+    // droop a little bit below the lowest point.
     public RangeConvert(
         double minPhysicalArmDegrees,
         double maxPhysicalArmDegrees,
         double minSimDegrees,
         double maxSimDegrees,
+        double bufferDegrees,
         boolean inverted) {
 
         if (minPhysicalArmDegrees < 0 || maxPhysicalArmDegrees < 0 || minSimDegrees < 0 || maxSimDegrees < 0) {
@@ -26,10 +31,10 @@ public class RangeConvert {
         if (minSimDegrees >= maxSimDegrees) {
             System.out.println("ERROR: m_minSimDegrees must be less than m_maxSimDegrees");
         }
-        this.m_minPhysicalArmDegrees = minPhysicalArmDegrees;
-        this.m_maxPhysicalArmDegrees = maxPhysicalArmDegrees;
-        this.m_minSimDegrees = minSimDegrees;
-        this.m_maxSimDegrees = maxSimDegrees;
+        this.m_minPhysicalArmDegrees = minPhysicalArmDegrees - bufferDegrees;
+        this.m_maxPhysicalArmDegrees = maxPhysicalArmDegrees + bufferDegrees;
+        this.m_minSimDegrees = minSimDegrees - bufferDegrees;
+        this.m_maxSimDegrees = maxSimDegrees + bufferDegrees;
         this.m_inverted = inverted;
     }
 
@@ -37,9 +42,10 @@ public class RangeConvert {
         double minPhysicalArmDegrees,
         double maxPhysicalArmDegrees,
         double minSimDegrees,
-        double maxSimDegrees) {
+        double maxSimDegrees,
+        double bufferDegrees) {
 
-        this(minPhysicalArmDegrees, maxPhysicalArmDegrees, minSimDegrees, maxSimDegrees, false);
+        this(minPhysicalArmDegrees, maxPhysicalArmDegrees, minSimDegrees, maxSimDegrees, bufferDegrees, false);
     }
 
     public double getMinPhysicalArmDegrees() {
