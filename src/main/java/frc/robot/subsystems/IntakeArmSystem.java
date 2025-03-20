@@ -35,10 +35,9 @@ public class IntakeArmSystem extends SubsystemBase{
     private SparkMax m_armMotor = new SparkMax(ArmConstants.kArmMotorID, MotorType.kBrushless);
     private RelativeEncoder m_armRelativeEncoder = m_armMotor.getEncoder();
     private SparkMaxConfig m_armConfig = new SparkMaxConfig();
-    private double maxOutput = ArmConstants.maxOutput;
     private SparkClosedLoopController m_armPIDController = m_armMotor.getClosedLoopController();
     private final DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(ArmConstants.kArmEncoderID);
-    private double desiredAngleRads;
+    private double m_desiredAngleRads;
 
     private ArmSimulation m_armSimulation = null;
 
@@ -85,10 +84,7 @@ public class IntakeArmSystem extends SubsystemBase{
         // Initialize relative encoder to the current position of the absolute encoder
         m_armRelativeEncoder.setPosition(getArmAngleRads());
 
-        // if (!m_armEncoder.isConnected()) {
-        //     throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get());
-        // }
-        desiredAngleRads = getArmAngleRelativeRads();
+        m_desiredAngleRads = getArmAngleRelativeRads();
 
         initShuffleboard();
     }
@@ -108,7 +104,7 @@ public class IntakeArmSystem extends SubsystemBase{
         IOArmSimInterface ioArmSim = new IOArmSim(
             absEncoderSim,
             relEncoderSim,
-            () -> Units.radiansToDegrees(desiredAngleRads));
+            () -> Units.radiansToDegrees(m_desiredAngleRads));
 
         return new ArmSimulation(
             ioArmSim,
@@ -137,7 +133,7 @@ public class IntakeArmSystem extends SubsystemBase{
             ShuffleboardTab tab = Shuffleboard.getTab("Arm");
             tab.addDouble("Arm Relative Encoder Rads", () -> getArmAngleRelativeRads());
             tab.addDouble("Arm Encoder Rads", () -> getArmAngleRads());
-            tab.addDouble("Desired Angle Rads", () -> desiredAngleRads);
+            tab.addDouble("Desired Angle Rads", () -> m_desiredAngleRads);
             tab.addBoolean("Encoder Is Connected", () -> m_armEncoder.isConnected());
 
             // Show current command on shuffleboard
@@ -163,7 +159,7 @@ public class IntakeArmSystem extends SubsystemBase{
     }
 
     public void setReferenceRads(double newReferencePositionRads) {
-        desiredAngleRads = newReferencePositionRads;
+        m_desiredAngleRads = newReferencePositionRads;
         m_armPIDController.setReference(newReferencePositionRads, ControlType.kPosition);
     }
 

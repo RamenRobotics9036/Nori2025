@@ -46,7 +46,6 @@ public class IOArmSim implements IOArmSimInterface {
     }
 
     @Override
-    // $TODO - This should be in the radians from the original range
     public double getPhysicalSetpointDegrees() {
         return m_setpointSupplier.getAsDouble();
     }
