@@ -37,6 +37,15 @@ public class IOArmSim implements IOArmSimInterface {
     }
 
     @Override
+    public void initPhysicalArmDegreesAbsolute(double physicalAngleDegrees) {
+        // Were initializing the position of the arm in simulation.
+        m_absEncoderSim.set(Units.degreesToRadians(physicalAngleDegrees));
+
+        // Reset the relative encoder to 0.0
+        m_relEncoderSim.setPosition(0.0);
+    }
+
+    @Override
     // $TODO - This should be in the radians from the original range
     public double getPhysicalSetpointDegrees() {
         return m_setpointSupplier.getAsDouble();

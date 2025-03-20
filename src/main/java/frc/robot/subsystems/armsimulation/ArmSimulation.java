@@ -58,9 +58,22 @@ public class ArmSimulation {
 
         m_armSim = createSingleJointedArmSim();
 
+        initArmPosition();
+
         // Create the arm display in ShuffleBoard
         m_mech2d = new Mechanism2d(60, 60);
         m_armLigament = createArmLigament(m_mech2d);
+    }
+
+    // In simulation, the arm encoder is at 0, rather than at some reasonable
+    // arm position half-way up.  So we explicitely set the arm to a half-way
+    // point here.
+    private void initArmPosition() {
+        double halfwaySimDegrees = (m_rangesPhysicalAndSim.getMinSimDegrees() + m_rangesPhysicalAndSim.getMaxSimDegrees()) / 2.0;
+
+        double halfwayPhysicalDegrees = m_rangesPhysicalAndSim.simToPhysical(halfwaySimDegrees);
+
+        m_ioArmSimInterface.initPhysicalArmDegreesAbsolute(halfwayPhysicalDegrees);
     }
 
     public void simulationPeriodic() {
