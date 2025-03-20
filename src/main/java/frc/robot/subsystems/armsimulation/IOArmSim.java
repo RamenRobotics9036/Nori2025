@@ -37,7 +37,7 @@ public class IOArmSim implements IOArmSimInterface {
     }
 
     @Override
-    public void initPhysicalArmDegreesAbsolute(double physicalAngleDegrees) {
+    public void initPosition(double physicalAngleDegrees) {
         // Were initializing the position of the arm in simulation.
         m_absEncoderSim.set(Units.degreesToRadians(physicalAngleDegrees));
 

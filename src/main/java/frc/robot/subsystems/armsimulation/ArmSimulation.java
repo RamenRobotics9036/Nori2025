@@ -62,7 +62,7 @@ public class ArmSimulation {
 
         double halfwayPhysicalDegrees = m_rangesPhysicalAndSim.simToPhysical(halfwaySimDegrees);
 
-        m_ioArmSimInterface.initPhysicalArmDegreesAbsolute(halfwayPhysicalDegrees);
+        m_ioArmSimInterface.initPosition(halfwayPhysicalDegrees);
     }
 
     public void simulationPeriodic() {
