@@ -80,6 +80,10 @@ public class IntakeArmSystem extends SubsystemBase{
             m_armRelativeEncoder.setPosition(getArmAngleRads());
         }
 
+        // $TODO - This is a temporary workaround:
+        m_armRelativeEncoder.setPosition(
+            (ArmConstants.kMinArmRotation + ArmConstants.kMaxArmRotation) / 2.0);
+
         // if (!m_armEncoder.isConnected()) {
         //     throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get());
         // }
@@ -96,6 +100,9 @@ public class IntakeArmSystem extends SubsystemBase{
         // Create sim wrappers for devices
         DutyCycleEncoderSim absEncoderSim = new DutyCycleEncoderSim(m_armEncoder);
         RelativeEncoderSim relEncoderSim = new RelativeEncoderSim(m_armRelativeEncoder);
+
+        // $TODO - Hack
+        absEncoderSim.set(relEncoderSim.getPosition());
 
         RangeConvert rangesPhysicalAndSim = new RangeConvert(
             Units.radiansToDegrees(ArmConstants.kMinArmRotation),
@@ -122,9 +129,10 @@ public class IntakeArmSystem extends SubsystemBase{
         // if (loop % 50 == 0) {
         //     System.out.println("@@@@ Arm encoder=" + getArmAngleRelative() + ", desired="+desiredAngle);
         // }
-        if (m_armEncoder.isConnected()) {
-            m_armRelativeEncoder.setPosition(getArmAngleRads());
-        }
+        // $TODO - Commented this out as a temporary workaround:
+        // if (m_armEncoder.isConnected()) {
+        //     m_armRelativeEncoder.setPosition(getArmAngleRads());
+        // }
     }
 
     @Override
@@ -182,6 +190,12 @@ public class IntakeArmSystem extends SubsystemBase{
 
     // get encoder value
     private double getArmAngleRads() {
+        // $TODO - This is a temporary workaround:
+        if (RobotBase.isSimulation()) {
+            return 99; // $TODO
+            //return m_armRelativeEncoder.getPosition() + ArmConstants.kMinArmRotation; // $TODO - Ug, this is wrong.
+        }
+
         // $TODO - Is there a bug here?  Isnt m_armEncoder.get() already returning in radians since
         // we configured the encoders to use a conversion factor above?
         return Math.max(0, (m_armEncoder.get() * 2 * Math.PI) + ArmConstants.kAbsoluteEncoderOffset) % (Math.PI * 2);

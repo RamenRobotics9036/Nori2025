@@ -5,14 +5,12 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
-import frc.robot.util.AbsToRelEncoderCalc;
 import frc.robot.util.RelativeEncoderSim;
 
 public class IOArmSim implements IOArmSimInterface {
     private DutyCycleEncoderSim m_absEncoderSim;
     private RelativeEncoderSim m_relEncoderSim;
     private DoubleSupplier m_setpointSupplier;
-    private AbsToRelEncoderCalc m_absToRelEncoderCalc = new AbsToRelEncoderCalc();
 
     // Constructor
     public IOArmSim(
@@ -48,16 +46,17 @@ public class IOArmSim implements IOArmSimInterface {
     public void setPhysicalOutputArmDegreesAbsolute(double physicalAngleDegrees) {
         // NOTE: Normally, encoders use Rotations for units.  But conversion factor
         // was configured on the encoders to use radians.
-        // $TODO - This is wrong.  Needs to convert from degrees for mech2d into the original radians
         double physicalAngleRads = Units.degreesToRadians(physicalAngleDegrees);
 
-        // Set it on the absolute encoder sim object.
+        double previousPhysicalRads = m_absEncoderSim.get();
+
+        // Set new value on the absolute encoder sim object.
         m_absEncoderSim.set(physicalAngleRads);
 
-        // Update our relative encoder calculator.
-        m_absToRelEncoderCalc.setAbsolutePosition(physicalAngleRads);
+        // Move relative encoder by the DELTA.
+        double delta = physicalAngleRads - previousPhysicalRads;
 
         // Set it on the relative encoder sim object.
-        m_relEncoderSim.setPosition(m_absToRelEncoderCalc.getRelativePosition());
+        m_relEncoderSim.setPosition(m_relEncoderSim.getPosition() + delta);
     }
 }
