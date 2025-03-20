@@ -101,7 +101,8 @@ public class IntakeArmSystem extends SubsystemBase{
             Units.radiansToDegrees(ArmConstants.kMinArmRotation),
             Units.radiansToDegrees(ArmConstants.kMaxArmRotation),
             -45.0,
-            45.0);
+            45.0,
+            true);
 
         IOArmSimInterface ioArmSim = new IOArmSim(
             absEncoderSim,
@@ -151,8 +152,14 @@ public class IntakeArmSystem extends SubsystemBase{
                 SmartDashboard.putData("Arm Sim", m_armSimulation.getMech2d());
 
                 // Add a button to test moving arm up
-                Command goUp = new SetArmToAngleCommand(this, ArmConstants.kMaxArmRotation); // $TODO - Should this be MIN?
+                Command goUp = new SetArmToAngleCommand(this, ArmConstants.kMinArmRotation);
                 tab.add("Go Up2", goUp).withWidget("Command");
+
+                Command goDown = new SetArmToAngleCommand(this, ArmConstants.kMaxArmRotation);
+                tab.add("Go Down2", goDown).withWidget("Command");
+
+                Command goL1 = new SetArmToAngleCommand(this, ArmConstants.L1ArmAngle);
+                tab.add("Go L1", goL1).withWidget("Command");
             }
         }
     }

@@ -5,12 +5,14 @@ public class RangeConvert {
     private final double m_maxPhysicalArmDegrees;
     private final double m_minSimDegrees;
     private final double m_maxSimDegrees;
+    private final boolean m_inverted;
     
     public RangeConvert(
         double minPhysicalArmDegrees,
         double maxPhysicalArmDegrees,
         double minSimDegrees,
-        double maxSimDegrees) {
+        double maxSimDegrees,
+        boolean inverted) {
 
         if (minPhysicalArmDegrees < 0 || maxPhysicalArmDegrees < 0 || minSimDegrees < 0 || maxSimDegrees < 0) {
             System.out.println("ERROR: Degrees must be non-negative");
@@ -28,6 +30,16 @@ public class RangeConvert {
         this.m_maxPhysicalArmDegrees = maxPhysicalArmDegrees;
         this.m_minSimDegrees = minSimDegrees;
         this.m_maxSimDegrees = maxSimDegrees;
+        this.m_inverted = inverted;
+    }
+
+    public RangeConvert(
+        double minPhysicalArmDegrees,
+        double maxPhysicalArmDegrees,
+        double minSimDegrees,
+        double maxSimDegrees) {
+
+        this(minPhysicalArmDegrees, maxPhysicalArmDegrees, minSimDegrees, maxSimDegrees, false);
     }
 
     public double getMinPhysicalArmDegrees() {
@@ -52,17 +64,29 @@ public class RangeConvert {
         }
         
         // converts from simulation degrees to physical arm degrees
-        return (simDegrees - m_minSimDegrees) / (m_maxSimDegrees - m_minSimDegrees) 
+        double result = (simDegrees - m_minSimDegrees) / (m_maxSimDegrees - m_minSimDegrees)
                 * (m_maxPhysicalArmDegrees - m_minPhysicalArmDegrees) + m_minPhysicalArmDegrees;
+
+        if (m_inverted) {
+            result = m_maxPhysicalArmDegrees - result + m_minPhysicalArmDegrees;
+        }
+
+        return result;
     }
 
-    public double physicalToSim(double armDegrees) {
-        if (armDegrees < m_minPhysicalArmDegrees || armDegrees > m_maxPhysicalArmDegrees) {
+    public double physicalToSim(double physicalDegrees) {
+        if (physicalDegrees < m_minPhysicalArmDegrees || physicalDegrees > m_maxPhysicalArmDegrees) {
             System.out.println("ERROR: armDegrees is out of range");
         }
 
         // converts from physical arm degrees to simulation degrees
-        return (armDegrees - m_minPhysicalArmDegrees) / (m_maxPhysicalArmDegrees - m_minPhysicalArmDegrees) 
+        double result = (physicalDegrees - m_minPhysicalArmDegrees) / (m_maxPhysicalArmDegrees - m_minPhysicalArmDegrees)
                 * (m_maxSimDegrees - m_minSimDegrees) + m_minSimDegrees;
+
+        if (m_inverted) {
+            result = m_maxSimDegrees - result + m_minSimDegrees;
+        }
+
+        return result;
     }
 }
