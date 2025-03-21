@@ -52,9 +52,9 @@ public class IntakeArmSystem extends SubsystemBase{
  
         ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig(); 
         closedLoopConfig 
-            .p(1) 
-            .i(0) 
-            .d(0); 
+            .p(ArmConstants.kP) 
+            .i(ArmConstants.kI)
+            .d(ArmConstants.kD); 
         // closedLoopConfig.positionWrappingEnabled(true); 
         // closedLoopConfig.positionWrappingMinInput(0); 
         // closedLoopConfig.positionWrappingMaxInput(Math.PI * 2); 

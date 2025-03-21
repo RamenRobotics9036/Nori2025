@@ -160,7 +160,7 @@ public final class Constants
     //public static final double kArmGearBoxRatio = 125 * (44/30);
     //125 is 3-stage gearbox, 38 and 18 are the numbers of teeth on the two gears.
     public static final double kArmGearBoxRatio = 125 * (38/18);
-
+    
     // Make sure the abolute encoder does NOT cross zero as the arm moves from top to bottom
     // This is the position of the arm in the up position, it should ALMOST be touching the endstop
     public static final double kMinArmRotation = 1.5;
@@ -174,6 +174,9 @@ public final class Constants
     public static final double tolerance = 0.1;
     public static final double setArmMaxTime = 4;
     public static final double algaePreset = 1.849222;
+    public static final double kP = 1.5;
+    public static final double kI = 0;
+    public static final double kD = 0;
   }
 
   public static final class ArmDefaultCommandConstants {
