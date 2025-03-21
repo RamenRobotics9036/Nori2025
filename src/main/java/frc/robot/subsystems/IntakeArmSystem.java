@@ -24,12 +24,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.SetArmToAngleCommand;
-import frc.robot.subsystems.armsimulation.ArmDisplay;
-import frc.robot.subsystems.armsimulation.ArmSimulation;
-import frc.robot.subsystems.armsimulation.IOArmSim;
-import frc.robot.subsystems.armsimulation.IOArmSimInterface;
-import frc.robot.util.RangeConvert;
-import frc.robot.util.RelativeEncoderSim;
+import frc.robot.sim.armsimulation.ArmDisplay;
+import frc.robot.sim.armsimulation.ArmSimulation;
+import frc.robot.sim.armsimulation.IOArmSim;
+import frc.robot.sim.armsimulation.IOArmSimInterface;
+import frc.robot.sim.simutil.RangeConvert;
+import frc.robot.sim.simutil.RelativeEncoderSim;
 import frc.robot.Constants.ArmConstants; 
  
  

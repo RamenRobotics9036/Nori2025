@@ -44,11 +44,11 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.commands.testcommands.WheelTestContext;
+import frc.robot.sim.simvision.VisionSim;
+import frc.robot.sim.simvision.VisionSystemInterface;
+import frc.robot.sim.simvision.VisionSystemSim;
 import frc.robot.util.AutoLogic;
-import frc.robot.vision.VisionSim;
 import frc.robot.vision.VisionSystem;
-import frc.robot.vision.VisionSystemInterface;
-import frc.robot.vision.VisionSystemSim;
 
 import java.io.File;
 import java.io.IOException;

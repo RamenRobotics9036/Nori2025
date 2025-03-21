@@ -22,18 +22,16 @@
  * SOFTWARE.
  */
 
-package frc.robot.vision;
+package frc.robot.sim.simvision;
 
-import static frc.robot.Constants.VisionSimConstants.*;
 import java.util.List;
 import java.util.Optional;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.Constants.VisionSimConstants;
 import frc.robot.Robot;
-
+import frc.robot.sim.SimConstants.VisionSimConstants;
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
@@ -70,7 +68,7 @@ public class VisionSim {
         // targets.
         m_cameraSim = new PhotonCameraSim(m_camera, cameraProp);
         // Add the simulated camera to view the targets on this simulated field.
-        m_visionSim.addCamera(m_cameraSim, kRobotToCam);
+        m_visionSim.addCamera(m_cameraSim, VisionSimConstants.kRobotToCam);
 
         // We disable the wire frame since we never open the PhotonVision local webview
         m_cameraSim.enableDrawWireframe(false);

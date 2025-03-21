@@ -1,4 +1,4 @@
-package frc.robot.subsystems.armsimulation;
+package frc.robot.sim.armsimulation;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -6,7 +6,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units; 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import frc.robot.util.RangeConvert;
+import frc.robot.sim.simutil.RangeConvert;
 
 // This class internally simulates an arm using a min-simulation-degrees to max-simulation-degrees
 // range.  This was chosen for one primary reason:

@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.sim.simutil;
 
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.RobotBase;

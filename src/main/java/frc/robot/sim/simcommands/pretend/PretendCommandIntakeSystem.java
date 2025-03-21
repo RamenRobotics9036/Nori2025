@@ -1,4 +1,4 @@
-package frc.robot.commands.pretend;
+package frc.robot.sim.simcommands.pretend;
 
 import frc.robot.subsystems.IntakeSystem;
 
