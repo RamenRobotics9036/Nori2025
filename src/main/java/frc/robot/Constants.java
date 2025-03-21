@@ -90,7 +90,7 @@ public final class Constants
 
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout =
-            AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+            AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
   }
 
   public static class VisionSimConstants {
