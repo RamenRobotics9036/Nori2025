@@ -21,14 +21,15 @@ import frc.robot.commands.IntakeDefaultCommand;
 import frc.robot.commands.IntakeSpitCommand;
 import frc.robot.commands.OuttakeSpitCommand;
 import frc.robot.commands.SetArmToAngleCommand;
-import frc.robot.commands.pretend.PretendCommandElevatorSystem;
-import frc.robot.commands.pretend.PretendCommandIntakeArmSystem;
-import frc.robot.commands.pretend.PretendCommandIntakeSystem;
-import frc.robot.commands.pretend.PretendCommandNoSystem;
-import frc.robot.commands.pretend.PretendCommandOuttakeSystem;
-import frc.robot.commands.pretend.UnexpectedCommand;
 import frc.robot.commands.testcommands.TestTurnWheel;
 import frc.robot.commands.testcommands.WheelTestContext;
+import frc.robot.sim.SimConstants.SimCommandConstants;
+import frc.robot.sim.simcommands.pretend.PretendCommandElevatorSystem;
+import frc.robot.sim.simcommands.pretend.PretendCommandIntakeArmSystem;
+import frc.robot.sim.simcommands.pretend.PretendCommandIntakeSystem;
+import frc.robot.sim.simcommands.pretend.PretendCommandNoSystem;
+import frc.robot.sim.simcommands.pretend.PretendCommandOuttakeSystem;
+import frc.robot.sim.simcommands.pretend.UnexpectedCommand;
 import frc.robot.subsystems.ElevatorSystem;
 import frc.robot.subsystems.IntakeArmSystem;
 import frc.robot.subsystems.IntakeSystem;
@@ -241,7 +242,7 @@ public class RobotContainer
       return false;
     }
 
-    return CommandConstants.kDisableMostCommandsInSim;
+    return SimCommandConstants.kDisableMostCommandsInSim;
   }
 
   public void configureDefaultCommands() {

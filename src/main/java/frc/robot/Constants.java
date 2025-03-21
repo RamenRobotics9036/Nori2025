@@ -10,13 +10,7 @@ import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -93,25 +87,7 @@ public final class Constants
             AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
   }
 
-  public static class VisionSimConstants {
-      public static final String kCameraName = "RAMEN SIM CAMERA";
-      // Cam mounted facing forward, half a meter forward of center, half a meter up from center,
-      // pitched upward.
-      // NOTE: For reefscape, set camPitch to 15 degrees, since 30 degrees was too high to detect
-      // the april tags near the coral reefs.
-      private static final double camPitch = Units.degreesToRadians(15.0); // Units.degreesToRadians(30.0);
-      public static final Transform3d kRobotToCam =
-              new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, -camPitch, 0));
-
-      // The standard deviations of our vision estimated poses, which affect correction rate
-      // (Fake values. Experiment and determine estimation noise on an actual robot.)
-      public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-      public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
-  }
-
   public static final class CommandConstants {
-    public static final boolean kDisableMostCommandsInSim = true;
-
     public static final class AlignRobotConstants {
       public static final double maxTimeSeconds = 10;
       public static final double maxSpeed = 0.4;

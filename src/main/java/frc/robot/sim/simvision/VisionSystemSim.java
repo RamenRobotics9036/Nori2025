@@ -1,4 +1,4 @@
-package frc.robot.vision;
+package frc.robot.sim.simvision;
 
 import java.util.Optional;
 
@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.sim.SimConstants;
 
 public class VisionSystemSim implements VisionSystemInterface {
     private VisionSim m_visionSim;
@@ -106,7 +107,7 @@ public class VisionSystemSim implements VisionSystemInterface {
 
     private Pose3d calcRelativeTargetPoseHelper(Pose3d robotPose, Pose3d targetPose) {
         // Get the camera's pose in field coordinates
-        Pose3d cameraPose = robotPose.transformBy(Constants.VisionSimConstants.kRobotToCam);
+        Pose3d cameraPose = robotPose.transformBy(SimConstants.VisionSimConstants.kRobotToCam);
 
         // Transform the target's field pose into the camera's coordinate system
         return targetPose.relativeTo(cameraPose);
@@ -123,7 +124,7 @@ public class VisionSystemSim implements VisionSystemInterface {
             return new Pose3d();
         }
 
-        Transform3d cameraToRobot = Constants.VisionSimConstants.kRobotToCam.inverse();
+        Transform3d cameraToRobot = SimConstants.VisionSimConstants.kRobotToCam.inverse();
         Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
             target.getBestCameraToTarget(),
             VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).get(),

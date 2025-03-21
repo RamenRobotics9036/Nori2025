@@ -1,11 +1,11 @@
-package frc.robot.subsystems.armsimulation;
+package frc.robot.sim.armsimulation;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
-import frc.robot.util.RelativeEncoderSim;
+import frc.robot.sim.simutil.RelativeEncoderSim;
 
 public class IOArmSim implements IOArmSimInterface {
     private DutyCycleEncoderSim m_absEncoderSim;

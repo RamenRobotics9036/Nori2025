@@ -1,4 +1,4 @@
-package frc.robot.subsystems.armsimulation;
+package frc.robot.sim.armsimulation;
 
 // This class is intended to give the SIMULATION implementation a
 // simpler interface to use.
