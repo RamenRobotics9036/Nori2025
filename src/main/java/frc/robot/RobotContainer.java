@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.AutoNameConstants;
 import frc.robot.Constants.CommandConstants;
 import frc.robot.Constants.IntakeSpitCommandConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -387,9 +388,17 @@ public class RobotContainer
    */
   public Command getAutonomousCommand()
   {
-    return new DriveForwardNow(m_swerveDrive).
-      andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
-      .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
+    switch (AutoLogic.autoPicker.getSelected()) {
+      case AutoNameConstants.kCenterL1AutoName:
+        return new DriveForwardNow(m_swerveDrive, 1.4).
+        andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
+        .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
+        
+      default:
+        return new DriveForwardNow(m_swerveDrive, 1.4).
+          andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
+          .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
+  }
     // return AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
   }
 

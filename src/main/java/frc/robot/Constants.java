@@ -228,4 +228,8 @@ public final class Constants
     public static final double speed = 1.0;
     public static final double numRotations = 250;
   }
+
+  public static final class AutoNameConstants {
+    public static final String kCenterL1AutoName = "CENTER 1 Coral L1";
+  }
 }
