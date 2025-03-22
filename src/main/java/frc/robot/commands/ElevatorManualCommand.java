@@ -66,7 +66,7 @@ public class ElevatorManualCommand extends Command {
     }
 
     private void setPosition(double value) {
-        value = MathUtil.clamp(value, 0, 1.5);
+        // value = MathUtil.clamp(value, 0, 1.5);
         desiredAngle = value;
         m_elevatorSystem.setPosition(desiredAngle);
     }
