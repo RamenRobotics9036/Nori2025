@@ -3,16 +3,34 @@ package frc.robot.logging;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.OperatorConstants;
 
 public class TriviaLogger {
+    // Singleton instance
+    private static TriviaLogger m_instance = null;
+
     private DoubleLogEntry m_voltageLog = null;
     private DoubleLogEntry m_canBusUtilizationLog = null;
 
-    // Constructor
-    public TriviaLogger() {
+    /**
+     * Private constructor to enforce singleton pattern.
+     * Users must use getInstance() instead of creating new instances.
+     */
+    private TriviaLogger() {
         enableLogging();
+    }
+
+    /**
+     * Get the singleton instance of TriviaLogger.
+     * This is the only way to obtain a TriviaLogger instance.
+     */
+    public static synchronized TriviaLogger getInstance() {
+        if (m_instance == null) {
+            m_instance = new TriviaLogger();
+        }
+        return m_instance;
     }
 
     private boolean isNTLoggingEnabled() {
@@ -22,21 +40,21 @@ public class TriviaLogger {
     }
 
     private boolean isDriverStationLoggingEnabled() {
-        return !isCompetitionMode();
+        return isSimOrNotCompetitionMode();
     }
 
     private boolean isPerformanceDataLoggingEnabled() {
-        return !isCompetitionMode();
+        return isSimOrNotCompetitionMode();
     }
 
     private boolean isPowerLoggingEnabled() {
-        return !isCompetitionMode();
+        return isSimOrNotCompetitionMode();
     }
 
-    private boolean isCompetitionMode() {
-        return OperatorConstants.kCompetitionMode;
+    private boolean isSimOrNotCompetitionMode() {
+        return RobotBase.isSimulation() || !OperatorConstants.kCompetitionMode;
     }
-
+    
     private void enableLogging() {
         // Optionally enable logging of all NetworkTables data
         DataLogManager.logNetworkTables(isNTLoggingEnabled());
