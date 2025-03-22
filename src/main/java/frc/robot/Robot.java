@@ -7,10 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.logging.TriviaLogger;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -26,8 +23,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private DoubleLogEntry m_voltageLog;
-  private DoubleLogEntry m_canBusUtilizationLog;
+  private TriviaLogger m_logger;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -41,29 +37,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    enableLogging();
-  }
-
-  private void enableLogging() {
-    // Enable logging of all NetworkTables data
-    DataLogManager.logNetworkTables(true);
-
-    // Starts recording to data log
-    DataLogManager.start();
-
-    // Record both DS control and joystick data
-    DriverStation.startDataLog(DataLogManager.getLog());
-
-    // Custom logging
-    m_voltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/my/Voltage");
-    m_canBusUtilizationLog = new DoubleLogEntry(DataLogManager.getLog(), "/my/CAN_Bus_Utilization");
-
-    System.out.println("Logging enabled with canbus and NT!");
-  }
-
-  private void logCustomMetrics() {
-    m_voltageLog.append(RobotController.getBatteryVoltage());
-    m_canBusUtilizationLog.append(RobotController.getCANStatus().percentBusUtilization);
+    m_logger = new TriviaLogger();
   }
 
   /**
@@ -88,7 +62,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.updateVisionPose();
     CommandScheduler.getInstance().run();
 
-    logCustomMetrics();
+    m_logger.updateLogging();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
