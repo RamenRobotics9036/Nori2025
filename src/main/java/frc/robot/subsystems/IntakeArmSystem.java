@@ -40,7 +40,7 @@ public class IntakeArmSystem extends SubsystemBase{
     private double maxOutput = ArmConstants.maxOutput; 
     private SparkClosedLoopController m_armPIDController = m_armMotor.getClosedLoopController(); 
     private final DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(ArmConstants.kArmEncoderID); 
-    private double desiredAngle; 
+    private double m_desiredAngle; 
  
     private ArmSimulation m_armSimulation = null; 
     private ArmDisplay m_armDisplay = null; 
@@ -99,7 +99,7 @@ public class IntakeArmSystem extends SubsystemBase{
         // if (!m_armEncoder.isConnected()) { 
         //     throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get()); 
         // }
-        desiredAngle = getArmAngleRelative(); 
+        m_desiredAngle = getArmAngleRelative(); 
  
         initShuffleboard(); 
     } 
@@ -114,7 +114,7 @@ public class IntakeArmSystem extends SubsystemBase{
         IOArmSimInterface ioArmSim = new IOArmSim( 
             absEncoderSim, 
             relEncoderSim, 
-            () -> Units.radiansToDegrees(desiredAngle)); 
+            () -> Units.radiansToDegrees(m_desiredAngle)); 
  
         return new ArmSimulation( 
             ioArmSim, 
@@ -145,7 +145,7 @@ public class IntakeArmSystem extends SubsystemBase{
             ShuffleboardTab tab = Shuffleboard.getTab("Arm"); 
             tab.addDouble("Arm Relative Encoder", () -> getArmAngleRelative()); 
             tab.addDouble("Arm Encoder", () -> getArmAngle()); 
-            tab.addDouble("Desired Angle", () -> desiredAngle); 
+            tab.addDouble("Desired Angle", () -> m_desiredAngle); 
             tab.addBoolean("Encoder Is Connected", () -> m_armEncoder.isConnected()); 
  
             // Show current command on shuffleboard 
@@ -171,7 +171,7 @@ public class IntakeArmSystem extends SubsystemBase{
   } 
  
     public void setReference(double position) { 
-        desiredAngle = position; 
+        m_desiredAngle = position; 
         m_armPIDController.setReference(position, ControlType.kPosition); 
     } 
  
@@ -180,12 +180,6 @@ public class IntakeArmSystem extends SubsystemBase{
         speed = MathUtil.clamp(speed, -maxOutput, maxOutput); 
         m_armMotor.set(speed); 
     } 
- 
-    //gets the speed of m_armMotor 
-    public double getArmMotorSpeed(){ 
-        return m_armMotor.get(); 
-    } 
- 
  
  
     // get encoder value 
