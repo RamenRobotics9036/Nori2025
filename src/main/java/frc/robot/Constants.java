@@ -39,6 +39,7 @@ public final class Constants
     public static final double kDeadband = 0.01;
     public static final Supplier<Alliance> kAlliance = () -> (DriverStation.getAlliance().isPresent()) ? DriverStation.getAlliance().get() : Alliance.Red;
     public static final boolean kCompetitionMode = true; // Set to true the day of competition to turn off extras (max performance)
+    public static final double kRumbleTime = 0.5; // seconds
   }
   /**
    * 
