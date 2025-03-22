@@ -23,7 +23,7 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IntakeConstants;
 
 public class ElevatorSystem extends SubsystemBase{
-    //Motors are on opposate sides of a shaft
+    //Motors are on opposite sides of a shaft
     private final SparkMax m_leaderMotor = new SparkMax(ElevatorConstants.kLeaderMotorID, MotorType.kBrushless);
     private final SparkMax m_followMotor = new SparkMax(ElevatorConstants.kFollowMotorID, MotorType.kBrushless);
     private SparkMaxConfig m_leaderConfig = new SparkMaxConfig();
