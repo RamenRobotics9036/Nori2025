@@ -71,11 +71,6 @@ public final class Constants
     public static final double kMaxSpeedMetersPerSecond = 5.06; // try 4.5 from YAGSL-Example
   }
 
-  public static final class TestSwerveConstants {
-    public static final boolean kIsTestMode = true;
-    public static final double maxTimeSeconds = 60;
-  }
-
   public static final class VisionConstants {
     public static final String limelightName = "limelight";
     public static final double allowedAngleUncertaintyDegrees = 0.5;
