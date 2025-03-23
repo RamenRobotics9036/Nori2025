@@ -1,7 +1,8 @@
 package frc.robot.logging;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -19,6 +20,7 @@ public class TriviaLogger {
     private PDData m_pdData = null;
     private StructLogEntry<PDData> m_powerDistributionLog = null;
     private CommandLogger m_commandLogger = null;
+    private CallbackLogger m_callbackLoggerForCommands = null;
 
     /**
      * Private constructor to enforce singleton pattern.
@@ -91,6 +93,13 @@ public class TriviaLogger {
         updateCommandLogging();
     }
     
+    public void registerSubsystemCmdCallback(String subsystemName, Supplier<String> commandNameSupplier) {
+        if (m_callbackLoggerForCommands != null) {
+            String fullPath = "/my/CommandLog/BySubsystem/" + (subsystemName == null ? "None" : subsystemName);
+            m_callbackLoggerForCommands.add(fullPath, commandNameSupplier);
+        }
+    }
+
     private void initPowerLogging() {
         if (isPowerLoggingEnabled()) {
             m_voltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/my/Voltage");
@@ -110,6 +119,9 @@ public class TriviaLogger {
     private void initCommandLogging() {
         if (isCommandLoggingEnabled()) {
             m_commandLogger = new CommandLogger();
+
+            // Use this to register callbacks to log various Commands.
+            m_callbackLoggerForCommands = new CallbackLogger();
         }
     }
 
@@ -132,6 +144,8 @@ public class TriviaLogger {
     }
 
     private void updateCommandLogging() {
-        // Nothing needed here yet.
+        if (m_callbackLoggerForCommands != null) {
+            m_callbackLoggerForCommands.update();
+        }
     }
 }
