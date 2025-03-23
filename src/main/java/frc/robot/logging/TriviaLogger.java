@@ -1,6 +1,7 @@
 package frc.robot.logging;
 
 import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -17,6 +18,7 @@ public class TriviaLogger {
     private DoubleLogEntry m_canBusUtilizationLog = null;
     private PDData m_pdData = null;
     private StructLogEntry<PDData> m_powerDistributionLog = null;
+    private CommandLogger m_commandLogger = null;
 
     /**
      * Private constructor to enforce singleton pattern.
@@ -55,6 +57,10 @@ public class TriviaLogger {
         return isSimOrNotCompetitionMode();
     }
 
+    private boolean isCommandLoggingEnabled() {
+        return isSimOrNotCompetitionMode();
+    }
+
     private boolean isSimOrNotCompetitionMode() {
         return RobotBase.isSimulation() || !OperatorConstants.kCompetitionMode;
     }
@@ -74,6 +80,7 @@ public class TriviaLogger {
         // Custom logging
         initPowerLogging();
         initPerformanceDataLogging();
+        initCommandLogging();
 
         System.out.println("TriviaLogging enabled!");
     }
@@ -81,6 +88,7 @@ public class TriviaLogger {
     public void updateLogging() {
         updatePowerLogging();
         updatePerformanceDataLogging();
+        updateCommandLogging();
     }
     
     private void initPowerLogging() {
@@ -96,6 +104,12 @@ public class TriviaLogger {
     private void initPerformanceDataLogging() {
         if (isPerformanceDataLoggingEnabled()) {
             m_canBusUtilizationLog = new DoubleLogEntry(DataLogManager.getLog(), "/my/CAN_Bus_Utilization");
+        }
+    }
+
+    private void initCommandLogging() {
+        if (isCommandLoggingEnabled()) {
+            m_commandLogger = new CommandLogger();
         }
     }
 
@@ -115,5 +129,9 @@ public class TriviaLogger {
            // Note we use update so that it only logs on change.
             m_canBusUtilizationLog.update(RobotController.getCANStatus().percentBusUtilization);
         }
+    }
+
+    private void updateCommandLogging() {
+        // Nothing needed here yet.
     }
 }
