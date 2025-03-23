@@ -1,8 +1,10 @@
 package frc.robot.logging;
 
 import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.OperatorConstants;
@@ -13,6 +15,8 @@ public class TriviaLogger {
 
     private DoubleLogEntry m_voltageLog = null;
     private DoubleLogEntry m_canBusUtilizationLog = null;
+    private PDData m_pdData = null;
+    private StructLogEntry<PDData> m_powerDistributionLog = null;
 
     /**
      * Private constructor to enforce singleton pattern.
@@ -82,6 +86,10 @@ public class TriviaLogger {
     private void initPowerLogging() {
         if (isPowerLoggingEnabled()) {
             m_voltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/my/Voltage");
+
+            // Enable power distribution logging
+            m_pdData = PDData.create(1, ModuleType.kRev);
+            m_powerDistributionLog = StructLogEntry.create(DataLogManager.getLog(), "/my/PowerDistribution", PDData.struct);
         }
     }
 
@@ -95,6 +103,10 @@ public class TriviaLogger {
         if (m_voltageLog != null) {
             // Note we use update so that it only logs on change.
             m_voltageLog.update(RobotController.getBatteryVoltage());
+        }
+        if (m_pdData != null) {
+            m_pdData.update();
+            m_powerDistributionLog.update(m_pdData);
         }
     }
 
