@@ -56,11 +56,13 @@
             "/my",
             "/NT/PathPlanner",
             "/DS",
-            "/NT/Shuffleboard/Outtake"
+            "/NT/Shuffleboard/Outtake",
+            "/my/Commands",
+            "/my/Commands/BySubsystem"
           ]
         },
         "tabs": {
-          "selected": 3,
+          "selected": 1,
           "tabs": [
             {
               "type": 0,
@@ -209,21 +211,11 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/SmartDashboard/Pigeon 2 (v6) [18]/Value",
+                    "logKey": "/my/Voltage",
                     "logType": "Number",
                     "visible": false,
                     "options": {
-                      "color": "#80588e",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "stepped",
-                    "logKey": "/my/Voltage",
-                    "logType": "Number",
-                    "visible": true,
-                    "options": {
-                      "color": "#e48b32",
+                      "color": "#e5b31b",
                       "size": "normal"
                     }
                   },
@@ -231,9 +223,9 @@
                     "type": "stepped",
                     "logKey": "/my/CAN_Bus_Utilization",
                     "logType": "Number",
-                    "visible": false,
+                    "visible": true,
                     "options": {
-                      "color": "#5f4528",
+                      "color": "#80588e",
                       "size": "normal"
                     }
                   }
@@ -269,7 +261,16 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/Shuffleboard/Field/Swerve Command",
+                    "logKey": "/my/Commands/BySubsystem/SwerveSubsystem",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/my/Commands/BySubsystem/IntakeArmSystem",
                     "logType": "String",
                     "visible": true,
                     "options": {
@@ -278,16 +279,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/Shuffleboard/Intake/IntakeSystem Command",
-                    "logType": "String",
-                    "visible": true,
-                    "options": {
-                      "color": "#e5b31b"
-                    }
-                  },
-                  {
-                    "type": "stripes",
-                    "logKey": "NT:/Shuffleboard/Arm/IntakeArmSystem Command",
+                    "logKey": "/my/Commands/BySubsystem/ElevatorSystem",
                     "logType": "String",
                     "visible": true,
                     "options": {
@@ -296,7 +288,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/Shuffleboard/Elevator/Elevator Command",
+                    "logKey": "/my/Commands/BySubsystem/IntakeSystem",
                     "logType": "String",
                     "visible": true,
                     "options": {
@@ -305,11 +297,11 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/Shuffleboard/Outtake/OuttakeSystem Command",
+                    "logKey": "/my/Commands/BySubsystem/OuttakeSystem",
                     "logType": "String",
                     "visible": true,
                     "options": {
-                      "color": "#2b66a2"
+                      "color": "#5f4528"
                     }
                   }
                 ],
@@ -444,5 +436,5 @@
     }
   ],
   "satellites": [],
-  "version": "4.1.2"
+  "version": "4.1.4"
 }
