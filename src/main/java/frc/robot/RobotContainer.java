@@ -15,14 +15,11 @@ import frc.robot.commands.DriveForwardNow;
 import frc.robot.commands.ElevatorDefaultCommand;
 import frc.robot.commands.ElevatorToPositionCommand;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Constants.TestSwerveConstants;
 import frc.robot.Constants.CommandConstants.AlignRobotConstants;
 import frc.robot.commands.IntakeDefaultCommand;
 import frc.robot.commands.IntakeSpitCommand;
 import frc.robot.commands.OuttakeSpitCommand;
 import frc.robot.commands.SetArmToAngleCommand;
-import frc.robot.commands.testcommands.TestTurnWheel;
-import frc.robot.commands.testcommands.WheelTestContext;
 import frc.robot.sim.SimConstants.SimCommandConstants;
 import frc.robot.sim.simcommands.pretend.PretendCommandElevatorSystem;
 import frc.robot.sim.simcommands.pretend.PretendCommandIntakeArmSystem;
@@ -340,42 +337,11 @@ public class RobotContainer
     new Trigger(() -> (m_driverController.leftBumper().getAsBoolean() && m_swerveDrive.getVisionSystem().isDetecting())).onTrue(
       Commands.runOnce(() -> m_swerveDrive.trueResetPose())
     );
-
-
-    // Test mode has (b) button triggering a test sequence
-    if (TestSwerveConstants.kIsTestMode) {
-      m_driverController.b().onTrue(createTestWheelsCommand());
-    }
   }
 
   private Command waitFiveSeconds = new WaitCommand(5)
     .beforeStarting(() -> System.out.println("Auto wait 5 seconds start"))
     .andThen(() -> System.out.println("Auto end wait"));
-
-  private Command testSequence() {
-    return new SequentialCommandGroup(
-        new InstantCommand(() -> m_swerveDrive.getWheelTestContext().reset()),
-        new TestTurnWheel(m_swerveDrive, "frontleft"),
-        new TestTurnWheel(m_swerveDrive, "frontright"),
-        new TestTurnWheel(m_swerveDrive, "backleft"),
-        new TestTurnWheel(m_swerveDrive, "backright"),
-        new InstantCommand(() -> m_swerveDrive.getWheelTestContext().testSucceeded())
-    );
-  }
-
-  private Command createTestWheelsCommand() {
-    WheelTestContext wheelTestContext = m_swerveDrive.getWheelTestContext();
-
-    Command scheduledComand = new ConditionalCommand(
-        testSequence(),
-        new InstantCommand(),
-        () -> DriverStation.isTest());
-
-    // Save the sequence handle into subsystem, in case we later need to cancel it.
-    wheelTestContext.setCancellableCommand(scheduledComand);
-
-    return scheduledComand;
-  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

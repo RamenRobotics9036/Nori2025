@@ -43,12 +43,12 @@ import frc.robot.Constants.CommandConstants.AlignRobotConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
-import frc.robot.commands.testcommands.WheelTestContext;
 import frc.robot.sim.simvision.VisionSim;
 import frc.robot.sim.simvision.VisionSystemInterface;
 import frc.robot.sim.simvision.VisionSystemSim;
 import frc.robot.util.AutoLogic;
 import frc.robot.vision.VisionSystem;
+import frc.robot.logging.TriviaLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -89,8 +89,6 @@ public class SwerveSubsystem extends SubsystemBase
   // $TODO - We should see if we can achieve showing the target location on m_field, so
   // all the info is in one place.
   private Field2d m_targetField = new Field2d();
-
-  private WheelTestContext m_wheelTestContext = new WheelTestContext();
 
   private VisionSystemInterface m_vision = null;
 
@@ -191,21 +189,18 @@ public class SwerveSubsystem extends SubsystemBase
       tab.add("Robot Position on Field", m_field);
       tab.add("Target Position on Field", m_targetField);
       tab.addBoolean("Path Planner Ready", () -> m_isPathfinderWarmedUp);
-
-      // Show current command on shuffleboard
-      tab.addString(
-        "Swerve Command",
-        () -> (this.getCurrentCommand() == null) ? "None"
-                : this.getCurrentCommand().getName());
     }
 
-    if (!OperatorConstants.kCompetitionMode){
-      m_wheelTestContext.initShuffleboard();
-    }
+    initLogging();
   }
 
-  public WheelTestContext getWheelTestContext() {
-    return m_wheelTestContext;
+  public void initLogging() {
+    // Log current command on this subsystem.
+    TriviaLogger logger = TriviaLogger.getInstance();
+    logger.registerSubsystemCmdCallback(
+      getSubsystem(),
+      () -> (this.getCurrentCommand() == null) ? "None"
+              : this.getCurrentCommand().getName());
   }
 
   @Override

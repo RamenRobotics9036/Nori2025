@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.OuttakeConstants;
+import frc.robot.logging.TriviaLogger;
 
 public class OuttakeSystem extends SubsystemBase {
     private SparkFlex m_outtakeSparkFlex = new SparkFlex(OuttakeConstants.sparkflexID, MotorType.kBrushless);
@@ -45,12 +46,19 @@ public class OuttakeSystem extends SubsystemBase {
         ShuffleboardTab tab = Shuffleboard.getTab("Outtake");
 
         if (!OperatorConstants.kCompetitionMode){
-            // Show current command on shuffleboard
-            tab.addString(
-            "OuttakeSystem Command",
-            () -> (this.getCurrentCommand() == null) ? "None"
-                    : this.getCurrentCommand().getName());
+            // Nothing yet
         }
+
+        initLogging();
+    }
+
+    public void initLogging() {
+        // Log current command on this subsystem.
+        TriviaLogger logger = TriviaLogger.getInstance();
+        logger.registerSubsystemCmdCallback(
+          getSubsystem(),
+          () -> (this.getCurrentCommand() == null) ? "None"
+                  : this.getCurrentCommand().getName());
     }
 
     public void setMotorSpeeds(double speed) {

@@ -21,6 +21,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.logging.TriviaLogger;
 
 public class ElevatorSystem extends SubsystemBase{
     //Motors are on opposate sides of a shaft
@@ -90,13 +91,18 @@ public class ElevatorSystem extends SubsystemBase{
             tab.addBoolean("Limit Switch Value", () -> m_limitReached);
             tab.addNumber("Relative Encoder Position", () ->  m_encoderPosition);
             tab.addString("Elevator State", () -> m_state.toString());
-
-            // Show current command on shuffleboard
-            tab.addString(
-            "Elevator Command",
-            () -> (this.getCurrentCommand() == null) ? "None"
-                    : this.getCurrentCommand().getName());
         }
+
+        initLogging();
+    }
+
+    public void initLogging() {
+        // Log current command on this subsystem.
+        TriviaLogger logger = TriviaLogger.getInstance();
+        logger.registerSubsystemCmdCallback(
+          getSubsystem(),
+          () -> (this.getCurrentCommand() == null) ? "None"
+                  : this.getCurrentCommand().getName());
     }
 
     @Override
