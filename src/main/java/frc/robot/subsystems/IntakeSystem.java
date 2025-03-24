@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.logging.TriviaLogger;
 
 public class IntakeSystem extends SubsystemBase{
     //the front motor, for pulling the coarl in and scoring on L1
@@ -74,13 +75,18 @@ public class IntakeSystem extends SubsystemBase{
             tab.addDouble("Can Encoder A", this::getCanAndColorAPeriod);
             tab.addDouble("Can Encoder B", this::getCanAndColorBPeriod);
             tab.addBoolean("Is Holding Coral", this::isHoldingCoral);
-
-            // Show current command on shuffleboard
-            tab.addString(
-            "IntakeSystem Command",
-            () -> (this.getCurrentCommand() == null) ? "None"
-                    : this.getCurrentCommand().getName());
         }
+
+        initLogging();
+    }
+
+    public void initLogging() {
+        // Log current command on this subsystem.
+        TriviaLogger logger = TriviaLogger.getInstance();
+        logger.registerSubsystemCmdCallback(
+        getSubsystem(),
+        () -> (this.getCurrentCommand() == null) ? "None"
+                : this.getCurrentCommand().getName());
     }
 
     //sets the speed of m_pullMotor. Cannot exceed maxOutputPercentage
