@@ -21,8 +21,10 @@ public class CallbackLogger {
             this.logEntryString = logEntryString;
         }
         
-        public String getNewLogValue() {
-            return stringSupplier.get();
+        public void logNewValue() {
+            // Note that we only log CHANGES
+            String newValue = stringSupplier.get();
+            logEntryString.update(newValue);
         }
     }
     
@@ -36,8 +38,10 @@ public class CallbackLogger {
             this.logEntryDouble = logEntryDouble;
         }
         
-        public double getNewLogValue() {
-            return doubleSupplier.getAsDouble();
+        public void logNewValue() {
+            // Note that we only log CHANGES
+            double newValue = doubleSupplier.getAsDouble();
+            logEntryDouble.update(newValue);
         }
     }
 
@@ -74,19 +78,13 @@ public class CallbackLogger {
         // Log all DoubleSuppliers
         for (Map.Entry<String, LogItemDouble> entry : doubleEntries.entrySet()) {
             LogItemDouble logItem = entry.getValue();
-
-            // Note that we only log CHANGES
-            double newValue = logItem.getNewLogValue();
-            logItem.logEntryDouble.update(newValue);
+            logItem.logNewValue();
         }
 
         // Log all String suppliers
         for (Map.Entry<String, LogItemString> entry : stringEntries.entrySet()) {
             LogItemString logItem = entry.getValue();
-
-            // Note that we only log CHANGES
-            String newValue = logItem.getNewLogValue();
-            logItem.logEntryString.update(newValue);
+            logItem.logNewValue();
         }
     }
 }
