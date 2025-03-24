@@ -95,7 +95,7 @@ public class TriviaLogger {
     
     public void registerSubsystemCmdCallback(String subsystemName, Supplier<String> commandNameSupplier) {
         if (m_callbackLoggerForCommands != null) {
-            String fullPath = "/my/CommandLog/BySubsystem/" + (subsystemName == null ? "None" : subsystemName);
+            String fullPath = "/my/Commands/BySubsystem/" + (subsystemName == null ? "None" : subsystemName);
             m_callbackLoggerForCommands.add(fullPath, commandNameSupplier);
         }
     }
@@ -105,8 +105,9 @@ public class TriviaLogger {
             m_voltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/my/Voltage");
 
             // Enable power distribution logging
-            m_pdData = PDData.create(1, ModuleType.kRev);
-            m_powerDistributionLog = StructLogEntry.create(DataLogManager.getLog(), "/my/PowerDistribution", PDData.struct);
+            // $TODO - Completely disabled Power Distribution logging until I can test on the robot.
+            //m_pdData = PDData.create(1, ModuleType.kRev);
+            //m_powerDistributionLog = StructLogEntry.create(DataLogManager.getLog(), "/my/PowerDistribution", PDData.struct);
         }
     }
 

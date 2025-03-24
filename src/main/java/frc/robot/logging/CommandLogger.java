@@ -14,7 +14,7 @@ public class CommandLogger {
 
     // Constructor
     public CommandLogger() {
-        m_commandsLog = new StringLogEntry(DataLogManager.getLog(), "/my/CommandLog");
+        m_commandsLog = new StringLogEntry(DataLogManager.getLog(), "/my/Commands/SchedulerCommandLog");
         setupLoggingCallbacks();
     }
 
