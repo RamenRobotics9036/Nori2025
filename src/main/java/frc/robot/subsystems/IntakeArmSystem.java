@@ -30,7 +30,8 @@ import frc.robot.sim.armsimulation.IOArmSim;
 import frc.robot.sim.armsimulation.IOArmSimInterface;
 import frc.robot.sim.simutil.RangeConvert;
 import frc.robot.sim.simutil.RelativeEncoderSim;
-import frc.robot.Constants.ArmConstants; 
+import frc.robot.Constants.ArmConstants;
+import frc.robot.logging.TriviaLogger;
  
  
 public class IntakeArmSystem extends SubsystemBase{ 
@@ -148,12 +149,6 @@ public class IntakeArmSystem extends SubsystemBase{
             tab.addDouble("Desired Angle", () -> desiredAngle); 
             tab.addBoolean("Encoder Is Connected", () -> m_armEncoder.isConnected()); 
  
-            // Show current command on shuffleboard 
-            tab.addString( 
-            "IntakeArmSystem Command", 
-            () -> (this.getCurrentCommand() == null) ? "None" 
-                    : this.getCurrentCommand().getName());
-
             if (RobotBase.isSimulation()) { 
                 SmartDashboard.putData("Arm Sim", m_armDisplay.getMech2d()); 
  
@@ -167,9 +162,20 @@ public class IntakeArmSystem extends SubsystemBase{
                 Command goL1 = new SetArmToAngleCommand(this, ArmConstants.L1ArmAngle); 
                 tab.add("Go L1", goL1).withWidget("Command"); 
             } 
-        } 
+        }
+
+        initLogging();
   } 
  
+  public void initLogging() {
+    // Log current command on this subsystem.
+    TriviaLogger logger = TriviaLogger.getInstance();
+    logger.registerSubsystemCmdCallback(
+      getSubsystem(),
+      () -> (this.getCurrentCommand() == null) ? "None"
+              : this.getCurrentCommand().getName());
+  }
+
     public void setReference(double position) { 
         desiredAngle = position; 
         m_armPIDController.setReference(position, ControlType.kPosition); 

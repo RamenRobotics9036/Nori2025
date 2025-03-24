@@ -48,6 +48,7 @@ import frc.robot.sim.simvision.VisionSystemInterface;
 import frc.robot.sim.simvision.VisionSystemSim;
 import frc.robot.util.AutoLogic;
 import frc.robot.vision.VisionSystem;
+import frc.robot.logging.TriviaLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -188,13 +189,18 @@ public class SwerveSubsystem extends SubsystemBase
       tab.add("Robot Position on Field", m_field);
       tab.add("Target Position on Field", m_targetField);
       tab.addBoolean("Path Planner Ready", () -> m_isPathfinderWarmedUp);
-
-      // Show current command on shuffleboards
-      tab.addString(
-        "Swerve Command",
-        () -> (this.getCurrentCommand() == null) ? "None"
-                : this.getCurrentCommand().getName());
     }
+
+    initLogging();
+  }
+
+  public void initLogging() {
+    // Log current command on this subsystem.
+    TriviaLogger logger = TriviaLogger.getInstance();
+    logger.registerSubsystemCmdCallback(
+      getSubsystem(),
+      () -> (this.getCurrentCommand() == null) ? "None"
+              : this.getCurrentCommand().getName());
   }
 
   @Override

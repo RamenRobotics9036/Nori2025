@@ -1,8 +1,12 @@
 package frc.robot.logging;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.OperatorConstants;
@@ -13,6 +17,10 @@ public class TriviaLogger {
 
     private DoubleLogEntry m_voltageLog = null;
     private DoubleLogEntry m_canBusUtilizationLog = null;
+    private PDData m_pdData = null;
+    private StructLogEntry<PDData> m_powerDistributionLog = null;
+    private CommandLogger m_commandLogger = null;
+    private CallbackLogger m_callbackLoggerForCommands = null;
 
     /**
      * Private constructor to enforce singleton pattern.
@@ -51,6 +59,10 @@ public class TriviaLogger {
         return isSimOrNotCompetitionMode();
     }
 
+    private boolean isCommandLoggingEnabled() {
+        return isSimOrNotCompetitionMode();
+    }
+
     private boolean isSimOrNotCompetitionMode() {
         return RobotBase.isSimulation() || !OperatorConstants.kCompetitionMode;
     }
@@ -70,6 +82,7 @@ public class TriviaLogger {
         // Custom logging
         initPowerLogging();
         initPerformanceDataLogging();
+        initCommandLogging();
 
         System.out.println("TriviaLogging enabled!");
     }
@@ -77,11 +90,24 @@ public class TriviaLogger {
     public void updateLogging() {
         updatePowerLogging();
         updatePerformanceDataLogging();
+        updateCommandLogging();
     }
     
+    public void registerSubsystemCmdCallback(String subsystemName, Supplier<String> commandNameSupplier) {
+        if (m_callbackLoggerForCommands != null) {
+            String fullPath = "/my/Commands/BySubsystem/" + (subsystemName == null ? "None" : subsystemName);
+            m_callbackLoggerForCommands.add(fullPath, commandNameSupplier);
+        }
+    }
+
     private void initPowerLogging() {
         if (isPowerLoggingEnabled()) {
             m_voltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/my/Voltage");
+
+            // Enable power distribution logging
+            // $TODO - Completely disabled Power Distribution logging until I can test on the robot.
+            //m_pdData = PDData.create(1, ModuleType.kRev);
+            //m_powerDistributionLog = StructLogEntry.create(DataLogManager.getLog(), "/my/PowerDistribution", PDData.struct);
         }
     }
 
@@ -91,10 +117,23 @@ public class TriviaLogger {
         }
     }
 
+    private void initCommandLogging() {
+        if (isCommandLoggingEnabled()) {
+            m_commandLogger = new CommandLogger();
+
+            // Use this to register callbacks to log various Commands.
+            m_callbackLoggerForCommands = new CallbackLogger();
+        }
+    }
+
     private void updatePowerLogging() {
         if (m_voltageLog != null) {
             // Note we use update so that it only logs on change.
             m_voltageLog.update(RobotController.getBatteryVoltage());
+        }
+        if (m_pdData != null) {
+            m_pdData.update();
+            m_powerDistributionLog.update(m_pdData);
         }
     }
 
@@ -102,6 +141,12 @@ public class TriviaLogger {
         if (m_canBusUtilizationLog != null) {
            // Note we use update so that it only logs on change.
             m_canBusUtilizationLog.update(RobotController.getCANStatus().percentBusUtilization);
+        }
+    }
+
+    private void updateCommandLogging() {
+        if (m_callbackLoggerForCommands != null) {
+            m_callbackLoggerForCommands.update();
         }
     }
 }
