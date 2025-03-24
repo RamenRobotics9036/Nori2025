@@ -5,22 +5,66 @@ import java.util.Map;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+
 public class CallbackLogger {
-    private final Map<String, DoubleSupplier> doubleEntries = new HashMap<>();
-    private final Map<String, Supplier<String>> stringEntries = new HashMap<>();
+    // Inner class for string log items
+    private class LogItemString {
+        private final Supplier<String> stringSupplier;
+        private final StringLogEntry logEntryString;
+        
+        public LogItemString(Supplier<String> stringSupplier, StringLogEntry logEntryString) {
+            this.stringSupplier = stringSupplier;
+            this.logEntryString = logEntryString;
+        }
+        
+        public String getNewLogValue() {
+            return stringSupplier.get();
+        }
+    }
+    
+    // Inner class for double log items
+    private class LogItemDouble {
+        private final DoubleSupplier doubleSupplier;
+        private final DoubleLogEntry logEntryDouble;
+        
+        public LogItemDouble(DoubleSupplier doubleSupplier, DoubleLogEntry logEntryDouble) {
+            this.doubleSupplier = doubleSupplier;
+            this.logEntryDouble = logEntryDouble;
+        }
+        
+        public double getNewLogValue() {
+            return doubleSupplier.getAsDouble();
+        }
+    }
+
+    // Members
+    private final DataLog m_dataLog;
+    private final Map<String, LogItemDouble> doubleEntries = new HashMap<>();
+    private final Map<String, LogItemString> stringEntries = new HashMap<>();
+
+    // Constructor
+    public CallbackLogger() {
+        m_dataLog = DataLogManager.getLog();
+    }
 
     /**
      * Adds a new numeric logging entry
      */
     public void add(String path, DoubleSupplier supplier) {
-        doubleEntries.put(path, supplier);
+        DoubleLogEntry logEntry = new DoubleLogEntry(m_dataLog, path);
+        doubleEntries.put(path, new LogItemDouble(supplier, logEntry));
     }
     
     /**
      * Adds a new string logging entry
      */
     public void add(String path, Supplier<String> supplier) {
-        stringEntries.put(path, supplier);
+        StringLogEntry logEntry = new StringLogEntry(m_dataLog, path);
+        stringEntries.put(path, new LogItemString(supplier, logEntry));
     }
     
     /**
@@ -28,17 +72,21 @@ public class CallbackLogger {
      */
     public void update() {
         // Log all DoubleSuppliers
-        for (Map.Entry<String, DoubleSupplier> entry : doubleEntries.entrySet()) {
-            String path = entry.getKey();
-            double value = entry.getValue().getAsDouble();
-            System.out.println(path + ": " + value);
+        for (Map.Entry<String, LogItemDouble> entry : doubleEntries.entrySet()) {
+            LogItemDouble logItem = entry.getValue();
+
+            // Note that we only log CHANGES
+            double newValue = logItem.getNewLogValue();
+            logItem.logEntryDouble.update(newValue);
         }
 
         // Log all String suppliers
-        for (Map.Entry<String, Supplier<String>> entry : stringEntries.entrySet()) {
-            String path = entry.getKey();
-            String value = entry.getValue().get();
-            System.out.println(path + ": " + value);
+        for (Map.Entry<String, LogItemString> entry : stringEntries.entrySet()) {
+            LogItemString logItem = entry.getValue();
+
+            // Note that we only log CHANGES
+            String newValue = logItem.getNewLogValue();
+            logItem.logEntryString.update(newValue);
         }
     }
 }
