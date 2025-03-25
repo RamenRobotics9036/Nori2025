@@ -156,10 +156,12 @@ public class RobotContainer
     NamedCommands.registerCommand("Set Elevator Position To Bottom", CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition)));
     NamedCommands.registerCommand("Set Elevator Position To L2", CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition)));
     NamedCommands.registerCommand("Set Elevator Position To L3", CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition)));
+    NamedCommands.registerCommand("Set Elevator Position to L4", CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel4ReefPosition)));
 
     //
     // Heres the Commands that we dont mock in simulation, since they work just fine in sim.
-    //
+    //[]\
+
 
     NamedCommands.registerCommand("waitFiveSeconds", waitFiveSeconds);
   }
@@ -323,6 +325,8 @@ public class RobotContainer
     m_armController.x().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
     // L3 Preset
     m_armController.y().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
+    // L4 Preset
+    m_armController.povUp().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel4ReefPosition));
 
     // Elevator down
     m_armController.povDown().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
