@@ -69,6 +69,11 @@ public final class Constants
     public static final PIDConstants kTranslationpid = new PIDConstants(0.7, 0, 0); // try 0.7,0,0 from YAGSL-Example
     public static final PIDConstants kAnglePID = new PIDConstants(0.4, 0, 0.01); // try 0.4,0,0.01 from YAGSL-Example
     public static final double kMaxSpeedMetersPerSecond = 5.06; // try 4.5 from YAGSL-Example
+
+    public static final double kRotSpeed = 0.2; //TODO: filler value
+    public static final double kRotTimeout = 5; //TODO: filler value
+    public static final double kRotMarginOfError = 2; //TODO: filler value
+
   }
 
   public static final class VisionConstants {
