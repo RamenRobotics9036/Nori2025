@@ -57,8 +57,9 @@
             "/NT/PathPlanner",
             "/DS",
             "/NT/Shuffleboard/Outtake",
-            "/my/Commands",
-            "/my/Commands/BySubsystem"
+            "/my/Commands/BySubsystem",
+            "/my/Power",
+            "/my/CAN_Bus"
           ]
         },
         "tabs": {
@@ -211,7 +212,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "/my/Voltage",
+                    "logKey": "/my/CAN_Bus/Utilization",
                     "logType": "Number",
                     "visible": false,
                     "options": {
@@ -221,7 +222,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/my/CAN_Bus_Utilization",
+                    "logKey": "/my/Power/Voltage",
                     "logType": "Number",
                     "visible": true,
                     "options": {
