@@ -6,13 +6,16 @@ package frc.robot;
 
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.AutoNameConstants;
 import frc.robot.Constants.CommandConstants;
 import frc.robot.Constants.IntakeSpitCommandConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.OuttakeSpitCommandConstants;
 import frc.robot.commands.ArmDefaultCommand;
+import frc.robot.commands.ControllerRumbleCommand;
 import frc.robot.commands.DriveForwardNow;
 import frc.robot.commands.ElevatorDefaultCommand;
+import frc.robot.commands.ElevatorManualCommand;
 import frc.robot.commands.ElevatorToPositionCommand;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.CommandConstants.AlignRobotConstants;
@@ -247,7 +250,8 @@ public class RobotContainer
   public void configureDefaultCommands() {
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
     m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
-    // m_elevatorSystem.setDefaultCommand(new ElevatorDefaultCommand(m_elevatorSystem, () -> m_armController.getRightY()));
+    
+    m_elevatorSystem.setDefaultCommand(new ElevatorManualCommand(m_elevatorSystem, () -> m_armController.getRightY()));
 
     m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
   }
@@ -341,6 +345,10 @@ public class RobotContainer
     new Trigger(() -> (m_driverController.leftBumper().getAsBoolean() && m_swerveDrive.getVisionSystem().isDetecting())).onTrue(
       Commands.runOnce(() -> m_swerveDrive.trueResetPose())
     );
+
+    new Trigger(() -> m_intakeSystem.isHoldingCoral()).onTrue(new ControllerRumbleCommand(m_armController, OperatorConstants.kRumbleTime));
+
+
   }
 
   private Command waitFiveSeconds = new WaitCommand(5)
@@ -354,9 +362,17 @@ public class RobotContainer
    */
   public Command getAutonomousCommand()
   {
-    return new DriveForwardNow(m_swerveDrive).
-      andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
-      .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
+    switch (AutoLogic.autoPicker.getSelected()) {
+      case AutoNameConstants.kCenterL1AutoName:
+        return new DriveForwardNow(m_swerveDrive, 1.4).
+        andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
+        .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
+        
+      default:
+        return new DriveForwardNow(m_swerveDrive, 1.4).
+          andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
+          .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
+  }
     // return AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
   }
 
