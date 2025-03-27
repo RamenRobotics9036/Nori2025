@@ -59,11 +59,12 @@
             "/NT/Shuffleboard/Outtake",
             "/my/Commands/BySubsystem",
             "/my/Power",
-            "/my/CAN_Bus"
+            "/my/CAN_Bus",
+            "/NT/SmartDashboard/ArmMechanism"
           ]
         },
         "tabs": {
-          "selected": 1,
+          "selected": 4,
           "tabs": [
             {
               "type": 0,
@@ -204,6 +205,22 @@
               "controllerUUID": "do16zjk5mnqjpehsbef4jc5s9qzpoxec",
               "renderer": null,
               "controlsHeight": 356
+            },
+            {
+              "type": 10,
+              "title": "Mechanism",
+              "controller": [
+                {
+                  "type": "mechanism",
+                  "logKey": "NT:/SmartDashboard/ArmMechanism",
+                  "logType": "Mechanism2d",
+                  "visible": true,
+                  "options": {}
+                }
+              ],
+              "controllerUUID": "pf4p97ligwurscafw9adbkmg95zcgtbm",
+              "renderer": null,
+              "controlsHeight": 200
             },
             {
               "type": 1,
