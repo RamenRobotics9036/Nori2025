@@ -68,6 +68,14 @@ public class TriviaLogger {
         return isSimOrNotCompetitionMode();
     }
 
+    private boolean isDetailedPowerLoggingEnabled() {
+        if (!OperatorConstants.kAllowDetailedPowerLogging) {
+            return false;
+        }
+
+        return isSimOrNotCompetitionMode();
+    }
+
     private boolean isCommandLoggingEnabled() {
         return isSimOrNotCompetitionMode();
     }
@@ -90,6 +98,7 @@ public class TriviaLogger {
 
         // Custom logging
         initPowerLogging();
+        initDetailedPowerLogging();
         initPerformanceDataLogging();
         initCommandLogging();
 
@@ -103,6 +112,7 @@ public class TriviaLogger {
 
     public void updateLogging() {
         updatePowerLogging();
+        updateDetailedPowerLogging();
         updatePerformanceDataLogging();
         updateCommandLogging();
     }
@@ -120,11 +130,14 @@ public class TriviaLogger {
             m_FaultCount3V = new IntegerLogEntry(DataLogManager.getLog(), "/my/Power/FaultCount3V");
             m_FaultCount5V = new IntegerLogEntry(DataLogManager.getLog(), "/my/Power/FaultCount5V");
             m_FaultCount6V = new IntegerLogEntry(DataLogManager.getLog(), "/my/Power/FaultCount6V");
+        }
+    }
 
+    private void initDetailedPowerLogging() {
+        if (isDetailedPowerLoggingEnabled()) {
             // Enable power distribution logging
-            // $TODO - Completely disabled Power Distribution logging until I can test on the robot.
-            //m_pdData = PDData.create(1, ModuleType.kRev);
-            //m_powerDistributionLog = StructLogEntry.create(DataLogManager.getLog(), "/my/PowerDistribution", PDData.struct);
+            m_pdData = PDData.create(1, ModuleType.kRev);
+            m_powerDistributionLog = StructLogEntry.create(DataLogManager.getLog(), "/my/PowerDistribution", PDData.struct);
         }
     }
 
@@ -160,6 +173,9 @@ public class TriviaLogger {
         if (m_FaultCount6V != null) {
             m_FaultCount6V.update(RobotController.getFaultCount6V());
         }
+    }
+
+    private void updateDetailedPowerLogging() {
         if (m_pdData != null) {
             m_pdData.update();
             m_powerDistributionLog.update(m_pdData);
