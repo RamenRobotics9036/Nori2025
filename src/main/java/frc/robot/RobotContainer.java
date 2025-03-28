@@ -44,6 +44,7 @@ import java.io.File;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -371,6 +372,8 @@ public class RobotContainer
 
       case AutoNameConstants.kCenterL4AutoName:
           return new DriveForwardNow(m_swerveDrive, 1, false)
+          .andThen(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kMaxElevatorPosition).withTimeout(2))
+          .andThen(new DriveForwardNow(m_swerveDrive, 0.5, false))
           .andThen(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed, true));
       
       default:

@@ -36,7 +36,7 @@ public final class Constants
     public static final int kArmPort = 1;
     public static final double kExpo = 4; //do not change this value, ever!
     public static final double kExpoRatio = 0.75; // change this 0..1 to add more exponential, 0 = no expo (linear)
-    public static final double kDeadband = 0.01;
+    public static final double kDeadband = 0.04;
     public static final Supplier<Alliance> kAlliance = () -> (DriverStation.getAlliance().isPresent()) ? DriverStation.getAlliance().get() : Alliance.Red;
     public static final boolean kCompetitionMode = false; // Set to true the day of competition to turn off extras (max performance)
     public static final double kRumbleTime = 0.5; // seconds
