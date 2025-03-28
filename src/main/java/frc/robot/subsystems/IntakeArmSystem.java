@@ -46,6 +46,10 @@ public class IntakeArmSystem extends SubsystemBase{
     private ArmSimulation m_armSimulation = null; 
     private ArmDisplay m_armDisplay = null;
     private RangeConvert m_rangesPhysicalAndSim = null; 
+
+    //Cached values:
+    private double m_armAngle;
+    private double m_armAngleRelative;
  
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit 
     public IntakeArmSystem(){ 
@@ -93,16 +97,22 @@ public class IntakeArmSystem extends SubsystemBase{
             m_armSimulation = createSim(m_rangesPhysicalAndSim); 
         }
 
+        //Caching values
+        m_armAngle = getArmAngle();
+        m_armAngleRelative = getArmAngleRelative();
+
         if (!m_armEncoder.isConnected()) { 
             m_armRelativeEncoder.setPosition(0.0); 
         } else { 
-            m_armRelativeEncoder.setPosition(getArmAngle()); 
+            m_armRelativeEncoder.setPosition(m_armAngle); 
         } 
  
         // if (!m_armEncoder.isConnected()) { 
         //     throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get()); 
         // }
-        m_desiredAngle = getArmAngleRelative(); 
+        m_desiredAngle = m_armAngle;
+
+        
  
         initShuffleboard(); 
     } 
@@ -126,16 +136,22 @@ public class IntakeArmSystem extends SubsystemBase{
 
     @Override 
     public void periodic() { 
+        
+        //Caching values
+        m_armAngle = getArmAngle();
+        m_armAngleRelative = getArmAngleRelative();
+
+
         // loop += 1; 
         // if (loop % 50 == 0) { 
         //     System.out.println("@@@@ Arm encoder=" + getArmAngleRelative() + ", desired="+desiredAngle); 
         // } 
         if (m_armEncoder.isConnected()) { 
-            m_armRelativeEncoder.setPosition(getArmAngle()); 
+            m_armRelativeEncoder.setPosition(m_armAngle); 
         }
 
         // Update the arm visualization
-        m_armDisplay.setAngle(getArmAngle()); 
+        m_armDisplay.setAngle(m_armAngle); 
     } 
  
     @Override 
@@ -148,8 +164,8 @@ public class IntakeArmSystem extends SubsystemBase{
     public void initShuffleboard() { 
         if (!OperatorConstants.kCompetitionMode) { 
             ShuffleboardTab tab = Shuffleboard.getTab("Arm"); 
-            tab.addDouble("Arm Relative Encoder", () -> getArmAngleRelative()); 
-            tab.addDouble("Arm Encoder", () -> getArmAngle()); 
+            tab.addDouble("Arm Relative Encoder", () -> m_armAngleRelative); 
+            tab.addDouble("Arm Encoder", () -> m_armAngle); 
             tab.addDouble("Desired Angle", () -> m_desiredAngle); 
             tab.addBoolean("Encoder Is Connected", () -> m_armEncoder.isConnected()); 
 
