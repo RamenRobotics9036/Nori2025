@@ -44,7 +44,8 @@ public class IntakeArmSystem extends SubsystemBase{
     private double m_desiredAngle; 
  
     private ArmSimulation m_armSimulation = null; 
-    private ArmDisplay m_armDisplay = null; 
+    private ArmDisplay m_armDisplay = null;
+    private RangeConvert m_rangesPhysicalAndSim = null; 
  
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit 
     public IntakeArmSystem(){ 
@@ -53,9 +54,9 @@ public class IntakeArmSystem extends SubsystemBase{
  
         ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig(); 
         closedLoopConfig 
-            .p(1) 
-            .i(0) 
-            .d(0); 
+            .p(ArmConstants.kP) 
+            .i(ArmConstants.kI)
+            .d(ArmConstants.kD); 
         // closedLoopConfig.positionWrappingEnabled(true); 
         // closedLoopConfig.positionWrappingMinInput(0); 
         // closedLoopConfig.positionWrappingMaxInput(Math.PI * 2); 
@@ -78,17 +79,18 @@ public class IntakeArmSystem extends SubsystemBase{
             SparkBase.ResetMode.kResetSafeParameters,  
             SparkBase.PersistMode.kPersistParameters); 
 
-        if (RobotBase.isSimulation()) { 
-            RangeConvert rangesPhysicalAndSim = new RangeConvert( 
-                Units.radiansToDegrees(ArmConstants.kMinArmRotation), 
-                Units.radiansToDegrees(ArmConstants.kMaxArmRotation), 
-                -45.0, 
-                45.0, 
-                5.0, 
-                true); 
-        
-            m_armSimulation = createSim(rangesPhysicalAndSim); 
-            m_armDisplay = new ArmDisplay(rangesPhysicalAndSim); 
+        // Configure how the arm will be displayed in AdvantageScope visually.
+        // We map the physical min and max arm angles to -45 and 45 degrees in the visualization.
+        m_rangesPhysicalAndSim = new RangeConvert( 
+            Units.radiansToDegrees(ArmConstants.kMinArmRotation), 
+            Units.radiansToDegrees(ArmConstants.kMaxArmRotation), 
+            -45.0, 
+            45.0,
+            RobotBase.isSimulation() ? 5.0 : 15.0,
+            true);
+
+        if (RobotBase.isSimulation()) {         
+            m_armSimulation = createSim(m_rangesPhysicalAndSim); 
         }
 
         if (!m_armEncoder.isConnected()) { 
@@ -130,14 +132,16 @@ public class IntakeArmSystem extends SubsystemBase{
         // } 
         if (m_armEncoder.isConnected()) { 
             m_armRelativeEncoder.setPosition(getArmAngle()); 
-        } 
+        }
+
+        // Update the arm visualization
+        m_armDisplay.setAngle(getArmAngle()); 
     } 
  
     @Override 
     public void simulationPeriodic() { 
-        if (m_armSimulation != null) { 
+        if (m_armSimulation != null) {
             m_armSimulation.simulationPeriodic(); 
-            m_armDisplay.setAngle(getArmAngle()); 
         } 
     }
 
@@ -148,9 +152,8 @@ public class IntakeArmSystem extends SubsystemBase{
             tab.addDouble("Arm Encoder", () -> getArmAngle()); 
             tab.addDouble("Desired Angle", () -> m_desiredAngle); 
             tab.addBoolean("Encoder Is Connected", () -> m_armEncoder.isConnected()); 
- 
+
             if (RobotBase.isSimulation()) { 
-                SmartDashboard.putData("Arm Sim", m_armDisplay.getMech2d()); 
  
                 // Add a button to test moving arm up 
                 Command goUp = new SetArmToAngleCommand(this, ArmConstants.kMinArmRotation); 
@@ -168,6 +171,9 @@ public class IntakeArmSystem extends SubsystemBase{
   } 
  
   public void initLogging() {
+    m_armDisplay = new ArmDisplay(m_rangesPhysicalAndSim);
+    SmartDashboard.putData("ArmMechanism", m_armDisplay.getMech2d());
+
     // Log current command on this subsystem.
     TriviaLogger logger = TriviaLogger.getInstance();
     logger.registerSubsystemCmdCallback(

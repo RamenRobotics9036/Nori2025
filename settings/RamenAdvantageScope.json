@@ -57,12 +57,14 @@
             "/NT/PathPlanner",
             "/DS",
             "/NT/Shuffleboard/Outtake",
-            "/my/Commands",
-            "/my/Commands/BySubsystem"
+            "/my/Commands/BySubsystem",
+            "/my/Power",
+            "/my/CAN_Bus",
+            "/NT/SmartDashboard/ArmMechanism"
           ]
         },
         "tabs": {
-          "selected": 1,
+          "selected": 4,
           "tabs": [
             {
               "type": 0,
@@ -205,13 +207,29 @@
               "controlsHeight": 356
             },
             {
+              "type": 10,
+              "title": "Mechanism",
+              "controller": [
+                {
+                  "type": "mechanism",
+                  "logKey": "NT:/SmartDashboard/ArmMechanism",
+                  "logType": "Mechanism2d",
+                  "visible": true,
+                  "options": {}
+                }
+              ],
+              "controllerUUID": "pf4p97ligwurscafw9adbkmg95zcgtbm",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
               "type": 1,
               "title": "LineGraph",
               "controller": {
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "/my/Voltage",
+                    "logKey": "/my/CAN_Bus/Utilization",
                     "logType": "Number",
                     "visible": false,
                     "options": {
@@ -221,7 +239,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/my/CAN_Bus_Utilization",
+                    "logKey": "/my/Power/Voltage",
                     "logType": "Number",
                     "visible": true,
                     "options": {

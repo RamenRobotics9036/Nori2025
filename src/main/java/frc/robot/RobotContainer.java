@@ -6,13 +6,17 @@ package frc.robot;
 
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.AutoNameConstants;
 import frc.robot.Constants.CommandConstants;
 import frc.robot.Constants.IntakeSpitCommandConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.OuttakeSpitCommandConstants;
 import frc.robot.commands.ArmDefaultCommand;
+import frc.robot.commands.ControllerRumbleCommand;
+import frc.robot.commands.DriveForwardCommand;
 import frc.robot.commands.DriveForwardNow;
 import frc.robot.commands.ElevatorDefaultCommand;
+import frc.robot.commands.ElevatorManualCommand;
 import frc.robot.commands.ElevatorToPositionCommand;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.CommandConstants.AlignRobotConstants;
@@ -40,6 +44,7 @@ import java.io.File;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -156,10 +161,12 @@ public class RobotContainer
     NamedCommands.registerCommand("Set Elevator Position To Bottom", CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition)));
     NamedCommands.registerCommand("Set Elevator Position To L2", CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition)));
     NamedCommands.registerCommand("Set Elevator Position To L3", CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition)));
+    NamedCommands.registerCommand("Set Elevator Position to L4", CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel4ReefPosition)));
 
     //
     // Heres the Commands that we dont mock in simulation, since they work just fine in sim.
-    //
+    //[]\
+
 
     NamedCommands.registerCommand("waitFiveSeconds", waitFiveSeconds);
   }
@@ -245,7 +252,8 @@ public class RobotContainer
   public void configureDefaultCommands() {
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
     m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
-    // m_elevatorSystem.setDefaultCommand(new ElevatorDefaultCommand(m_elevatorSystem, () -> m_armController.getRightY()));
+    
+    // m_elevatorSystem.setDefaultCommand(new ElevatorManualCommand(m_elevatorSystem, () -> m_armController.getRightY()));
 
     m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
   }
@@ -323,6 +331,8 @@ public class RobotContainer
     m_armController.x().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel2ReefPosition));
     // L3 Preset
     m_armController.y().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel3ReefPosition));
+    // L4 Preset
+    m_armController.povUp().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kLevel4ReefPosition));
 
     // Elevator down
     m_armController.povDown().onTrue(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kDownElevatorPosition));
@@ -337,6 +347,10 @@ public class RobotContainer
     new Trigger(() -> (m_driverController.leftBumper().getAsBoolean() && m_swerveDrive.getVisionSystem().isDetecting())).onTrue(
       Commands.runOnce(() -> m_swerveDrive.trueResetPose())
     );
+
+    new Trigger(() -> m_intakeSystem.isHoldingCoral()).onTrue(new ControllerRumbleCommand(m_armController, OperatorConstants.kRumbleTime));
+
+
   }
 
   private Command waitFiveSeconds = new WaitCommand(5)
@@ -350,9 +364,23 @@ public class RobotContainer
    */
   public Command getAutonomousCommand()
   {
-    return new DriveForwardNow(m_swerveDrive).
-      andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
-      .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
+    switch (AutoLogic.autoPicker.getSelected()) {
+      case AutoNameConstants.kCenterL1AutoName:
+        return new DriveForwardNow(m_swerveDrive, 1.4, true)
+        .andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
+        .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
+
+      case AutoNameConstants.kCenterL4AutoName:
+          return new DriveForwardNow(m_swerveDrive, 1, false)
+          .andThen(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kMaxElevatorPosition).withTimeout(2))
+          .andThen(new DriveForwardNow(m_swerveDrive, 0.5, false))
+          .andThen(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed, true));
+      
+      default:
+        return new DriveForwardNow(m_swerveDrive, 1.4, true).
+          andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
+          .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
+  }
     // return AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
   }
 
