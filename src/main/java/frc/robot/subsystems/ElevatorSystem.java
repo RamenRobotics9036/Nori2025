@@ -8,6 +8,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,6 +23,9 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.logging.TriviaLogger;
+import frc.robot.sim.SimConstants;
+import frc.robot.sim.SimConstants.ElevatorSimConstants;
+import frc.robot.sim.elevatorsimulation.ElevatorSimulation;
 
 public class ElevatorSystem extends SubsystemBase{
     //Motors are on opposate sides of a shaft
@@ -32,6 +36,7 @@ public class ElevatorSystem extends SubsystemBase{
     private RelativeEncoder m_encoder = m_leaderMotor.getEncoder();
     private SparkClosedLoopController m_PIDController = m_leaderMotor.getClosedLoopController();
     private double m_desiredPosition;
+    private ElevatorSimulation m_elevatorSim = null;
 
     private DigitalInput m_limitSwitch= new DigitalInput(ElevatorConstants.kDIOIndex);
     /* Sensor will reset a relative encoder when the elevator lowers fully
@@ -74,6 +79,10 @@ public class ElevatorSystem extends SubsystemBase{
         m_followMotor.configure(m_followConfig, 
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
+
+        if (RobotBase.isSimulation()) {
+            m_elevatorSim = new ElevatorSimulation();
+        }
 
         initShuffleboard();
     }
@@ -125,6 +134,20 @@ public class ElevatorSystem extends SubsystemBase{
                     // initializeMotorConfig(false);
                 }
         }
+
+        if (m_elevatorSim != null) {
+            // Run the simulation model.
+            m_elevatorSim.reachGoal(ElevatorSimConstants.kSetpointMeters);
+        }
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        if (m_elevatorSim != null) {
+            // Update the simulation model.
+            m_elevatorSim.simulationPeriodic();
+            m_elevatorSim.updateTelemetry();
+        }
     }
 
     public boolean isLimitReached() {
@@ -170,5 +193,10 @@ public class ElevatorSystem extends SubsystemBase{
 
     public void stopSystem(){
         m_leaderMotor.stopMotor();
+
+        if (m_elevatorSim != null) {
+            // This just makes sure that our simulation code knows that the motor's off.
+            m_elevatorSim.stop();
+        }
     }
 }

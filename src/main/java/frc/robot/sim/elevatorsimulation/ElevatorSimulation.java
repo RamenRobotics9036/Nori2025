@@ -37,7 +37,7 @@ public class ElevatorSimulation implements AutoCloseable {
           ElevatorSimConstants.kElevatorkV,
           ElevatorSimConstants.kElevatorkA);
   private final Encoder m_encoder =
-      new Encoder(ElevatorSimConstants.kEncoderAChannel, ElevatorSimConstants.kEncoderBChannel);
+      new Encoder(5, 6); // $TODO ElevatorSimConstants.kEncoderAChannel, ElevatorSimConstants.kEncoderBChannel);
   private final PWMSparkMax m_motor = new PWMSparkMax(ElevatorSimConstants.kMotorPort);
 
   // Simulation classes help us simulate what's going on, including gravity.
