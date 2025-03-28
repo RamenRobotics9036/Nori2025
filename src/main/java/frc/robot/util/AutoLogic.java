@@ -129,6 +129,7 @@ public class AutoLogic {
 
   public static void addAutoOptions() {
     autoPicker.setDefaultOption(AutoNameConstants.kCenterL1AutoName, AutoNameConstants.kCenterL1AutoName);
+    addOptionToPicker(AutoNameConstants.kCenterL4AutoName);
     // addOptionToPicker("auto lower l1");
     // addOptionToPicker("RIGHT 2 Coral L1 Robot Should Be next to Barge with OPPOSITE Color of Team Alliance", "auto lower 2 coral");
     // addOptionToPicker("auto lower 3 coral");

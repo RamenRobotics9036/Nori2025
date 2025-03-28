@@ -13,6 +13,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.OuttakeSpitCommandConstants;
 import frc.robot.commands.ArmDefaultCommand;
 import frc.robot.commands.ControllerRumbleCommand;
+import frc.robot.commands.DriveForwardCommand;
 import frc.robot.commands.DriveForwardNow;
 import frc.robot.commands.ElevatorDefaultCommand;
 import frc.robot.commands.ElevatorManualCommand;
@@ -251,7 +252,7 @@ public class RobotContainer
     m_swerveDrive.setDefaultCommand(m_driveFieldOrientedAngularVelocity);
     m_intakeSystem.setDefaultCommand(new IntakeDefaultCommand(m_intakeSystem));
     
-    m_elevatorSystem.setDefaultCommand(new ElevatorManualCommand(m_elevatorSystem, () -> m_armController.getRightY()));
+    // m_elevatorSystem.setDefaultCommand(new ElevatorManualCommand(m_elevatorSystem, () -> m_armController.getRightY()));
 
     m_armSystem.setDefaultCommand(new ArmDefaultCommand(m_armSystem, () -> m_armController.getLeftY()));
   }
@@ -364,12 +365,16 @@ public class RobotContainer
   {
     switch (AutoLogic.autoPicker.getSelected()) {
       case AutoNameConstants.kCenterL1AutoName:
-        return new DriveForwardNow(m_swerveDrive, 1.4).
-        andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
+        return new DriveForwardNow(m_swerveDrive, 1.4, true)
+        .andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
         .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
-        
+
+      case AutoNameConstants.kCenterL4AutoName:
+          return new DriveForwardNow(m_swerveDrive, 1, false)
+          .andThen(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed, true));
+      
       default:
-        return new DriveForwardNow(m_swerveDrive, 1.4).
+        return new DriveForwardNow(m_swerveDrive, 1.4, true).
           andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
           .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
   }

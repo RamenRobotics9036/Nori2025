@@ -202,7 +202,7 @@ public final class Constants
   public static final double kLevel3ReefPosition = -(0.37 + 0.01); 
   public static final double kLevel4ReefPosition = -(0.547 + 0.01); 
   //Tested with robot with 2024 bumpers, will need to adjust for new bumpers 
-  public static final double maxTime = 8; 
+  public static final double maxTime = 2; 
   public static final double tolerance = 0.01; 
   }
 
@@ -226,5 +226,6 @@ public final class Constants
 
   public static final class AutoNameConstants {
     public static final String kCenterL1AutoName = "CENTER 1 Coral L1";
+    public static final String kCenterL4AutoName = "CENTER 1 Coral L4";
   }
 }
