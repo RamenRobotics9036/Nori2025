@@ -22,10 +22,14 @@ public class DriveForwardNow extends Command
   private Timer m_timer = new Timer();
   private double startX;
   private double startY;
+  private boolean resetOdometry;
+  private double distanceMeters;
 
-  public DriveForwardNow(SwerveSubsystem swerve)
+  public DriveForwardNow(SwerveSubsystem swerve, double distanceMeters, boolean resetOdometry)
   {
     this.m_swerve = swerve;
+    this.distanceMeters = distanceMeters;
+    this.resetOdometry = resetOdometry;
 
     addRequirements(swerve);
   }
@@ -34,8 +38,10 @@ public class DriveForwardNow extends Command
   public void initialize()
   {
     // final double resetToAngle = (OperatorConstants.kAlliance.get() == Alliance.Red) ? 90 : 270;
-    final double resetToAngle = 90;
-    m_swerve.resetOdometry(new Pose2d(m_swerve.getPose().getTranslation(), Rotation2d.fromDegrees(resetToAngle)));
+    if (resetOdometry) {
+      final double resetToAngle = 90;
+      m_swerve.resetOdometry(new Pose2d(m_swerve.getPose().getTranslation(), Rotation2d.fromDegrees(resetToAngle)));
+    }
     m_timer.restart();
     startX = m_swerve.getPose().getX();
     startY = m_swerve.getPose().getY();
@@ -65,7 +71,7 @@ public class DriveForwardNow extends Command
       System.out.println("auto timed out");
         return true;
     }
-    if (Math.abs(m_swerve.getPose().getX() - startX) + Math.abs(m_swerve.getPose().getY() - startY) > 1.4) {
+    if (Math.abs(m_swerve.getPose().getX() - startX) + Math.abs(m_swerve.getPose().getY() - startY) >= distanceMeters) {
       System.out.println("auto hit distance limit");
       return true;
     }

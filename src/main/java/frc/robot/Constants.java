@@ -36,10 +36,11 @@ public final class Constants
     public static final int kArmPort = 1;
     public static final double kExpo = 4; //do not change this value, ever!
     public static final double kExpoRatio = 0.75; // change this 0..1 to add more exponential, 0 = no expo (linear)
-    public static final double kDeadband = 0.01;
+    public static final double kDeadband = 0.04;
     public static final Supplier<Alliance> kAlliance = () -> (DriverStation.getAlliance().isPresent()) ? DriverStation.getAlliance().get() : Alliance.Red;
     public static final boolean kCompetitionMode = true; // Set to true the day of competition to turn off extras (max performance)
     public static final boolean kAllowDetailedPowerLogging = false; // Only when set to true will we log detailed power distrbution logging
+    public static final double kRumbleTime = 0.5; // seconds
   }
   /**
    * 
@@ -161,7 +162,7 @@ public final class Constants
     //public static final double kArmGearBoxRatio = 125 * (44/30);
     //125 is 3-stage gearbox, 38 and 18 are the numbers of teeth on the two gears.
     public static final double kArmGearBoxRatio = 125 * (38/18);
-
+    
     // Make sure the abolute encoder does NOT cross zero as the arm moves from top to bottom
     // This is the position of the arm in the up position, it should ALMOST be touching the endstop
     public static final double kMinArmRotation = 1.5;
@@ -175,32 +176,35 @@ public final class Constants
     public static final double tolerance = 0.1;
     public static final double setArmMaxTime = 4;
     public static final double algaePreset = 1.849222;
+    public static final double kP = 1.5;
+    public static final double kI = 0;
+    public static final double kD = 0;
   }
 
   public static final class ArmDefaultCommandConstants {
     public static final double armAngleChangeRate = 5;
   }
-
   public static final class ElevatorConstants {
-    public static final int kLeaderMotorID = 30;
-    public static final int kFollowMotorID = 31;
-    public static final int kDIOIndex = 1; // TODO: placeholder
-    public static final int kStallLimit = 20;
-    public static final double kMaxOutputPercentage = 1;
-    //Elevator moves 5.625 in (0.1429 m) per rotation of the sprocket, gear ratio of 12:1
-    public static final double kRotationToElevatorRatio = (5.625 * 0.0254) / 12;
-    //Physical limit is 43.75 in (1.1112 m)
-    public static final double kMarginOfError = 0.06;
-    public static final double elevatorMaxSpeed = 2.5;
+  public static final int kLeaderMotorID = 30; 
+  public static final int kFollowMotorID = 31; 
+  public static final int kDIOIndex = 1; // TODO: placeholder 
+  public static final int kStallLimit = 20; 
+  public static final double kMaxOutputPercentage = 1; 
+  //Elevator moves 5.625 in (0.1429 m) per rotation of the sprocket, gear ratio of 12:1 
+  public static final double kRotationToElevatorRatio = (5.625 * 0.0254) / 20; 
+  //Physical limit is 43.75 in (1.1112 m) 
+  public static final double kMarginOfError = 0.06; 
+  public static final double elevatorMaxSpeed = 5; 
 
-    public static final double kDownElevatorPosition = 0.0;
-    public static final double kMaxElevatorPosition = -0.6;
-    public static final double kLevel2ReefPosition = -0.35;
-    //Tested with robot with 2024 bumpers, will need to adjust for new bumpers
-    public static final double kLevel3ReefPosition = -0.55;
-    //Tested with robot with 2024 bumpers, will need to adjust for new bumpers
-    public static final double maxTime = 8;
-    public static final double tolerance = 0.01;
+  public static final double kDownElevatorPosition = 0.0; 
+  public static final double kMaxElevatorPosition = -(0.55 + 0.02); 
+  public static final double kLevel2ReefPosition = -(0.268 + 0.03);
+  //Tested with robot with 2024 bumpers, will need to adjust for new bumpers 
+  public static final double kLevel3ReefPosition = -(0.37 + 0.01); 
+  public static final double kLevel4ReefPosition = -(0.547 + 0.01); 
+  //Tested with robot with 2024 bumpers, will need to adjust for new bumpers 
+  public static final double maxTime = 2; 
+  public static final double tolerance = 0.01; 
   }
 
   public static final class ElevatorDefaultCommandConstants{
@@ -219,5 +223,10 @@ public final class Constants
     public static final int maxTime = 3;
     public static final double speed = 1.0;
     public static final double numRotations = 250;
+  }
+
+  public static final class AutoNameConstants {
+    public static final String kCenterL1AutoName = "CENTER 1 Coral L1";
+    public static final String kCenterL4AutoName = "CENTER 1 Coral L4";
   }
 }
