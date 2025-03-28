@@ -31,7 +31,10 @@ public class ElevatorSystem extends SubsystemBase{
     private SparkMaxConfig m_followConfig = new SparkMaxConfig();
     private RelativeEncoder m_encoder = m_leaderMotor.getEncoder();
     private SparkClosedLoopController m_PIDController = m_leaderMotor.getClosedLoopController();
+    //Cached values
     private double m_desiredPosition;
+    private double m_encoderPosition;
+    private boolean m_limitReached = false;
 
     private DigitalInput m_limitSwitch= new DigitalInput(ElevatorConstants.kDIOIndex);
     /* Sensor will reset a relative encoder when the elevator lowers fully
@@ -75,6 +78,8 @@ public class ElevatorSystem extends SubsystemBase{
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
 
+        m_encoderPosition = m_encoder.getPosition();
+
         initShuffleboard();
     }
 
@@ -83,9 +88,8 @@ public class ElevatorSystem extends SubsystemBase{
             ShuffleboardTab tab = Shuffleboard.getTab("Elevator");
             tab.addNumber("Desired Position", () ->  m_desiredPosition);
             tab.addNumber("Position", this::getPosition);
-            tab.addBoolean("Limit Switch Value", () -> isLimitReached());
-            tab.addNumber("Relative Encoder Position", () -> m_encoder.getPosition());
-            tab.addNumber("Motor Speeds", this::getSpeed);
+            tab.addBoolean("Limit Switch Value", () -> m_limitReached);
+            tab.addNumber("Relative Encoder Position", () ->  m_encoderPosition);
             tab.addString("Elevator State", () -> m_state.toString());
         }
 
@@ -103,9 +107,14 @@ public class ElevatorSystem extends SubsystemBase{
 
     @Override
     public void periodic(){
+        // update cached values
+        m_limitReached = m_limitSwitch.get();
+        m_encoderPosition = m_encoder.getPosition();
+
         switch (m_state) {
+        
             case INIT:
-                if (isLimitReached()) {
+                if (m_limitReached) {
                     m_state = states.READYLOW;
                     resetEncoder();
                     // initializeMotorConfig is a no-op since we do not use the brake to keep the elevator in place
@@ -113,22 +122,18 @@ public class ElevatorSystem extends SubsystemBase{
                 }
                 break;
             case READYLOW:
-                if (!isLimitReached()) {
+                if (!m_limitReached) {
                     m_state = states.READY;
                 }
                 break;
             case READY:
-                if (isLimitReached()) {
+                if (m_limitReached) {
                     m_leaderMotor.stopMotor(); // we are at the bottom, stop for safety
                     m_state = states.INIT;
                     // initializeMotorConfig is a no-op since we do not use the brake to keep the elevator in place
                     // initializeMotorConfig(false);
                 }
         }
-    }
-
-    public boolean isLimitReached() {
-        return m_limitSwitch.get();
     }
 
     public void setPosition(double position){
@@ -154,15 +159,12 @@ public class ElevatorSystem extends SubsystemBase{
 
     private void resetEncoder(){
         m_encoder.setPosition(0);
-    }
-
-    public double getSpeed(){
-        return m_leaderMotor.get();
+        m_encoderPosition = 0;
     }
 
     public double getPosition(){
         if (m_state == states.READY || m_state == states.READYLOW){
-            return m_encoder.getPosition(); // TODO: placeholder, change this to the correct ratio
+            return m_encoderPosition;
         } else {
             return -1;
         }
