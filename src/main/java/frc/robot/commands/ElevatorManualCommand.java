@@ -51,8 +51,8 @@ public class ElevatorManualCommand extends Command {
         }
 
         // $TODO - See bugfix made for simulation above.  We should fix this for the actual physical robot too.
-        // Needs investigation.
-        setPosition(m_elevatorSystem.getPosition() + (m_deltaArmAngleFromController.get() / 20)); 
+        // Needs investigation. Shlok commented the next line out at 3/27/25 because it was causing the Elevator to slowly descend. This was because the desired position of the elevator was slowly decreasing without any human input.
+        // setPosition(m_elevatorSystem.getPosition() + (m_deltaArmAngleFromController.get() / 20)); 
     }
 
     @Override

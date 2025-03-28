@@ -190,17 +190,17 @@ public final class Constants
   public static final int kStallLimit = 20; 
   public static final double kMaxOutputPercentage = 1; 
   //Elevator moves 5.625 in (0.1429 m) per rotation of the sprocket, gear ratio of 12:1 
-  public static final double kRotationToElevatorRatio = (5.625 * 0.0254) / 48; 
+  public static final double kRotationToElevatorRatio = (5.625 * 0.0254) / 20; 
   //Physical limit is 43.75 in (1.1112 m) 
   public static final double kMarginOfError = 0.06; 
   public static final double elevatorMaxSpeed = 5; 
 
   public static final double kDownElevatorPosition = 0.0; 
-  public static final double kMaxElevatorPosition = -0.55; 
-  public static final double kLevel2ReefPosition = -0.268; 
+  public static final double kMaxElevatorPosition = -(0.55 + 0.01); 
+  public static final double kLevel2ReefPosition = -(0.268 + 0.01);
   //Tested with robot with 2024 bumpers, will need to adjust for new bumpers 
-  public static final double kLevel3ReefPosition = -0.37; 
-  public static final double kLevel4ReefPosition = -0.547; 
+  public static final double kLevel3ReefPosition = -(0.37 + 0.01); 
+  public static final double kLevel4ReefPosition = -(0.547 + 0.01); 
   //Tested with robot with 2024 bumpers, will need to adjust for new bumpers 
   public static final double maxTime = 8; 
   public static final double tolerance = 0.01; 
