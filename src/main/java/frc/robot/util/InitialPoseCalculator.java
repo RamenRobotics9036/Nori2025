@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.Constants.InitialPoseConstants;
 import frc.robot.Constants.VisionConstants;
 
 /**
@@ -30,7 +29,7 @@ public final class InitialPoseCalculator {
      * Gets the current alliance color from the FMS
      * @return The alliance color (Red or Blue), default to Blue.
      */
-    private static Alliance getAlliance() {
+    public static Alliance getAlliance() {
         return DriverStation.getAlliance().orElse(Alliance.Blue);
     }
     
@@ -49,19 +48,20 @@ public final class InitialPoseCalculator {
         // If alliance is RED, we need to mirror the pose across the field
         boolean isRed = (alliance == Alliance.Red);
 
+        Pose2d result = nonmirroredInitialPose;
+
         // If we're on red alliance, mirror the pose
         if (isRed) {
-            // Mirror across the field width
-            double fieldWidth = VisionConstants.kTagLayout.getFieldWidth();
+            // Mirror across the field length
+            double fieldLength = VisionConstants.kTagLayout.getFieldLength();
 
-            return new Pose2d(
-                nonmirroredInitialPose.getX(),
-                fieldWidth - nonmirroredInitialPose.getY(),
-                Rotation2d.fromDegrees(-nonmirroredInitialPose.getRotation().getDegrees())
+            result = new Pose2d(
+                fieldLength - nonmirroredInitialPose.getX(),
+                nonmirroredInitialPose.getY(),
+                Rotation2d.fromDegrees(nonmirroredInitialPose.getRotation().getDegrees() + 180.0)
             );
-        } else {
-            // Blue alliance, use pose as-is
-            return nonmirroredInitialPose;
         }
+
+        return result;
     }
 }
