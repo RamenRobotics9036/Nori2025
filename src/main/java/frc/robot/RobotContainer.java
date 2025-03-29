@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.InitialPoseConstants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.AutoNameConstants;
 import frc.robot.Constants.CommandConstants;
@@ -41,6 +42,7 @@ import frc.robot.util.CommandAppliedController;
 import swervelib.SwerveInputStream;
 
 import java.io.File;
+import java.util.Optional;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -363,18 +365,18 @@ public class RobotContainer
   {
     switch (AutoLogic.autoPicker.getSelected()) {
       case AutoNameConstants.kCenterL1AutoName:
-        return new DriveForwardNow(m_swerveDrive, 1.4, true)
+        return new DriveForwardNow(m_swerveDrive, 1.4, Optional.of(InitialPoseConstants.kCenterStationPose))
         .andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
         .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
 
       case AutoNameConstants.kCenterL4AutoName:
-          return new DriveForwardNow(m_swerveDrive, 1, false)
+          return new DriveForwardNow(m_swerveDrive, 1)
           .andThen(CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kMaxElevatorPosition).withTimeout(2)))
-          .andThen(new DriveForwardNow(m_swerveDrive, 0.5, false))
+          .andThen(new DriveForwardNow(m_swerveDrive, 0.5))
           .andThen(CmdWrapperOuttakeSystem(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed, true)));
       
       default:
-        return new DriveForwardNow(m_swerveDrive, 1.4, true).
+        return new DriveForwardNow(m_swerveDrive, 1.4, Optional.of(InitialPoseConstants.kCenterStationPose)).
           andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
           .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
   }
