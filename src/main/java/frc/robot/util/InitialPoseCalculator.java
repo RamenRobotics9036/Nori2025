@@ -27,10 +27,10 @@ public final class InitialPoseCalculator {
 
     /**
      * Gets the current alliance color from the FMS
-     * @return The alliance color (Red or Blue), default to Blue.
+     * @return The alliance color (Red or Blue), default to Red.
      */
     public static Alliance getAlliance() {
-        return DriverStation.getAlliance().orElse(Alliance.Blue);
+        return DriverStation.getAlliance().orElse(Alliance.Red);
     }
     
     /**
