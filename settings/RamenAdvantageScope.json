@@ -3,8 +3,8 @@
     {
       "x": -8,
       "y": -8,
-      "width": 1808,
-      "height": 1088,
+      "width": 1792,
+      "height": 1072,
       "state": {
         "sidebar": {
           "width": 346,
@@ -64,7 +64,7 @@
           ]
         },
         "tabs": {
-          "selected": 4,
+          "selected": 5,
           "tabs": [
             {
               "type": 0,
@@ -227,16 +227,6 @@
               "title": "LineGraph",
               "controller": {
                 "leftSources": [
-                  {
-                    "type": "stepped",
-                    "logKey": "/my/CAN_Bus/Utilization",
-                    "logType": "Number",
-                    "visible": false,
-                    "options": {
-                      "color": "#e5b31b",
-                      "size": "normal"
-                    }
-                  },
                   {
                     "type": "stepped",
                     "logKey": "/my/Power/Voltage",
