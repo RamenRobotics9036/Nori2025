@@ -4,14 +4,14 @@
 
 package frc.robot.commands;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.InitialPose;
 
 /**
  * An example command that uses an example subsystem.
@@ -22,26 +22,31 @@ public class DriveForwardNow extends Command
   private Timer m_timer = new Timer();
   private double startX;
   private double startY;
-  private boolean resetOdometry;
   private double distanceMeters;
+  private Optional<Pose2d> nonmirroredInitialPose;
 
-  public DriveForwardNow(SwerveSubsystem swerve, double distanceMeters, boolean resetOdometry)
+  public DriveForwardNow(SwerveSubsystem swerve, double distanceMeters, Optional<Pose2d> nonmirroredInitialPose)
   {
     this.m_swerve = swerve;
     this.distanceMeters = distanceMeters;
-    this.resetOdometry = resetOdometry;
+    this.nonmirroredInitialPose = nonmirroredInitialPose;
 
     addRequirements(swerve);
+  }
+
+  public DriveForwardNow(SwerveSubsystem swerve, double distanceMeters)
+  {
+    this(swerve, distanceMeters, Optional.empty());
   }
 
   @Override
   public void initialize()
   {
-    // final double resetToAngle = (OperatorConstants.kAlliance.get() == Alliance.Red) ? 90 : 270;
-    if (resetOdometry) {
-      final double resetToAngle = 90;
-      m_swerve.resetOdometry(new Pose2d(m_swerve.getPose().getTranslation(), Rotation2d.fromDegrees(resetToAngle)));
+    if (nonmirroredInitialPose.isPresent()) {
+      Pose2d mirroredPose = InitialPose.getCalculatedInitialPose(nonmirroredInitialPose.get());
+      m_swerve.resetOdometry(mirroredPose);
     }
+
     m_timer.restart();
     startX = m_swerve.getPose().getX();
     startY = m_swerve.getPose().getY();
@@ -68,11 +73,11 @@ public class DriveForwardNow extends Command
   public boolean isFinished()
   {
     if (m_timer.get() > 15) {
-      System.out.println("auto timed out");
+      System.out.println("Error: Auto timed out");
         return true;
     }
     if (Math.abs(m_swerve.getPose().getX() - startX) + Math.abs(m_swerve.getPose().getY() - startY) >= distanceMeters) {
-      System.out.println("auto hit distance limit");
+      System.out.println("Error: Auto hit distance limit");
       return true;
     }
 

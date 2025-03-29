@@ -10,6 +10,8 @@ import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -224,5 +226,10 @@ public final class Constants
   public static final class AutoNameConstants {
     public static final String kCenterL1AutoName = "CENTER 1 Coral L1";
     public static final String kCenterL4AutoName = "CENTER 1 Coral L4";
+  }
+
+  public static final class InitialPoseConstants {
+    // Station poses (in meters)
+    public static final Pose2d kCenterStationPose = new Pose2d(7.1, 4.0, Rotation2d.fromDegrees(90));
   }
 }
