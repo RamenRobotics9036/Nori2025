@@ -200,7 +200,7 @@ public class IntakeArmSystem extends SubsystemBase{
 
     public void setReference(double position) { 
         m_desiredAngle = position; 
-        m_armPIDController.setReference(position, ControlType.kPosition); 
+        // m_armPIDController.setReference(position, ControlType.kPosition); 
     } 
  
     //sets the speed of m_armMotor. Cannot exceed maxOutputPercentage 
@@ -218,7 +218,7 @@ public class IntakeArmSystem extends SubsystemBase{
 
         /// $TODO This seems like a bug.  Conversion factor was already configured on the absolute encoder, 
         // so units are already in radians.  Needs investigation.
-        return Math.max(0, (m_armEncoder.get() * 2 * Math.PI) + ArmConstants.kAbsoluteEncoderOffset) % (Math.PI * 2); 
+        return Math.max(0, (m_armEncoder.get()) + ArmConstants.kAbsoluteEncoderOffset);
     } 
  
     public double getArmAngleRelative() { 
