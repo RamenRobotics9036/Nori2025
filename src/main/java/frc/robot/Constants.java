@@ -179,7 +179,7 @@ public final class Constants
   }
 
   public static final class ArmDefaultCommandConstants {
-    public static final double armAngleChangeRate = 5;
+    public static final double armAngleChangeRate = 8;
   }
   public static final class ElevatorConstants {
   public static final int kLeaderMotorID = 30; 
@@ -194,12 +194,11 @@ public final class Constants
   public static final double elevatorMaxSpeed = 5; 
 
   public static final double kDownElevatorPosition = 0.0; 
-  public static final double kMaxElevatorPosition = -(0.55 + 0.02); 
-  public static final double kLevel2ReefPosition = -(0.268 + 0.03);
-  //Tested with robot with 2024 bumpers, will need to adjust for new bumpers 
-  public static final double kLevel3ReefPosition = -(0.37 + 0.01); 
-  public static final double kLevel4ReefPosition = -(0.547 + 0.01); 
-  //Tested with robot with 2024 bumpers, will need to adjust for new bumpers 
+  public static final double kMaxElevatorPosition = -(0.549); 
+  public static final double kLevel2ReefPosition = -(0.239); 
+  public static final double kLevel3ReefPosition = -(0.336 + 0.024); //plus value is to compensate for bent threaded rod. will be replaced saturday 3/29 and should be unnecessary after
+  public static final double kLevel4ReefPosition = -(0.546);
+
   public static final double maxTime = 2; 
   public static final double tolerance = 0.01; 
   }
