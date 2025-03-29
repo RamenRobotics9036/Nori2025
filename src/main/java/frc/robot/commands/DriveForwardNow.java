@@ -11,7 +11,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.util.InitialPose;
+import frc.robot.util.InitialPoseCalculator;
 
 /**
  * An example command that uses an example subsystem.
@@ -43,7 +43,7 @@ public class DriveForwardNow extends Command
   public void initialize()
   {
     if (nonmirroredInitialPose.isPresent()) {
-      Pose2d mirroredPose = InitialPose.getCalculatedInitialPose(nonmirroredInitialPose.get());
+      Pose2d mirroredPose = InitialPoseCalculator.getCalculatedInitialPose(nonmirroredInitialPose.get());
       m_swerve.resetOdometry(mirroredPose);
     }
 

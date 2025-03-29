@@ -10,11 +10,11 @@ import frc.robot.Constants.VisionConstants;
 /**
  * Utility class for determining the initial pose of the robot based on FMS data
  */
-public final class InitialPose {    
+public final class InitialPoseCalculator {    
     /**
      * Private constructor to prevent instantiation of this utility class
      */
-    private InitialPose() {
+    private InitialPoseCalculator() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 
@@ -41,10 +41,9 @@ public final class InitialPose {
     public static Pose2d getCalculatedInitialPose(Pose2d nonmirroredInitialPose) {
         // Check if FMS is connected and reporting alliance
         if (!isFmsReady()) {
-            System.out.println("Error: FMS not ready, using default pose");
-            return nonmirroredInitialPose;
+            System.out.println("Warning: FMS not ready, using drivestation Alliance");
         }
-        
+
         Alliance alliance = getAlliance();
         
         // If alliance is RED, we need to mirror the pose across the field
