@@ -8,7 +8,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -29,9 +29,8 @@ public class IntakeSystem extends SubsystemBase{
     private RelativeEncoder m_pullMotorRelativeEncoder = m_pullMotor.getEncoder();
     private RelativeEncoder m_loadMotorRelativeEncoder = m_loadMotor.getEncoder();
 
-    //Proximity sensors
-    private Counter m_canAndColorA = new Counter(IntakeConstants.kCanAndColorSensorAPort);
-    private Counter m_canAndColorB = new Counter(IntakeConstants.kCanAndColorSensorBPort);
+    //Proximity sensors for detecting coral
+    private DigitalInput m_proximitySensor = new DigitalInput(IntakeConstants.kProximitySensorPort);
 
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit
     public IntakeSystem(){
@@ -51,29 +50,12 @@ public class IntakeSystem extends SubsystemBase{
             SparkBase.ResetMode.kResetSafeParameters, 
             SparkBase.PersistMode.kPersistParameters);
 
-        m_canAndColorA.reset();
-        m_canAndColorB.reset();
-        
-        //semi-period mode counts the duration of pulses from a rising to falling edge or vice versa
-        m_canAndColorA.setSemiPeriodMode(true);
-        //sets how long it will me considered "moving" for
-        m_canAndColorA.setMaxPeriod(1);
-        //how many samples to average to calculate period
-        m_canAndColorA.setSamplesToAverage(5);
-
-        //same as the last three
-        m_canAndColorB.setSemiPeriodMode(true);
-        m_canAndColorB.setMaxPeriod(1);
-        m_canAndColorB.setSamplesToAverage(5);
-
         initShuffleboard();
     }
 
     public void initShuffleboard() {
         if (!OperatorConstants.kCompetitionMode){
             ShuffleboardTab tab = Shuffleboard.getTab("Intake");
-            tab.addDouble("Can Encoder A", this::getCanAndColorAPeriod);
-            tab.addDouble("Can Encoder B", this::getCanAndColorBPeriod);
             tab.addBoolean("Is Holding Coral", this::isHoldingCoral);
         }
 
@@ -100,27 +82,10 @@ public class IntakeSystem extends SubsystemBase{
         m_loadMotor.set(speed);
     }
 
-    //checks values of canandcolors
-    public double getCanAndColorAPeriod() {
-        return m_canAndColorA.getPeriod() * IntakeConstants.canAndColorScalar;
-    }
-
-    public double getCanAndColorBPeriod() {
-        return m_canAndColorB.getPeriod() * IntakeConstants.canAndColorScalar;
-    }
-
-    //checks to see if one detects a coral
-    public boolean canAndColorAIsDetecting() {
-        return getCanAndColorAPeriod() < IntakeConstants.canAndColorThreshold;
-    }
-
-    public boolean canAndColorBIsDetecting() {
-        return getCanAndColorBPeriod() < IntakeConstants.canAndColorThreshold;
-    }
 
     public boolean isHoldingCoral() {
         // Removed encoder B because not working.
-        return canAndColorAIsDetecting() || canAndColorBIsDetecting();
+        return m_proximitySensor.get();
     }
 
     //gets the speed of m_pullMotor
