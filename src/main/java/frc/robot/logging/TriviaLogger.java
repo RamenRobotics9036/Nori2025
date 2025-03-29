@@ -61,7 +61,8 @@ public class TriviaLogger {
     }
 
     private boolean isPerformanceDataLoggingEnabled() {
-        return isSimOrNotCompetitionMode();
+        return false;
+        // return isSimOrNotCompetitionMode();
     }
 
     private boolean isPowerLoggingEnabled() {
