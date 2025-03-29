@@ -190,11 +190,8 @@ public class RobotContainer
   }
 
   private Command CmdWrapperIntakeArmSystem(Command command) {
-    if (disableCommandsInSim()) {
-      return new PretendCommandIntakeArmSystem(m_armSystem);
-    } else {
-      return command;
-    }
+    // Now that we implemented sim for arm, re-enable these commands for sim.
+    return command;
   }
 
   private Command CmdWrapperIntakeSystem(Command command) {
