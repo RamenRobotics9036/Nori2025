@@ -98,8 +98,14 @@ public class IntakeArmSystem extends SubsystemBase{
         }
 
         //Caching values
-        m_armAngleAbsolute = getArmAngle();
+        if (RobotBase.isSimulation()) { 
+            m_armAngleAbsolute = m_armEncoder.get(); 
+        } else{
+            m_armAngleAbsolute = Math.max(0, (m_armEncoder.get() * 2 * Math.PI) + ArmConstants.kAbsoluteEncoderOffset) % (Math.PI * 2);
+        }
+
         m_armAngleRelative = m_armRelativeEncoder.getPosition();
+
 
         if (!m_armEncoder.isConnected()) { 
             m_armRelativeEncoder.setPosition(0.0); 
@@ -138,7 +144,13 @@ public class IntakeArmSystem extends SubsystemBase{
     public void periodic() { 
         
         //Caching values
-        m_armAngleAbsolute = getArmAngle();
+        if (RobotBase.isSimulation()) { 
+            m_armAngleAbsolute = m_armEncoder.get(); 
+        } else{
+            m_armAngleAbsolute = Math.max(0, (m_armEncoder.get() * 2 * Math.PI) + ArmConstants.kAbsoluteEncoderOffset) % (Math.PI * 2);
+        }
+
+        m_armAngleRelative = m_armRelativeEncoder.getPosition();
         m_armAngleRelative = m_armRelativeEncoder.getPosition();
 
 
@@ -212,13 +224,7 @@ public class IntakeArmSystem extends SubsystemBase{
  
     // get encoder value 
     private double getArmAngle() {
-        if (RobotBase.isSimulation()) { 
-            return m_armEncoder.get(); 
-        }
-
-        /// $TODO This seems like a bug.  Conversion factor was already configured on the absolute encoder, 
-        // so units are already in radians.  Needs investigation.
-        return Math.max(0, (m_armEncoder.get()) + ArmConstants.kAbsoluteEncoderOffset);
+        return m_armAngleAbsolute;
     } 
  
     public double getArmAngleRelative() { 
