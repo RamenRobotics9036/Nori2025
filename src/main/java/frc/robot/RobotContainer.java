@@ -190,11 +190,8 @@ public class RobotContainer
   }
 
   private Command CmdWrapperIntakeArmSystem(Command command) {
-    if (disableCommandsInSim()) {
-      return new PretendCommandIntakeArmSystem(m_armSystem);
-    } else {
-      return command;
-    }
+    // Now that we implemented sim for arm, re-enable these commands for sim.
+    return command;
   }
 
   private Command CmdWrapperIntakeSystem(Command command) {
@@ -372,9 +369,9 @@ public class RobotContainer
 
       case AutoNameConstants.kCenterL4AutoName:
           return new DriveForwardNow(m_swerveDrive, 1, false)
-          .andThen(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kMaxElevatorPosition).withTimeout(2))
+          .andThen(CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kMaxElevatorPosition).withTimeout(2)))
           .andThen(new DriveForwardNow(m_swerveDrive, 0.5, false))
-          .andThen(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed, true));
+          .andThen(CmdWrapperOuttakeSystem(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed, true)));
       
       default:
         return new DriveForwardNow(m_swerveDrive, 1.4, true).
