@@ -20,33 +20,32 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
  *
  * @see PDData#create(int, ModuleType)
  */
-// $TODO - These channels are from team 6995.  We need to change them to match our robot.
 public class PDData implements StructSerializable {
     public enum Channel {
-        c00,
+        c00_FR_Steer,
         c01,
         c02,
         c03,
-        c04_FL_Drive,
-        c05_FL_Steer,
+        c04,
+        c05,
         c06,
         c07,
-        c08_FR_Steer,
-        c09_FR_Drive,
-        c10_BR_Steer,
-        c11_BR_Drive,
-        c12_BR_Steer,
+        c08,
+        c09_FL_Steer,
+        c10_BL_Steer,
+        c11,
+        c12,
         c13,
         c14,
-        c15_BL_Drive,
+        c15,
         c16,
         c17,
         c18,
-        c19,
+        c19_BR_Steer,
         c20,
         c21,
         c22,
-        c23_Switchable;
+        c23;
     
         public int channel() {
           return this.ordinal();

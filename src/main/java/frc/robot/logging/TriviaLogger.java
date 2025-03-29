@@ -22,10 +22,6 @@ public class TriviaLogger {
     private IntegerLogEntry m_FaultCount3V = null;
     private IntegerLogEntry m_FaultCount5V = null;
     private IntegerLogEntry m_FaultCount6V = null;
-    private DoubleLogEntry m_canBusUtilizationLog = null;
-    private IntegerLogEntry m_canBusReceiveErrorCountLog = null;
-    private IntegerLogEntry m_canBusTransmitErrorCountLog = null;
-    private StringLogEntry m_radioLEDStateLog = null;
     private PDData m_pdData = null;
     private StructLogEntry<PDData> m_powerDistributionLog = null;
     private CommandLogger m_commandLogger = null;
@@ -61,8 +57,7 @@ public class TriviaLogger {
     }
 
     private boolean isPerformanceDataLoggingEnabled() {
-        return false;
-        // return isSimOrNotCompetitionMode();
+        return isSimOrNotCompetitionMode();
     }
 
     private boolean isPowerLoggingEnabled() {
@@ -144,10 +139,7 @@ public class TriviaLogger {
 
     private void initPerformanceDataLogging() {
         if (isPerformanceDataLoggingEnabled()) {
-            m_canBusUtilizationLog = new DoubleLogEntry(DataLogManager.getLog(), "/my/CAN_Bus/Utilization");
-            m_canBusReceiveErrorCountLog = new IntegerLogEntry(DataLogManager.getLog(), "/my/CAN_Bus/ReceiveErrorCount");
-            m_canBusTransmitErrorCountLog = new IntegerLogEntry(DataLogManager.getLog(), "/my/CAN_Bus/TransmitErrorCount");
-            m_radioLEDStateLog = new StringLogEntry(DataLogManager.getLog(), "/my/RadioLEDState");
+            // Nothing yet
         }
     }
 
@@ -184,19 +176,7 @@ public class TriviaLogger {
     }
 
     private void updatePerformanceDataLogging() {
-        CANStatus canStatus;
-
-        if (m_canBusUtilizationLog != null) {
-            canStatus = RobotController.getCANStatus();
-
-            // Note we use update so that it only logs on change.
-            m_canBusUtilizationLog.update(canStatus.percentBusUtilization);
-            m_canBusReceiveErrorCountLog.update(canStatus.receiveErrorCount);
-            m_canBusTransmitErrorCountLog.update(canStatus.transmitErrorCount);
-        }
-        if (m_radioLEDStateLog != null) {
-            m_radioLEDStateLog.update(RobotController.getRadioLEDState().toString());
-        }
+        // Nothing yet
     }
 
     private void updateCommandLogging() {
