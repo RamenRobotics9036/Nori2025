@@ -372,9 +372,9 @@ public class RobotContainer
 
       case AutoNameConstants.kCenterL4AutoName:
           return new DriveForwardNow(m_swerveDrive, 1, false)
-          .andThen(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kMaxElevatorPosition).withTimeout(2))
+          .andThen(CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kMaxElevatorPosition).withTimeout(2)))
           .andThen(new DriveForwardNow(m_swerveDrive, 0.5, false))
-          .andThen(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed, true));
+          .andThen(CmdWrapperOuttakeSystem(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed, true)));
       
       default:
         return new DriveForwardNow(m_swerveDrive, 1.4, true).
