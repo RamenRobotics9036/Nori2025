@@ -177,15 +177,18 @@ public class RobotContainer
   }
 
   private void addTestButtonsToShuffleboard() {
+    ShuffleboardTab tabTest = Shuffleboard.getTab("Test");
+
     Command spinCmd = printStartStop(
       m_swerveDrive.sysIdDriveMotorCommand(true), "Spin test");
-
-    ShuffleboardTab tabTest = Shuffleboard.getTab("Test");
     tabTest.add("Spin Test", spinCmd).withWidget("Command");
+
+    Command driveCmd = printStartStop(
+      m_swerveDrive.sysIdDriveMotorCommand(false), "Drive test");
+    tabTest.add("Drive Test", driveCmd).withWidget("Command");
 
     Command angleTest = printStartStop(
       m_swerveDrive.sysIdAngleMotorCommand(), "Angle test");
-
     tabTest.add("Angle Test", angleTest).withWidget("Command");
   }
 
