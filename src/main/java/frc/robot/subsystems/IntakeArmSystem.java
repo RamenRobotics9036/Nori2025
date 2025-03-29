@@ -48,7 +48,7 @@ public class IntakeArmSystem extends SubsystemBase{
     private RangeConvert m_rangesPhysicalAndSim = null; 
 
     //Cached values:
-    private double m_armAngle;
+    private double m_armAngleAbsolute;
     private double m_armAngleRelative;
  
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit 
@@ -98,19 +98,19 @@ public class IntakeArmSystem extends SubsystemBase{
         }
 
         //Caching values
-        m_armAngle = getArmAngle();
+        m_armAngleAbsolute = getArmAngle();
         m_armAngleRelative = getArmAngleRelative();
 
         if (!m_armEncoder.isConnected()) { 
             m_armRelativeEncoder.setPosition(0.0); 
         } else { 
-            m_armRelativeEncoder.setPosition(m_armAngle); 
+            m_armRelativeEncoder.setPosition(m_armAngleAbsolute); 
         } 
  
         // if (!m_armEncoder.isConnected()) { 
         //     throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get()); 
         // }
-        m_desiredAngle = m_armAngle;
+        m_desiredAngle = m_armAngleRelative;
 
         
  
@@ -138,7 +138,7 @@ public class IntakeArmSystem extends SubsystemBase{
     public void periodic() { 
         
         //Caching values
-        m_armAngle = getArmAngle();
+        m_armAngleAbsolute = getArmAngle();
         m_armAngleRelative = getArmAngleRelative();
 
 
@@ -147,11 +147,11 @@ public class IntakeArmSystem extends SubsystemBase{
         //     System.out.println("@@@@ Arm encoder=" + getArmAngleRelative() + ", desired="+desiredAngle); 
         // } 
         if (m_armEncoder.isConnected()) { 
-            m_armRelativeEncoder.setPosition(m_armAngle); 
+            m_armRelativeEncoder.setPosition(m_armAngleAbsolute); 
         }
 
         // Update the arm visualization
-        m_armDisplay.setAngle(m_armAngle); 
+        m_armDisplay.setAngle(m_armAngleAbsolute); 
     } 
  
     @Override 
@@ -165,7 +165,7 @@ public class IntakeArmSystem extends SubsystemBase{
         if (!OperatorConstants.kCompetitionMode) { 
             ShuffleboardTab tab = Shuffleboard.getTab("Arm"); 
             tab.addDouble("Arm Relative Encoder", () -> m_armAngleRelative); 
-            tab.addDouble("Arm Encoder", () -> m_armAngle); 
+            tab.addDouble("Arm Encoder", () -> m_armAngleAbsolute); 
             tab.addDouble("Desired Angle", () -> m_desiredAngle); 
             tab.addBoolean("Encoder Is Connected", () -> m_armEncoder.isConnected()); 
 
