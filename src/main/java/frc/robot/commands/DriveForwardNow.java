@@ -7,7 +7,9 @@ package frc.robot.commands;
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -56,10 +58,11 @@ public class DriveForwardNow extends Command
   @Override
   public void execute()
   {
-
+    double forwardSpeed = InitialPoseCalculator.getAlliance() == Alliance.Red ? -1.0 : 1.0;
+   
     this.m_swerve.drive(
         ChassisSpeeds.fromRobotRelativeSpeeds(
-            1.0, // Forward speed in meters per second
+            forwardSpeed, // Forward speed in meters per second
             0.0, // Sideways speed in meters per second
             0.0, // Rotational speed in radians per second
             m_swerve.getPose().getRotation() // Robot's current rotation
