@@ -345,8 +345,9 @@ public class RobotContainer
       Commands.runOnce(() -> m_swerveDrive.trueResetPose())
     );
 
-    new Trigger(() -> m_intakeSystem.isHoldingCoral()).onTrue(new ControllerRumbleCommand(m_armController, OperatorConstants.kRumbleTime));
-
+    new Trigger(() -> m_intakeSystem.isHoldingCoral()).onTrue(new ControllerRumbleCommand(m_armController, OperatorConstants.kRumbleTime)
+    .alongWith(new ControllerRumbleCommand(m_driverController, OperatorConstants.kRumbleTime))
+    );
 
   }
 
