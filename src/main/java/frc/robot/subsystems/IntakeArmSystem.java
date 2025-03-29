@@ -99,7 +99,7 @@ public class IntakeArmSystem extends SubsystemBase{
 
         //Caching values
         m_armAngleAbsolute = getArmAngle();
-        m_armAngleRelative = getArmAngleRelative();
+        m_armAngleRelative = m_armRelativeEncoder.getPosition();
 
         if (!m_armEncoder.isConnected()) { 
             m_armRelativeEncoder.setPosition(0.0); 
@@ -139,7 +139,7 @@ public class IntakeArmSystem extends SubsystemBase{
         
         //Caching values
         m_armAngleAbsolute = getArmAngle();
-        m_armAngleRelative = getArmAngleRelative();
+        m_armAngleRelative = m_armRelativeEncoder.getPosition();
 
 
         // loop += 1; 
@@ -222,7 +222,7 @@ public class IntakeArmSystem extends SubsystemBase{
     } 
  
     public double getArmAngleRelative() { 
-        return m_armRelativeEncoder.getPosition(); 
+        return m_armAngleRelative;
     } 
  
     // public double getAbsoluteArmAngle() { 
