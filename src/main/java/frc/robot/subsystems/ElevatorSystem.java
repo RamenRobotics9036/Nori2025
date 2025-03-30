@@ -140,7 +140,7 @@ public class ElevatorSystem extends SubsystemBase{
         // set desired position
         // measured in rotations of motor * a constant
         if (m_state == states.READY || m_state == states.READYLOW){
-            m_desiredPosition = MathUtil.clamp(position, ElevatorConstants.kMaxElevatorPosition, ElevatorConstants.kDownElevatorPosition);
+            m_desiredPosition = MathUtil.clamp(position, ElevatorConstants.kMaxElevatorPosition - 0.08, ElevatorConstants.kDownElevatorPosition);
             m_PIDController.setReference(m_desiredPosition, ControlType.kPosition);
         }
     }
