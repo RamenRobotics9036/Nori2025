@@ -367,7 +367,8 @@ public class RobotContainer
   {
     switch (AutoLogic.autoPicker.getSelected()) {
       case AutoNameConstants.kCenterL1AutoName:
-        return new DriveForwardNow(m_swerveDrive, 1.4, true)
+        return Commands.runOnce(() -> Commands.runOnce(m_swerveDrive::zeroGyro))
+        .andThen(new DriveForwardNow(m_swerveDrive, 1.4, true))
         .andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
         .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
 
