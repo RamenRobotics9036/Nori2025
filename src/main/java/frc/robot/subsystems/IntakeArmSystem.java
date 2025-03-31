@@ -105,18 +105,11 @@ public class IntakeArmSystem extends SubsystemBase{
             m_armRelativeEncoder.setPosition(m_armAngleAbsolute); 
         } 
  
-        // if (!m_armEncoder.isConnected()) { 
-        //     throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get()); 
-        // }
         m_desiredAngle = m_armAngleRelative;
 
-        
- 
         initShuffleboard(); 
     } 
- 
-// private int loop = 0; 
- 
+
     private ArmSimulation createSim(RangeConvert rangesPhysicalAndSim) { 
         // Create sim wrappers for devices 
         DutyCycleEncoderSim absEncoderSim = new DutyCycleEncoderSim(m_armEncoder); 
@@ -138,11 +131,6 @@ public class IntakeArmSystem extends SubsystemBase{
         //Caching values
         updateArmAngles();
 
-
-        // loop += 1; 
-        // if (loop % 50 == 0) { 
-        //     System.out.println("@@@@ Arm encoder=" + getArmAngleRelative() + ", desired="+desiredAngle); 
-        // } 
         if (m_armEncoder.isConnected()) { 
             m_armRelativeEncoder.setPosition(m_armAngleAbsolute); 
         }
@@ -224,7 +212,6 @@ public class IntakeArmSystem extends SubsystemBase{
 
         m_armAngleRelative = m_armRelativeEncoder.getPosition();
     }
-
  
     //stops everything 
     public void stopSystem(){ 
