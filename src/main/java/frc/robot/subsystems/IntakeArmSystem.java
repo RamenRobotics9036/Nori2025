@@ -98,12 +98,7 @@ public class IntakeArmSystem extends SubsystemBase{
         }
 
         //Caching values
-        if (RobotBase.isSimulation()) { 
-            m_armAngleAbsolute = m_armEncoder.get(); 
-        } else{
-            m_armAngleAbsolute = Math.max(0, (m_armEncoder.get() * 2 * Math.PI) + ArmConstants.kAbsoluteEncoderOffset) % (Math.PI * 2);
-        }
-
+        m_armAngleAbsolute = calculateArmAngle();
         m_armAngleRelative = m_armRelativeEncoder.getPosition();
 
 
@@ -144,13 +139,8 @@ public class IntakeArmSystem extends SubsystemBase{
     public void periodic() { 
         
         //Caching values
-        if (RobotBase.isSimulation()) { 
-            m_armAngleAbsolute = m_armEncoder.get(); 
-        } else{
-            m_armAngleAbsolute = Math.max(0, (m_armEncoder.get() * 2 * Math.PI) + ArmConstants.kAbsoluteEncoderOffset) % (Math.PI * 2);
-        }
-
-        m_armAngleRelative = m_armRelativeEncoder.getPosition();
+    
+        m_armAngleAbsolute = calculateArmAngle();
         m_armAngleRelative = m_armRelativeEncoder.getPosition();
 
 
@@ -222,22 +212,22 @@ public class IntakeArmSystem extends SubsystemBase{
     } 
  
  
-    // get encoder value 
-    private double getArmAngle() {
-        return m_armAngleAbsolute;
-    } 
+    // get encoder value
  
     public double getArmAngleRelative() { 
         return m_armAngleRelative;
-    } 
- 
-    // public double getAbsoluteArmAngle() { 
-    //     return m_armEncoder.getAbsolutePosition(); 
-    // } 
- 
-    // public void resetArmAngle() { 
-    //     m_armEncoder.reset(); 
-    // } 
+    }
+
+    private double calculateArmAngle() {
+        if (RobotBase.isSimulation()) { 
+            return m_armEncoder.get();
+        }
+
+        /// $TODO This seems like a bug.  Conversion factor was already configured on the absolute encoder, 
+        // so units are already in radians.  Needs investigation.
+        return Math.max(0, (m_armEncoder.get() * 2 * Math.PI) + ArmConstants.kAbsoluteEncoderOffset) % (Math.PI * 2);
+    }
+
  
     //stops everything 
     public void stopSystem(){ 
