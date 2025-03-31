@@ -46,6 +46,10 @@ public class IntakeArmSystem extends SubsystemBase{
     private ArmSimulation m_armSimulation = null; 
     private ArmDisplay m_armDisplay = null;
     private RangeConvert m_rangesPhysicalAndSim = null; 
+
+    //Cached values:
+    private double m_armAngleAbsolute;
+    private double m_armAngleRelative;
  
     //sets the idle mode of both motors to kBrake and adds a smartCurrentLimit 
     public IntakeArmSystem(){ 
@@ -66,10 +70,7 @@ public class IntakeArmSystem extends SubsystemBase{
         encoderConfig.velocityConversionFactor(((Math.PI * 2) / ArmConstants.kArmGearBoxRatio) / 60); 
         // Did not set distance per rotation 
  
-        // m_armConfig.inverted(true); 
- 
         m_armConfig.idleMode(SparkBaseConfig.IdleMode.kCoast); 
-        //m_armConfig.idleMode(SparkBaseConfig.IdleMode.kBrake); 
         m_armConfig.smartCurrentLimit(ArmConstants.kcurrentLimit); 
  
         m_armConfig.apply(closedLoopConfig); 
@@ -93,22 +94,22 @@ public class IntakeArmSystem extends SubsystemBase{
             m_armSimulation = createSim(m_rangesPhysicalAndSim); 
         }
 
+        //Caching values
+        updateArmAngles();
+
+
         if (!m_armEncoder.isConnected()) { 
-            m_armRelativeEncoder.setPosition(0.0); 
+            m_armRelativeEncoder.setPosition(0.0);
+            System.out.println("WARNING: ARM ABSOLUTE ENCODER NOT PLUGGED IN!");
         } else { 
-            m_armRelativeEncoder.setPosition(getArmAngle()); 
+            m_armRelativeEncoder.setPosition(m_armAngleAbsolute); 
         } 
  
-        // if (!m_armEncoder.isConnected()) { 
-        //     throw new ValueOutOfRangeException("ARM ABSOLUTE ENCODER NOT PLUGGED IN!", m_armEncoder.get()); 
-        // }
-        m_desiredAngle = getArmAngleRelative(); 
- 
+        m_desiredAngle = m_armAngleRelative;
+
         initShuffleboard(); 
     } 
- 
-// private int loop = 0; 
- 
+
     private ArmSimulation createSim(RangeConvert rangesPhysicalAndSim) { 
         // Create sim wrappers for devices 
         DutyCycleEncoderSim absEncoderSim = new DutyCycleEncoderSim(m_armEncoder); 
@@ -126,16 +127,16 @@ public class IntakeArmSystem extends SubsystemBase{
 
     @Override 
     public void periodic() { 
-        // loop += 1; 
-        // if (loop % 50 == 0) { 
-        //     System.out.println("@@@@ Arm encoder=" + getArmAngleRelative() + ", desired="+desiredAngle); 
-        // } 
+        
+        //Caching values
+        updateArmAngles();
+
         if (m_armEncoder.isConnected()) { 
-            m_armRelativeEncoder.setPosition(getArmAngle()); 
+            m_armRelativeEncoder.setPosition(m_armAngleAbsolute); 
         }
 
         // Update the arm visualization
-        m_armDisplay.setAngle(getArmAngle()); 
+        m_armDisplay.setAngle(m_armAngleAbsolute); 
     } 
  
     @Override 
@@ -148,8 +149,8 @@ public class IntakeArmSystem extends SubsystemBase{
     public void initShuffleboard() { 
         if (!OperatorConstants.kCompetitionMode) { 
             ShuffleboardTab tab = Shuffleboard.getTab("Arm"); 
-            tab.addDouble("Arm Relative Encoder", () -> getArmAngleRelative()); 
-            tab.addDouble("Arm Encoder", () -> getArmAngle()); 
+            tab.addDouble("Arm Relative Encoder", () -> m_armAngleRelative); 
+            tab.addDouble("Arm Encoder", () -> m_armAngleAbsolute); 
             tab.addDouble("Desired Angle", () -> m_desiredAngle); 
             tab.addBoolean("Encoder Is Connected", () -> m_armEncoder.isConnected()); 
 
@@ -194,28 +195,23 @@ public class IntakeArmSystem extends SubsystemBase{
     } 
  
  
-    // get encoder value 
-    private double getArmAngle() {
-        if (RobotBase.isSimulation()) { 
-            return m_armEncoder.get(); 
-        }
-
-        /// $TODO This seems like a bug.  Conversion factor was already configured on the absolute encoder, 
-        // so units are already in radians.  Needs investigation.
-        return Math.max(0, (m_armEncoder.get() * 2 * Math.PI) + ArmConstants.kAbsoluteEncoderOffset) % (Math.PI * 2); 
-    } 
+    // get encoder value
  
     public double getArmAngleRelative() { 
-        return m_armRelativeEncoder.getPosition(); 
-    } 
- 
-    // public double getAbsoluteArmAngle() { 
-    //     return m_armEncoder.getAbsolutePosition(); 
-    // } 
- 
-    // public void resetArmAngle() { 
-    //     m_armEncoder.reset(); 
-    // } 
+        return m_armAngleRelative;
+    }
+
+    private void updateArmAngles() {
+        if (RobotBase.isSimulation()) { 
+            m_armAngleAbsolute =  m_armEncoder.get();
+        } else{
+            /// $TODO This seems like a bug.  Conversion factor was already configured on the absolute encoder, 
+            // so units are already in radians.  Needs investigation.
+            m_armAngleAbsolute = Math.max(0, (m_armEncoder.get() * 2 * Math.PI) + ArmConstants.kAbsoluteEncoderOffset) % (Math.PI * 2);
+        }
+
+        m_armAngleRelative = m_armRelativeEncoder.getPosition();
+    }
  
     //stops everything 
     public void stopSystem(){ 
