@@ -18,7 +18,7 @@ public class ControllerRumbleCommand extends Command {
     }
 
     public ControllerRumbleCommand(CommandAppliedController controller, double time){
-        this(controller, time, 0.3);
+        this(controller, time, 0.6);
     }
 
     @Override
