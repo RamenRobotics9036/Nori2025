@@ -70,10 +70,7 @@ public class IntakeArmSystem extends SubsystemBase{
         encoderConfig.velocityConversionFactor(((Math.PI * 2) / ArmConstants.kArmGearBoxRatio) / 60); 
         // Did not set distance per rotation 
  
-        // m_armConfig.inverted(true); 
- 
         m_armConfig.idleMode(SparkBaseConfig.IdleMode.kCoast); 
-        //m_armConfig.idleMode(SparkBaseConfig.IdleMode.kBrake); 
         m_armConfig.smartCurrentLimit(ArmConstants.kcurrentLimit); 
  
         m_armConfig.apply(closedLoopConfig); 
@@ -98,12 +95,12 @@ public class IntakeArmSystem extends SubsystemBase{
         }
 
         //Caching values
-        m_armAngleAbsolute = calculateArmAngle();
-        m_armAngleRelative = m_armRelativeEncoder.getPosition();
+        updateArmAngles();
 
 
         if (!m_armEncoder.isConnected()) { 
-            m_armRelativeEncoder.setPosition(0.0); 
+            m_armRelativeEncoder.setPosition(0.0);
+            System.out.println("WARNING: ARM ABSOLUTE ENCODER NOT PLUGGED IN!");
         } else { 
             m_armRelativeEncoder.setPosition(m_armAngleAbsolute); 
         } 
@@ -139,9 +136,7 @@ public class IntakeArmSystem extends SubsystemBase{
     public void periodic() { 
         
         //Caching values
-    
-        m_armAngleAbsolute = calculateArmAngle();
-        m_armAngleRelative = m_armRelativeEncoder.getPosition();
+        updateArmAngles();
 
 
         // loop += 1; 
@@ -218,14 +213,16 @@ public class IntakeArmSystem extends SubsystemBase{
         return m_armAngleRelative;
     }
 
-    private double calculateArmAngle() {
+    private void updateArmAngles() {
         if (RobotBase.isSimulation()) { 
-            return m_armEncoder.get();
+            m_armAngleAbsolute =  m_armEncoder.get();
+        } else{
+            /// $TODO This seems like a bug.  Conversion factor was already configured on the absolute encoder, 
+            // so units are already in radians.  Needs investigation.
+            m_armAngleAbsolute = Math.max(0, (m_armEncoder.get() * 2 * Math.PI) + ArmConstants.kAbsoluteEncoderOffset) % (Math.PI * 2);
         }
 
-        /// $TODO This seems like a bug.  Conversion factor was already configured on the absolute encoder, 
-        // so units are already in radians.  Needs investigation.
-        return Math.max(0, (m_armEncoder.get() * 2 * Math.PI) + ArmConstants.kAbsoluteEncoderOffset) % (Math.PI * 2);
+        m_armAngleRelative = m_armRelativeEncoder.getPosition();
     }
 
  
