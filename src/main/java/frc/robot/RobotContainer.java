@@ -372,7 +372,7 @@ public class RobotContainer
         .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
 
         case AutoNameConstants.kSideL1AutoName:
-        return new DriveForwardNow(m_swerveDrive, 2.4, true)
+        return new DriveForwardNow(m_swerveDrive, 2.85, true)
         .andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
         .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
 
