@@ -371,6 +371,11 @@ public class RobotContainer
         .andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
         .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
 
+        case AutoNameConstants.kSideL1AutoName:
+        return new DriveForwardNow(m_swerveDrive, 2.4, true)
+        .andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
+        .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
+
       case AutoNameConstants.kCenterL4AutoName:
           return new DriveForwardNow(m_swerveDrive, 1, false)
           .andThen(CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kMaxElevatorPosition).withTimeout(2)))

@@ -224,5 +224,6 @@ public final class Constants
   public static final class AutoNameConstants {
     public static final String kCenterL1AutoName = "CENTER 1 Coral L1";
     public static final String kCenterL4AutoName = "CENTER 1 Coral L4";
+    public static final String kSideL1AutoName = "SIDE 1 Coral L4";
   }
 }
