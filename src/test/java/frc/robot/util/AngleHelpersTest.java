@@ -1,7 +1,8 @@
+package frc.robot.util;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.util.AngleHelpers;
 
 public class AngleHelpersTest {
     private static final double maxDelta = 0.0001; // Allowable delta for floating point comparisons
