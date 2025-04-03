@@ -45,11 +45,11 @@ public class WheelCalibration {
 
     // Return false if the wheel is turned too far from straight.
     public boolean isWheelStraight() {
-        Rotation2d currentAngleNoPolarity = AngleHelpers.constrainNegative90ToPos90(
-            readCurrentAbsoluteAngleWithOffset());
+        Rotation2d currentAngleNoPolarity = AngleHelpers.normalizeAngle(
+            readCurrentAbsoluteAngleWithOffset(), -90, 90);
 
-        Rotation2d offsetAngleNoPolarity = AngleHelpers.constrainNegative90ToPos90(
-            Rotation2d.fromDegrees(getConfigationOffsetDegrees()));
+        Rotation2d offsetAngleNoPolarity = AngleHelpers.normalizeAngle(
+            Rotation2d.fromDegrees(getConfigationOffsetDegrees()), -90, 90);
 
         return AngleHelpers.isAngleNear(currentAngleNoPolarity, offsetAngleNoPolarity);
     }
@@ -101,13 +101,13 @@ public class WheelCalibration {
         SwerveModuleState moduleState = m_swerveModule.getState();
         Rotation2d encoderAngle = moduleState.angle;
 
-        return AngleHelpers.constrainNegative180ToPos180(encoderAngle);
+        return AngleHelpers.normalizeAngle(encoderAngle, -180, 180);
     }
 
     // Constrained -180 to 180 degrees.
     private Rotation2d readCurrentAbsoluteAngleWithOffset() {
         double resultDegrees = readCurrentRawAbsoluteAngle().getDegrees() + getConfigationOffsetDegrees();
-        return AngleHelpers.constrainNegative180ToPos180(Rotation2d.fromDegrees(resultDegrees));
+        return AngleHelpers.normalizeAngle(Rotation2d.fromDegrees(resultDegrees), -180, 180);
     }
 
     // Can be a negative value.  Note that we dont constrain the return value.  However,

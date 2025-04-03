@@ -23,22 +23,22 @@ public final class AngleHelpers {
     }
 
     public static double distanceBetweenAngles720(Rotation2d angle1, Rotation2d angle2) {
-        Rotation2d constrainedAngle1 = constrainNegative360ToPos360(angle1);
-        Rotation2d constrainedAngle2 = constrainNegative360ToPos360(angle2);
+        Rotation2d constrainedAngle1 = normalizeAngle(angle1, -360, 360);
+        Rotation2d constrainedAngle2 = normalizeAngle(angle2, -360, 360);
 
         return distanceBetweenAngles_Helper(constrainedAngle1, constrainedAngle2, 360.0);
     }
 
     public static double distanceBetweenAngles(Rotation2d angle1, Rotation2d angle2) {
-        Rotation2d constrainedAngle1 = constrainNegative180ToPos180(angle1);
-        Rotation2d constrainedAngle2 = constrainNegative180ToPos180(angle2);
+        Rotation2d constrainedAngle1 = normalizeAngle(angle1, -180, 180);
+        Rotation2d constrainedAngle2 = normalizeAngle(angle2, -180, 180);
 
         return distanceBetweenAngles_Helper(constrainedAngle1, constrainedAngle2, 180.0);
     }
 
     public static double distanceBetweenAnglesIgnoringPolarity(Rotation2d angle1, Rotation2d angle2) {
-        Rotation2d constrainedAngle1 = constrainNegative90ToPos90(angle1);
-        Rotation2d constrainedAngle2 = constrainNegative90ToPos90(angle2);
+        Rotation2d constrainedAngle1 = normalizeAngle(angle1, -90, 90);
+        Rotation2d constrainedAngle2 = normalizeAngle(angle2, -90, 90);
 
         return distanceBetweenAngles_Helper(constrainedAngle1, constrainedAngle2, 90.0);
     }
@@ -67,17 +67,17 @@ public final class AngleHelpers {
 
         // Make sure the angles are in their proper ranges
         if (!allow720range) {
-            angleA = constrainNegative90ToPos90(angleA);
-            referenceAngle = constrainNegative180ToPos180(referenceAngle);
-            angleARotated = constrainNegative180ToPos180(Rotation2d.fromDegrees(angleA.getDegrees() + 180.0));
+            angleA = normalizeAngle(angleA, -90, 90);
+            referenceAngle = normalizeAngle(referenceAngle, -180, 180);
+            angleARotated = normalizeAngle(Rotation2d.fromDegrees(angleA.getDegrees() + 180.0), -180, 180);
 
             distanceA = distanceBetweenAngles(angleA, referenceAngle);
             distanceARotated = distanceBetweenAngles(angleARotated, referenceAngle);
         }
         else {
-            angleA = constrainNegative180ToPos180(angleA);
-            referenceAngle = constrainNegative360ToPos360(referenceAngle);
-            angleARotated = constrainNegative360ToPos360(Rotation2d.fromDegrees(angleA.getDegrees() + 360.0));
+            angleA = normalizeAngle(angleA, -180, 180);
+            referenceAngle = normalizeAngle(referenceAngle, -360, 360);
+            angleARotated = normalizeAngle(Rotation2d.fromDegrees(angleA.getDegrees() + 360.0), -360, 360);
 
             distanceA = distanceBetweenAngles720(angleA, referenceAngle);
             distanceARotated = distanceBetweenAngles720(angleARotated, referenceAngle);
@@ -90,27 +90,11 @@ public final class AngleHelpers {
         }
     }
 
-    public static Rotation2d constrainNegative360ToPos360(Rotation2d angle) {
-        double constrainedDegrees = MathUtil.inputModulus(
+    public static Rotation2d normalizeAngle(Rotation2d angle, double lowerBound, double upperBound) {
+        double normalizedDegrees = MathUtil.inputModulus(
             angle.getDegrees(),
-            -360.0, 
-            360.0);
-        return Rotation2d.fromDegrees(constrainedDegrees);
-    }
-
-    public static Rotation2d constrainNegative180ToPos180(Rotation2d angle) {
-        double constrainedDegrees = MathUtil.inputModulus(
-            angle.getDegrees(),
-            -180.0, 
-            180.0);
-        return Rotation2d.fromDegrees(constrainedDegrees);
-    }
-
-    public static Rotation2d constrainNegative90ToPos90(Rotation2d angle) {
-        double constrainedDegrees = MathUtil.inputModulus(
-            angle.getDegrees(),
-            -90.0, 
-            90.0);
-        return Rotation2d.fromDegrees(constrainedDegrees);
+            lowerBound, 
+            upperBound);
+        return Rotation2d.fromDegrees(normalizedDegrees);
     }
 }

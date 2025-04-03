@@ -15,7 +15,7 @@ public class AngleHelpersTest {
         double angle = 5.0;
 
         double expected = angle;
-        Rotation2d actual = AngleHelpers.constrainNegative180ToPos180(Rotation2d.fromDegrees(angle));
+        Rotation2d actual = AngleHelpers.normalizeAngle(Rotation2d.fromDegrees(angle), -180, 180);
         assertEquals(expected, actual.getDegrees(), "The angle should be unchanged.");
     }
 
@@ -24,7 +24,7 @@ public class AngleHelpersTest {
         double angle = 180.0;
 
         double expected = 180.0;
-        Rotation2d actual = AngleHelpers.constrainNegative180ToPos180(Rotation2d.fromDegrees(angle));
+        Rotation2d actual = AngleHelpers.normalizeAngle(Rotation2d.fromDegrees(angle), -180, 180);
         assertEquals(expected, actual.getDegrees(), "The angle should be unchanged.");
     }
 
@@ -34,7 +34,7 @@ public class AngleHelpersTest {
         double angle = -180.0;
 
         double expected = 180.0;
-        Rotation2d actual = AngleHelpers.constrainNegative180ToPos180(Rotation2d.fromDegrees(angle));
+        Rotation2d actual = AngleHelpers.normalizeAngle(Rotation2d.fromDegrees(angle), -180, 180);
         assertEquals(expected, actual.getDegrees(), "Expected 180 given implementation of MathUtil.inputModulus.");
     }
 
@@ -43,7 +43,7 @@ public class AngleHelpersTest {
         double angle = 181.0;
 
         double expected = -179.0;
-        Rotation2d actual = AngleHelpers.constrainNegative180ToPos180(Rotation2d.fromDegrees(angle));
+        Rotation2d actual = AngleHelpers.normalizeAngle(Rotation2d.fromDegrees(angle), -180, 180);
         assertEquals(expected, actual.getDegrees(), "The angle should wrap around.");
     }
 
@@ -52,7 +52,7 @@ public class AngleHelpersTest {
         double angle = -181.0;
 
         double expected = 179.0;
-        Rotation2d actual = AngleHelpers.constrainNegative180ToPos180(Rotation2d.fromDegrees(angle));
+        Rotation2d actual = AngleHelpers.normalizeAngle(Rotation2d.fromDegrees(angle), -180, 180);
         assertEquals(expected, actual.getDegrees(), "The angle should wrap around.");
     }
 
@@ -61,7 +61,7 @@ public class AngleHelpersTest {
         double angle = -1000.0;
 
         double expected = 80.0; // -1000 mod 360 = -280, which is 80 degrees in the positive direction.
-        Rotation2d actual = AngleHelpers.constrainNegative180ToPos180(Rotation2d.fromDegrees(angle));
+        Rotation2d actual = AngleHelpers.normalizeAngle(Rotation2d.fromDegrees(angle), -180, 180);
         assertEquals(expected, actual.getDegrees(), maxDelta, "The angle should wrap around correctly.");
     }
 
