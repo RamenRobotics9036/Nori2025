@@ -38,7 +38,7 @@ public final class Constants
     public static final double kExpoRatio = 0.75; // change this 0..1 to add more exponential, 0 = no expo (linear)
     public static final double kDeadband = 0.04;
     public static final Supplier<Alliance> kAlliance = () -> (DriverStation.getAlliance().isPresent()) ? DriverStation.getAlliance().get() : Alliance.Red;
-    public static final boolean kCompetitionMode = false; // Set to true the day of competition to turn off extras (max performance)
+    public static final boolean kCompetitionMode = true; // Set to true the day of competition to turn off extras (max performance)
     public static final boolean kAllowDetailedPowerLogging = false; // Only when set to true will we log detailed power distrbution logging
     public static final double kRumbleTime = 0.5; // seconds
   }
@@ -179,7 +179,7 @@ public final class Constants
   }
 
   public static final class ArmDefaultCommandConstants {
-    public static final double armAngleChangeRate = 8;
+    public static final double armAngleChangeRate = 16;
   }
   public static final class ElevatorConstants {
   public static final int kLeaderMotorID = 30; 
@@ -194,11 +194,10 @@ public final class Constants
   public static final double elevatorMaxSpeed = 5; 
 
   public static final double kDownElevatorPosition = 0.0; 
-  public static final double kMaxElevatorPosition = -(0.549); 
+  public static final double kMaxElevatorPosition = -(0.533+0.1); 
   public static final double kLevel2ReefPosition = -(0.239); 
   public static final double kLevel3ReefPosition = -(0.336 + 0.024); //plus value is to compensate for bent threaded rod. will be replaced saturday 3/29 and should be unnecessary after
-  public static final double kLevel4ReefPosition = -(0.546);
-
+  public static final double kLevel4ReefPosition = -(0.533+0.05);
   public static final double maxTime = 2; 
   public static final double tolerance = 0.01; 
   }

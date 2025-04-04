@@ -164,8 +164,8 @@ public class SwerveSubsystem extends SubsystemBase
       isUsingSimVision = true;
     }
 
-    swerveDrive.setMaximumAttainableSpeeds(swerveDrive.getMaximumChassisVelocity(), swerveDrive.getMaximumChassisAngularVelocity() * 0.8);
-    swerveDrive.setMaximumAllowableSpeeds(swerveDrive.getMaximumChassisVelocity(), swerveDrive.getMaximumChassisAngularVelocity() * 0.8);
+    swerveDrive.setMaximumAttainableSpeeds(swerveDrive.getMaximumChassisVelocity(), swerveDrive.getMaximumChassisAngularVelocity() * 0.9);
+    swerveDrive.setMaximumAllowableSpeeds(swerveDrive.getMaximumChassisVelocity(), swerveDrive.getMaximumChassisAngularVelocity() * 0.9);
   }
 
   public void initShuffleboard() {
