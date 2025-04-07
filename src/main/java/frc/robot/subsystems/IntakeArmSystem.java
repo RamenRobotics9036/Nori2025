@@ -24,14 +24,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.SetArmToAngleCommand;
-import frc.robot.sim.armsimulation.ArmDisplay;
-import frc.robot.sim.armsimulation.ArmSimulation;
-import frc.robot.sim.armsimulation.IOArmSim;
-import frc.robot.sim.armsimulation.IOArmSimInterface;
-import frc.robot.sim.simutil.RangeConvert;
-import frc.robot.sim.simutil.RelativeEncoderSim;
+import frc.robot.ramenutils.logging.TriviaLogger;
+import frc.robot.ramenutils.sim.armsimulation.ArmDisplay;
+import frc.robot.ramenutils.sim.armsimulation.ArmSimulation;
+import frc.robot.ramenutils.sim.armsimulation.IOArmSim;
+import frc.robot.ramenutils.sim.armsimulation.IOArmSimInterface;
+import frc.robot.ramenutils.sim.simutil.RangeConvert;
+import frc.robot.ramenutils.sim.simutil.RelativeEncoderSim;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.logging.TriviaLogger;
  
  
 public class IntakeArmSystem extends SubsystemBase{ 

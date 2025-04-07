@@ -45,7 +45,7 @@
         },
         "EstimatedRobotModules": {
           "arrows": false,
-          "image": "./src/main/java/frc/robot/sim/images/swerve_module.png",
+          "image": "./src/main/java/frc/robot/ramenutils/sim/images/swerve_module.png",
           "length": 0.30000001192092896,
           "selectable": false,
           "width": 0.30000001192092896
@@ -88,7 +88,7 @@
         },
         "apriltag": {
           "arrows": false,
-          "image": "./src/main/java/frc/robot/sim/images/tag-green.png",
+          "image": "./src/main/java/frc/robot/ramenutils/sim/images/tag-green.png",
           "length": 0.6000000238418579,
           "width": 0.5
         },
@@ -113,7 +113,7 @@
         "top": 291,
         "visibleTargetPoses": {
           "arrows": false,
-          "image": "./src/main/java/frc/robot/sim/images/tag-blue.png",
+          "image": "./src/main/java/frc/robot/ramenutils/sim/images/tag-blue.png",
           "length": 0.5,
           "selectable": false,
           "width": 0.4000000059604645
