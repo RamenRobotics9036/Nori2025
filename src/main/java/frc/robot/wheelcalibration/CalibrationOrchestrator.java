@@ -50,7 +50,25 @@ public class CalibrationOrchestrator {
         return areAllWheelsStraight;
     }
 
+    private boolean areAllWheelOffsetConfigsInRange() {
+        boolean areAllWheelOffsetConfigsInRange = true;
+        for (int i = 0; i < m_numWheels; i++) {
+            WheelCalibration wheel = m_wheelCalibrations[i];
+            if (!wheel.isConfigOffsetInGoodRange()) {
+                areAllWheelOffsetConfigsInRange = false;
+                break;
+            }
+        }
+
+        return areAllWheelOffsetConfigsInRange;
+    }
+
     public void takeReading() {
+        if (!areAllWheelOffsetConfigsInRange()) {
+            m_numFailedReadings++;
+            return;
+        }
+
         if (!areAllWheelsStraight()) {
             System.out.println("ERROR: Expected takeReading() to only be called when all wheels are straight.");
             m_numFailedReadings++;

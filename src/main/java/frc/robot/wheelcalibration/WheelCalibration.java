@@ -2,6 +2,7 @@ package frc.robot.wheelcalibration;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import swervelib.SwerveModule;
 
 public class WheelCalibration {
@@ -51,6 +52,17 @@ public class WheelCalibration {
             Rotation2d.fromDegrees(getConfigationOffsetDegrees()), -90, 90);
 
         return AngleHelpers.isAngleNear(currentAngleNoPolarity, offsetAngleNoPolarity);
+    }
+
+    public boolean isConfigOffsetInGoodRange() {
+        double offsetDegrees = getConfigationOffsetDegrees();
+        if (offsetDegrees <= -180 || offsetDegrees >= 180) {
+            double recommendedOffset = Math.round(AngleHelpers.normalizeAngle(Rotation2d.fromDegrees(offsetDegrees), -180, 180).getDegrees() * 100000.0) / 100000.0;
+            System.out.println("ERROR: " + getModuleName() + ": Config offset is not in correct range (-180, 180): " + offsetDegrees + " (instead use " + recommendedOffset + " degrees");
+            return false;
+        }
+
+        return true;
     }
 
     private void recordReading(Rotation2d angle) {
@@ -111,7 +123,7 @@ public class WheelCalibration {
 
     // Can be a negative value.  Note that we dont constrain the return value.  However,
     // somethign is very fishy if the configuration offset is greater than 360 degrees.
-    public double getConfigationOffsetDegrees() {
+    private double getConfigationOffsetDegrees() {
         double offsetDegrees = m_swerveModule.configuration.angleOffset;
 
         if (offsetDegrees <= -360 || offsetDegrees >= 360) {
