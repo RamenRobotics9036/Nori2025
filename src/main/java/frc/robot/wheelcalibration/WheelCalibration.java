@@ -4,17 +4,31 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import swervelib.SwerveModule;
 
+/**
+ * The WheelCalibration class is responsible for calibrating the swerve module's wheel angles.
+ * It provides methods to take readings, check alignment, and calculate angle offsets.
+ */
 public class WheelCalibration {
     private SwerveModule m_swerveModule;
     private double m_runningTotalAngles;
     private int m_numReadings;
 
-    // Constructor
+    /**
+     * Constructor for WheelCalibration.
+     *
+     * @param swerveModule The swerve module to be calibrated.
+     */
     public WheelCalibration(SwerveModule swerveModule) {
         m_swerveModule = swerveModule;
         resetReadingsHelper();
     }
 
+    /**
+     * Takes a reading of the current wheel angle if the wheel is straight.
+     * If the wheel is not straight, an error message is printed and the method returns false.
+     *
+     * @return true if the reading was successfully taken, false otherwise.
+     */
     public boolean takeReading() {
         if (!isWheelStraight()) {
             System.out
@@ -36,6 +50,12 @@ public class WheelCalibration {
     }
 
     // Return false if the wheel is turned too far from straight.
+    /**
+     * Checks if the wheel is straight by comparing the current angle with the
+     * configured offset angle.
+     *
+     * @return true if the wheel is straight, false otherwise.
+     */
     public boolean isWheelStraight() {
         Rotation2d currentAngleNoPolarity = AngleHelpers.normalizeAngle(
             readCurrentAbsoluteAngleWithOffset(),
@@ -50,6 +70,12 @@ public class WheelCalibration {
         return AngleHelpers.isAngleNear(currentAngleNoPolarity, offsetAngleNoPolarity);
     }
 
+    /**
+     * Checks if the configuration offset is within the valid range (-180, 180).
+     * If not, it prints an error message with a recommended offset value.
+     *
+     * @return true if the configuration offset is in the valid range, false otherwise.
+     */
     public boolean isConfigOffsetInGoodRange() {
         double offsetDegrees = getConfigationOffsetDegrees();
         if (offsetDegrees <= -180 || offsetDegrees >= 180) {
@@ -87,10 +113,19 @@ public class WheelCalibration {
         m_numReadings = 0;
     }
 
+    /**
+     * Resets the readings by clearing the running total and the number of readings.
+     */
     public void resetReadings() {
         resetReadingsHelper();
     }
 
+    /**
+     * Calculates and returns the average of the recorded wheel angle readings.
+     * If no readings have been taken, it prints an error message and returns -1.0.
+     *
+     * @return The average wheel angle reading, or -1.0 if no readings are available.
+     */
     public double getAverageReading() {
         if (m_numReadings == 0) {
             System.out.println("ERROR: No readings taken yet.");
@@ -101,6 +136,12 @@ public class WheelCalibration {
     }
 
     // Returns an absolute value
+    /**
+     * Calculates the absolute change in degrees between the average reading and the
+     * configuration offset.  If no readings are available, it returns -1.0.
+     *
+     * @return The absolute change in degrees, or -1.0 if no readings are available.
+     */
     public double getChangeInDegrees() {
         double averageReading = getAverageReading();
         if (averageReading == -1.0) {
