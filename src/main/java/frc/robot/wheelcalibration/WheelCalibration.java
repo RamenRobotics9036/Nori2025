@@ -173,16 +173,7 @@ public class WheelCalibration {
         return AngleHelpers.normalizeAngle(Rotation2d.fromDegrees(resultDegrees), -180, 180);
     }
 
-    // Can be a negative value. Note that we dont constrain the return value. However,
-    // somethign is very fishy if the configuration offset is greater than 360 degrees.
     private double getConfigationOffsetDegrees() {
-        double offsetDegrees = m_swerveModule.configuration.angleOffset;
-
-        if (offsetDegrees <= -360 || offsetDegrees >= 360) {
-            System.out
-                .println("Error: Avoid offset angle >360 degrees in config: " + offsetDegrees);
-        }
-
-        return offsetDegrees;
+        return m_swerveModule.configuration.angleOffset;
     }
 }
