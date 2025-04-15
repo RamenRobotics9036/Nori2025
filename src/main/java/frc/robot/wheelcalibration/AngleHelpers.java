@@ -22,13 +22,6 @@ public final class AngleHelpers {
             maxPositiveDegrees));
     }
 
-    public static double distanceBetweenAngles720(Rotation2d angle1, Rotation2d angle2) {
-        Rotation2d constrainedAngle1 = normalizeAngle(angle1, -360, 360);
-        Rotation2d constrainedAngle2 = normalizeAngle(angle2, -360, 360);
-
-        return distanceBetweenAngles_Helper(constrainedAngle1, constrainedAngle2, 360.0);
-    }
-
     public static double distanceBetweenAngles(Rotation2d angle1, Rotation2d angle2) {
         Rotation2d constrainedAngle1 = normalizeAngle(angle1, -180, 180);
         Rotation2d constrainedAngle2 = normalizeAngle(angle2, -180, 180);
@@ -57,31 +50,18 @@ public final class AngleHelpers {
 
     // Given angleA and a reference angle, return either angleA or angleA + 180 degrees,
     // whichever is closer to the reference angle.
-    // allow720range is used in the case that the reference angle is in the -360 to 360 range.  Unfortunately,
-    // some of the offsets are in this range, and we want to provide angles that are 'near' the existing offset
-    // to make it easier to calibrate.
-    public static Rotation2d getClosestAngleToReference(Rotation2d angleA, Rotation2d referenceAngle, boolean allow720range) {
+    public static Rotation2d getClosestAngleToReference(Rotation2d angleA, Rotation2d referenceAngle) {
         Rotation2d angleARotated;
         double distanceA;
         double distanceARotated;
 
         // Make sure the angles are in their proper ranges
-        if (!allow720range) {
-            angleA = normalizeAngle(angleA, -90, 90);
-            referenceAngle = normalizeAngle(referenceAngle, -180, 180);
-            angleARotated = normalizeAngle(Rotation2d.fromDegrees(angleA.getDegrees() + 180.0), -180, 180);
+        angleA = normalizeAngle(angleA, -90, 90);
+        referenceAngle = normalizeAngle(referenceAngle, -180, 180);
+        angleARotated = normalizeAngle(Rotation2d.fromDegrees(angleA.getDegrees() + 180.0), -180, 180);
 
-            distanceA = distanceBetweenAngles(angleA, referenceAngle);
-            distanceARotated = distanceBetweenAngles(angleARotated, referenceAngle);
-        }
-        else {
-            angleA = normalizeAngle(angleA, -180, 180);
-            referenceAngle = normalizeAngle(referenceAngle, -360, 360);
-            angleARotated = normalizeAngle(Rotation2d.fromDegrees(angleA.getDegrees() + 360.0), -360, 360);
-
-            distanceA = distanceBetweenAngles720(angleA, referenceAngle);
-            distanceARotated = distanceBetweenAngles720(angleARotated, referenceAngle);
-        }
+        distanceA = distanceBetweenAngles(angleA, referenceAngle);
+        distanceARotated = distanceBetweenAngles(angleARotated, referenceAngle);
 
         if (distanceA <= distanceARotated) {
             return angleA;

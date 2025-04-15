@@ -472,7 +472,7 @@ public class AngleHelpersTest {
         Rotation2d referenceAngle = Rotation2d.fromDegrees(45.0);
         
         double expected = 30.0;
-        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle, false);
+        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle);
         assertEquals(expected, actual.getDegrees(), maxDelta, "Original angle should be closer to reference.");
     }
     
@@ -482,7 +482,7 @@ public class AngleHelpersTest {
         Rotation2d referenceAngle = Rotation2d.fromDegrees(240.0); // Closer to 30+180=210 than to 30
         
         double expected = -150.0; // 30+180=210, constrained to -180 to 180 is -150
-        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle, false);
+        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle);
         assertEquals(expected, actual.getDegrees(), maxDelta, "Rotated angle should be closer to reference.");
     }
     
@@ -492,7 +492,7 @@ public class AngleHelpersTest {
         Rotation2d referenceAngle = Rotation2d.fromDegrees(100.0);
         
         double expected = 90.0;
-        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle, false);
+        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle);
         assertEquals(expected, actual.getDegrees(), maxDelta, "Angle at boundary should return correct result.");
     }
     
@@ -502,7 +502,7 @@ public class AngleHelpersTest {
         Rotation2d referenceAngle = Rotation2d.fromDegrees(-100.0);
         
         double expected = -90.0;
-        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle, false);
+        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle);
         assertEquals(expected, actual.getDegrees(), maxDelta, "Negative angle at boundary should return correct result.");
     }
     
@@ -512,7 +512,7 @@ public class AngleHelpersTest {
         Rotation2d referenceAngle = Rotation2d.fromDegrees(45.0);
         
         double expected = 45.0;
-        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle, false);
+        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle);
         assertEquals(expected, actual.getDegrees(), maxDelta, "Identical angles should return the original angle.");
     }
     
@@ -522,7 +522,7 @@ public class AngleHelpersTest {
         Rotation2d referenceAngle = Rotation2d.fromDegrees(179.0);
         
         double expected = 180.0;
-        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle, false);
+        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle);
         assertEquals(expected, actual.getDegrees(), maxDelta, "Should return original angle when reference is on opposite side but closer.");
     }
     
@@ -532,7 +532,7 @@ public class AngleHelpersTest {
         Rotation2d referenceAngle = Rotation2d.fromDegrees(210.0); // Constrained -180 to 180, equivalent to -150 degrees
         
         double expected = -140.0; // 40+180=220, constrained to -180 to 180 is -140
-        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle, false);
+        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle);
         assertEquals(expected, actual.getDegrees(), maxDelta, "Should handle large angle values correctly.");
     }
     
@@ -542,7 +542,7 @@ public class AngleHelpersTest {
         Rotation2d referenceAngle = Rotation2d.fromDegrees(-45.0);
         
         double expected = -30.0;
-        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle, false);
+        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle);
         assertEquals(expected, actual.getDegrees(), maxDelta, "Should handle negative angles correctly.");
     }
     
@@ -552,7 +552,7 @@ public class AngleHelpersTest {
         Rotation2d referenceAngle = Rotation2d.fromDegrees(-170.0); // Constrained to -180 to 180, equivalent to -170 degrees
         
         double expected = 170.0; // -10+180=170, constrained to -180 to 180 is 170
-        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle, false);
+        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle);
         assertEquals(expected, actual.getDegrees(), maxDelta, "Should handle angles that cross boundaries correctly.");
     }
     
@@ -562,7 +562,7 @@ public class AngleHelpersTest {
         Rotation2d referenceAngle = Rotation2d.fromDegrees(90.0);
         
         double expected = 0.0; // Original angle is closer to reference than rotated (180)
-        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle, false);
+        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle);
         assertEquals(expected, actual.getDegrees(), maxDelta, "When angles are exactly 90 degrees apart, should return original.");
     }
 
@@ -572,7 +572,7 @@ public class AngleHelpersTest {
         Rotation2d referenceAngle = Rotation2d.fromDegrees(91.0);
         
         double expected = 180.0;
-        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle, false);
+        Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle);
         assertEquals(expected, actual.getDegrees(), maxDelta, "When angles are 91 degrees apart, should return rotated.");
     }
 }

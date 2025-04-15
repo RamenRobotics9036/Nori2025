@@ -28,15 +28,7 @@ public class WheelCalibration {
         Rotation2d currentAngle = readCurrentAbsoluteAngleWithOffset();
         currentAngle = AngleHelpers.getClosestAngleToReference(
             currentAngle,
-            Rotation2d.fromDegrees(getConfigationOffsetDegrees()),
-            false);
-
-        // Unfortunately, some of the offsets configured are in -360 to 360 range, and we want to provide angles that are
-        // 'near' the existing offset.
-        currentAngle = AngleHelpers.getClosestAngleToReference(
-            currentAngle,
-            Rotation2d.fromDegrees(getConfigationOffsetDegrees()),
-            true);
+            Rotation2d.fromDegrees(getConfigationOffsetDegrees()));
 
         recordReading(currentAngle);
 
