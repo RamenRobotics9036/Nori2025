@@ -18,13 +18,14 @@ public class WheelCalibration {
 
     public boolean takeReading() {
         if (!isWheelStraight()) {
-            System.out.println("ERROR: Expected takeReading() to only be called when wheel is straight.");
+            System.out
+                .println("ERROR: Expected takeReading() to only be called when wheel is straight.");
             return false;
         }
 
         // After we get the wheel reading, we may flip the polarity so that the reading
-        // is close to configured offset.  This is so that we recommend an offset thats
-        // in the same vacinity as the current configured offset.        
+        // is close to configured offset. This is so that we recommend an offset thats
+        // in the same vacinity as the current configured offset.
         Rotation2d currentAngle = readCurrentAbsoluteAngleWithOffset();
         currentAngle = AngleHelpers.getClosestAngleToReference(
             currentAngle,
@@ -38,10 +39,14 @@ public class WheelCalibration {
     // Return false if the wheel is turned too far from straight.
     public boolean isWheelStraight() {
         Rotation2d currentAngleNoPolarity = AngleHelpers.normalizeAngle(
-            readCurrentAbsoluteAngleWithOffset(), -90, 90);
+            readCurrentAbsoluteAngleWithOffset(),
+            -90,
+            90);
 
         Rotation2d offsetAngleNoPolarity = AngleHelpers.normalizeAngle(
-            Rotation2d.fromDegrees(getConfigationOffsetDegrees()), -90, 90);
+            Rotation2d.fromDegrees(getConfigationOffsetDegrees()),
+            -90,
+            90);
 
         return AngleHelpers.isAngleNear(currentAngleNoPolarity, offsetAngleNoPolarity);
     }
@@ -49,8 +54,18 @@ public class WheelCalibration {
     public boolean isConfigOffsetInGoodRange() {
         double offsetDegrees = getConfigationOffsetDegrees();
         if (offsetDegrees <= -180 || offsetDegrees >= 180) {
-            double recommendedOffset = Math.round(AngleHelpers.normalizeAngle(Rotation2d.fromDegrees(offsetDegrees), -180, 180).getDegrees() * 100000.0) / 100000.0;
-            System.out.println("ERROR: " + getModuleName() + ": Config offset is not in correct range (-180, 180): " + offsetDegrees + " (instead use " + recommendedOffset + " degrees");
+            double recommendedOffset = Math.round(
+                AngleHelpers.normalizeAngle(Rotation2d.fromDegrees(offsetDegrees), -180, 180)
+                    .getDegrees() * 100000.0)
+                / 100000.0;
+            System.out.println(
+                "ERROR: "
+                    + getModuleName()
+                    + ": Config offset is not in correct range (-180, 180): "
+                    + offsetDegrees
+                    + " (instead use "
+                    + recommendedOffset
+                    + " degrees");
             return false;
         }
 
@@ -61,7 +76,11 @@ public class WheelCalibration {
         m_runningTotalAngles += angle.getDegrees();
         m_numReadings++;
 
-        System.out.println("Reading: " + getModuleName() + " angle: " + Math.round(angle.getDegrees() * 10000.0) / 10000.0);
+        System.out.println(
+            "Reading: "
+                + getModuleName()
+                + " angle: "
+                + Math.round(angle.getDegrees() * 10000.0) / 10000.0);
     }
 
     private void resetReadingsHelper() {
@@ -109,17 +128,19 @@ public class WheelCalibration {
 
     // Constrained -180 to 180 degrees.
     private Rotation2d readCurrentAbsoluteAngleWithOffset() {
-        double resultDegrees = readCurrentRawAbsoluteAngle().getDegrees() + getConfigationOffsetDegrees();
+        double resultDegrees = readCurrentRawAbsoluteAngle().getDegrees()
+            + getConfigationOffsetDegrees();
         return AngleHelpers.normalizeAngle(Rotation2d.fromDegrees(resultDegrees), -180, 180);
     }
 
-    // Can be a negative value.  Note that we dont constrain the return value.  However,
+    // Can be a negative value. Note that we dont constrain the return value. However,
     // somethign is very fishy if the configuration offset is greater than 360 degrees.
     private double getConfigationOffsetDegrees() {
         double offsetDegrees = m_swerveModule.configuration.angleOffset;
 
         if (offsetDegrees <= -360 || offsetDegrees >= 360) {
-            System.out.println("Error: Avoid offset angle >360 degrees in config: " + offsetDegrees);
+            System.out
+                .println("Error: Avoid offset angle >360 degrees in config: " + offsetDegrees);
         }
 
         return offsetDegrees;

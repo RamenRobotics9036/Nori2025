@@ -70,7 +70,8 @@ public class CalibrationOrchestrator {
         }
 
         if (!areAllWheelsStraight()) {
-            System.out.println("ERROR: Expected takeReading() to only be called when all wheels are straight.");
+            System.out.println(
+                "ERROR: Expected takeReading() to only be called when all wheels are straight.");
             m_numFailedReadings++;
             return;
         }
@@ -79,17 +80,20 @@ public class CalibrationOrchestrator {
         for (int i = 0; i < m_numWheels; i++) {
             WheelCalibration wheel = m_wheelCalibrations[i];
             if (!wheel.takeReading()) {
-                System.out.println("ERROR: Reading should have succeeded since all wheels straight.");
+                System.out
+                    .println("ERROR: Reading should have succeeded since all wheels straight.");
                 gotReading = false;
             }
         }
         if (gotReading) {
             m_numReadings++;
-        } else {
+        }
+        else {
             m_numFailedReadings++;
         }
 
-        System.out.println("Num readings: " + m_numReadings + " num failed readings: " + m_numFailedReadings);
+        System.out.println(
+            "Num readings: " + m_numReadings + " num failed readings: " + m_numFailedReadings);
     }
 
     public void showReport() {
@@ -104,9 +108,15 @@ public class CalibrationOrchestrator {
 
         for (int i = 0; i < m_numWheels; i++) {
             WheelCalibration wheel = m_wheelCalibrations[i];
-            System.out.println(wheel.getModuleName() + " (" + i + ") average angle: " 
-            + Math.round(wheel.getAverageReading() * 10000.0) / 10000.0 
-            + " (change degrees: " + Math.round(wheel.getChangeInDegrees() * 100.0) / 100.0 + ")");
+            System.out.println(
+                wheel.getModuleName()
+                    + " ("
+                    + i
+                    + ") average angle: "
+                    + Math.round(wheel.getAverageReading() * 10000.0) / 10000.0
+                    + " (change degrees: "
+                    + Math.round(wheel.getChangeInDegrees() * 100.0) / 100.0
+                    + ")");
         }
     }
 
