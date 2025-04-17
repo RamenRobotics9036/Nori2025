@@ -1,9 +1,14 @@
 package frc.robot.wheelcalibration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
-import edu.wpi.first.math.geometry.Rotation2d;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import org.junit.jupiter.api.Test;
+
+/**
+ * Unit tests for the AngleHelpers utility class.
+ * This class tests various angle-related helper methods to ensure correctness.
+ */
 public class AngleHelpersTest {
     private static final double maxDelta = 0.0001; // Allowable delta for floating point comparisons
 
@@ -64,8 +69,8 @@ public class AngleHelpersTest {
     public void testBigNegativeNumberShouldWork() {
         double angle = -1000.0;
 
-        double expected = 80.0; // -1000 mod 360 = -280, which is 80 degrees in the positive
-                                // direction.
+        // -1000 mod 360 = -280, which is 80 degrees in the positive direction.
+        double expected = 80.0;
         Rotation2d actual = AngleHelpers.normalizeAngle(Rotation2d.fromDegrees(angle), -180, 180);
         assertEquals(
             expected,
@@ -555,8 +560,7 @@ public class AngleHelpersTest {
     @Test
     public void testGetClosestAngleToReferenceRotatedCloser() {
         Rotation2d angleA = Rotation2d.fromDegrees(30.0);
-        Rotation2d referenceAngle = Rotation2d.fromDegrees(240.0); // Closer to 30+180=210 than to
-                                                                   // 30
+        Rotation2d referenceAngle = Rotation2d.fromDegrees(240.0);
 
         double expected = -150.0; // 30+180=210, constrained to -180 to 180 is -150
         Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle);
@@ -626,8 +630,7 @@ public class AngleHelpersTest {
     @Test
     public void testGetClosestAngleToReferenceLargeValues() {
         Rotation2d angleA = Rotation2d.fromDegrees(400.0); // Equivalent to 40 degrees
-        Rotation2d referenceAngle = Rotation2d.fromDegrees(210.0); // Constrained -180 to 180,
-                                                                   // equivalent to -150 degrees
+        Rotation2d referenceAngle = Rotation2d.fromDegrees(210.0); // Equivalent to -150 degrees
 
         double expected = -140.0; // 40+180=220, constrained to -180 to 180 is -140
         Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle);
@@ -654,10 +657,8 @@ public class AngleHelpersTest {
 
     @Test
     public void testGetClosestAngleToReferenceCrossingBoundary() {
-        Rotation2d angleA = Rotation2d.fromDegrees(170.0); // Constrained to -90 to 90, equivalent
-                                                           // to -10 degrees
-        Rotation2d referenceAngle = Rotation2d.fromDegrees(-170.0); // Constrained to -180 to 180,
-                                                                    // equivalent to -170 degrees
+        Rotation2d angleA = Rotation2d.fromDegrees(170.0);
+        Rotation2d referenceAngle = Rotation2d.fromDegrees(-170.0);
 
         double expected = 170.0; // -10+180=170, constrained to -180 to 180 is 170
         Rotation2d actual = AngleHelpers.getClosestAngleToReference(angleA, referenceAngle);
