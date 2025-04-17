@@ -13,11 +13,11 @@ public class AngleHelpersTest {
     private static final double maxDelta = 0.0001; // Allowable delta for floating point comparisons
 
     //
-    // Test constrainNegative180ToPos180 method
+    // Test normalizeAngle method
     //
 
     @Test
-    public void testConstrainWorks() {
+    public void testNormalizeAngleWithinBounds() {
         double angle = 5.0;
 
         double expected = angle;
@@ -26,7 +26,7 @@ public class AngleHelpersTest {
     }
 
     @Test
-    public void testContrain180ShouldReturn180() {
+    public void testNormalizeAngleAtPositiveBoundary() {
         double angle = 180.0;
 
         double expected = 180.0;
@@ -34,9 +34,8 @@ public class AngleHelpersTest {
         assertEquals(expected, actual.getDegrees(), "The angle should be unchanged.");
     }
 
-    // NOTE: MathUtil.inputModulus does convert -180 to 180. We can live with that.
     @Test
-    public void testConstrainNegative180ShouldReturnNegative180() {
+    public void testNormalizeAngleAtNegativeBoundary() {
         double angle = -180.0;
 
         double expected = 180.0;
@@ -48,7 +47,7 @@ public class AngleHelpersTest {
     }
 
     @Test
-    public void testConstrain181ShouldWork() {
+    public void testNormalizeAngleAbovePositiveBoundary() {
         double angle = 181.0;
 
         double expected = -179.0;
@@ -57,7 +56,7 @@ public class AngleHelpersTest {
     }
 
     @Test
-    public void testConstrainNegative181ShouldWork() {
+    public void testNormalizeAngleBelowNegativeBoundary() {
         double angle = -181.0;
 
         double expected = 179.0;
@@ -66,7 +65,7 @@ public class AngleHelpersTest {
     }
 
     @Test
-    public void testBigNegativeNumberShouldWork() {
+    public void testNormalizeAngleLargeNegativeValue() {
         double angle = -1000.0;
 
         // -1000 mod 360 = -280, which is 80 degrees in the positive direction.
@@ -84,7 +83,7 @@ public class AngleHelpersTest {
     //
 
     @Test
-    public void testDistanceBetweenAnglesBasicCase() {
+    public void testDistanceBetweenAnglesSimpleDifference() {
         Rotation2d angle1 = Rotation2d.fromDegrees(30.0);
         Rotation2d angle2 = Rotation2d.fromDegrees(45.0);
 
@@ -94,7 +93,7 @@ public class AngleHelpersTest {
     }
 
     @Test
-    public void testDistanceBetweenAnglesSameAngle() {
+    public void testDistanceBetweenAnglesIdenticalAngles() {
         Rotation2d angle1 = Rotation2d.fromDegrees(90.0);
         Rotation2d angle2 = Rotation2d.fromDegrees(90.0);
 
@@ -104,7 +103,7 @@ public class AngleHelpersTest {
     }
 
     @Test
-    public void testDistanceBetweenAngles180DegreesApart() {
+    public void testDistanceBetweenAnglesOppositeAngles() {
         Rotation2d angle1 = Rotation2d.fromDegrees(0.0);
         Rotation2d angle2 = Rotation2d.fromDegrees(180.0);
 
@@ -114,7 +113,7 @@ public class AngleHelpersTest {
     }
 
     @Test
-    public void testDistanceBetweenAnglesWrappingAround() {
+    public void testDistanceBetweenAnglesAcrossBoundary() {
         Rotation2d angle1 = Rotation2d.fromDegrees(170.0);
         Rotation2d angle2 = Rotation2d.fromDegrees(-170.0);
 
@@ -454,7 +453,7 @@ public class AngleHelpersTest {
     //
 
     @Test
-    public void testIsNearIgnoringPolarityShouldSucceedIfWheelFlipped() {
+    public void testIsAngleNearIgnoringPolarityWheelFlipped() {
         Rotation2d angle1 = Rotation2d.fromDegrees(85);
         Rotation2d angle2 = Rotation2d.fromDegrees(85.0 + 8.0 + 180.0);
 
@@ -467,7 +466,7 @@ public class AngleHelpersTest {
     }
 
     @Test
-    public void testIsNearIgnoringPolarityShouldReturnFalseIfTooFar() {
+    public void testIsAngleNearIgnoringPolarityTooFar() {
         Rotation2d angle1 = Rotation2d.fromDegrees(85);
         Rotation2d angle2 = Rotation2d.fromDegrees(85.0 + 8.01 + 180.0);
 
@@ -477,7 +476,7 @@ public class AngleHelpersTest {
     }
 
     @Test
-    public void testNegativeIsNearIgnoringPolarityShouldSucceedIfWheelFlipped() {
+    public void testIsAngleNearIgnoringPolarityNegativeWheelFlipped() {
         Rotation2d angle1 = Rotation2d.fromDegrees(-85);
         Rotation2d angle2 = Rotation2d.fromDegrees(-85.0 - 8.0 + 180.0);
 
@@ -490,7 +489,7 @@ public class AngleHelpersTest {
     }
 
     @Test
-    public void testNegativeIsNearIgnoringPolarityShouldReturnFalseIfTooFar() {
+    public void testIsAngleNearIgnoringPolarityNegativeTooFar() {
         Rotation2d angle1 = Rotation2d.fromDegrees(-85);
         Rotation2d angle2 = Rotation2d.fromDegrees(-85.0 - 8.01 + 180.0);
 
@@ -500,7 +499,7 @@ public class AngleHelpersTest {
     }
 
     @Test
-    public void testIsNearIgnoringPolarityBasicCase() {
+    public void testIsAngleNearIgnoringPolarityBasicCase() {
         Rotation2d angle1 = Rotation2d.fromDegrees(30.0);
         Rotation2d angle2 = Rotation2d.fromDegrees(45.0);
 
@@ -510,7 +509,7 @@ public class AngleHelpersTest {
     }
 
     @Test
-    public void testIsNearIgnoringPolarityBasicCase2() {
+    public void testIsAngleNearIgnoringPolarityWithinThreshold() {
         Rotation2d angle1 = Rotation2d.fromDegrees(30.0);
         Rotation2d angle2 = Rotation2d.fromDegrees(38.0);
 
@@ -520,7 +519,7 @@ public class AngleHelpersTest {
     }
 
     @Test
-    public void testIsNearIgnoringPolarityBasicCase3() {
+    public void testIsAngleNearIgnoringPolarityLargeValues() {
         Rotation2d angle1 = Rotation2d.fromDegrees(400.0);
         Rotation2d angle2 = Rotation2d.fromDegrees(400.0);
 
@@ -530,7 +529,7 @@ public class AngleHelpersTest {
     }
 
     @Test
-    public void testIsNearIgnoringPolarityBasicCase4() {
+    public void testIsAngleNearIgnoringPolarityOutsideThreshold() {
         Rotation2d angle1 = Rotation2d.fromDegrees(400.0);
         Rotation2d angle2 = Rotation2d.fromDegrees(410.0);
 
