@@ -1,4 +1,4 @@
-package frc.robot.sim.armsimulation;
+package frc.robot.ramenlib.sim.armsimulation;
 
 // This class is intended to give the SIMULATION implementation a
 // simpler interface to use.

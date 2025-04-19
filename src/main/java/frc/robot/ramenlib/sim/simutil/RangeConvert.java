@@ -1,4 +1,4 @@
-package frc.robot.sim.simutil;
+package frc.robot.ramenlib.sim.simutil;
 
 public class RangeConvert {
     private final double m_minPhysicalArmDegrees;

@@ -1,4 +1,4 @@
-package frc.robot.sim.simvision;
+package frc.robot.ramenlib.sim.simvision;
 
 import java.util.Optional;
 
@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.sim.SimConstants;
+import frc.robot.ramenlib.sim.SimConstants;
 
 public class VisionSystemSim implements VisionSystemInterface {
     private VisionSim m_visionSim;

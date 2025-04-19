@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package frc.robot.sim.simvision;
+package frc.robot.ramenlib.sim.simvision;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,8 +30,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.ramenlib.sim.SimConstants.VisionSimConstants;
 import frc.robot.Robot;
-import frc.robot.sim.SimConstants.VisionSimConstants;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
