@@ -63,6 +63,10 @@ public class CalibrationOrchestrator {
         return areAllWheelOffsetConfigsInRange;
     }
 
+    /**
+     * Takes a reading for all wheels if their offset configurations are in range
+     * and all wheels are straight.
+     */
     public void takeReading() {
         if (!areAllWheelOffsetConfigsInRange()) {
             m_numFailedReadings++;
@@ -96,6 +100,10 @@ public class CalibrationOrchestrator {
             "Num readings: " + m_numReadings + " num failed readings: " + m_numFailedReadings);
     }
 
+    /**
+     * Displays a report of the calibration results, including average angles and changes
+     * in degrees for each wheel.
+     */
     public void showReport() {
         if (m_numReadings == 0) {
             System.out.println("No readings taken yet!");
@@ -120,6 +128,9 @@ public class CalibrationOrchestrator {
         }
     }
 
+    /**
+     * Resets the readings for all wheels by clearing the number of readings and failed readings.
+     */
     public void resetReadings() {
         resetReadingsHelper();
         System.out.println("Reset readings for all wheels.");
