@@ -48,6 +48,7 @@ import frc.robot.sim.simvision.VisionSystemInterface;
 import frc.robot.sim.simvision.VisionSystemSim;
 import frc.robot.util.AutoLogic;
 import frc.robot.vision.VisionSystem;
+import frc.robot.wheelcalibration.CalibrationOrchestrator;
 import frc.robot.logging.TriviaLogger;
 
 import java.io.File;
@@ -96,6 +97,8 @@ public class SwerveSubsystem extends SubsystemBase
 
   private boolean m_isPathfinderWarmedUp = false;
   private boolean m_hasWarnedOnce = false;
+
+  private CalibrationOrchestrator m_calibrationOrch = null;
 
   //
   // Simulated Vision
@@ -189,6 +192,17 @@ public class SwerveSubsystem extends SubsystemBase
       tab.add("Robot Position on Field", m_field);
       tab.add("Target Position on Field", m_targetField);
       tab.addBoolean("Path Planner Ready", () -> m_isPathfinderWarmedUp);
+
+      // Add buttons to help callibrate wheel angles
+      m_calibrationOrch = new CalibrationOrchestrator(swerveDrive);
+      Command takeReadingCmd = new InstantCommand(() -> m_calibrationOrch.takeReading());
+      tab.add("Take Wheel Reading", takeReadingCmd).withWidget("Command");
+
+      Command showReportCmd = new InstantCommand(() -> m_calibrationOrch.showReport());
+      tab.add("Show Report", showReportCmd).withWidget("Command");
+
+      Command resetReadingsCmd = new InstantCommand(() -> m_calibrationOrch.resetReadings());
+      tab.add("Reset Readings", resetReadingsCmd).withWidget("Command");
     }
 
     initLogging();
