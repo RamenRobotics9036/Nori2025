@@ -16,11 +16,18 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.ramenlib.logging.TriviaLogger;
+import frc.robot.ramenlib.sim.SimConstants.ElevatorSimConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.logging.TriviaLogger;
-import frc.robot.sim.SimConstants;
-import frc.robot.sim.SimConstants.ElevatorSimConstants;
 import frc.robot.sim.elevatorsimulation.ElevatorSimulation;
 
 @SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
