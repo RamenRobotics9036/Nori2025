@@ -90,7 +90,7 @@ public class RangeConvert {
      */
     public double simToPhysical(double simDegrees) {
         if (simDegrees < m_minSimDegrees || simDegrees > m_maxSimDegrees) {
-            System.out.println("ERROR: simDegrees is out of range");
+            //System.out.println("ERROR: simDegrees is out of range");
         }
 
         // Converts from simulation degrees to physical arm degrees
@@ -113,7 +113,7 @@ public class RangeConvert {
     public double physicalToSim(double physicalDegrees) {
         if (physicalDegrees < m_minPhysicalArmDegrees
             || physicalDegrees > m_maxPhysicalArmDegrees) {
-            System.out.println("ERROR: armDegrees is out of range");
+            //System.out.println("ERROR: armDegrees is out of range");
         }
 
         // converts from physical arm degrees to simulation degrees
