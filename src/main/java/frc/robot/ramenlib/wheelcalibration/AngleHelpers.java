@@ -35,7 +35,7 @@ public final class AngleHelpers {
     }
 
     /**
-     * Calculates the distance between two angles, ignoring their polarity.  (i.e. a wheel
+     * Calculates the distance between two angles, ignoring their polarity. (i.e. a wheel
      * can be rotated 180 degrees, and its still pointing in the same direction).
      *
      * @param angle1 The first angle to compare.
@@ -84,7 +84,7 @@ public final class AngleHelpers {
      * Returns the angle (either the given angle or the given angle plus 180 degrees)
      * that is closest to the reference angle.
      *
-     * @param angle The angle to compare.
+     * @param angle          The angle to compare.
      * @param referenceAngle The reference angle to compare against.
      * @return The closest angle to the reference angle.
      */
@@ -114,7 +114,7 @@ public final class AngleHelpers {
     /**
      * Normalizes the given angle to be within the specified bounds.
      *
-     * @param angle The angle to normalize.
+     * @param angle      The angle to normalize.
      * @param lowerBound The lower bound of the range.
      * @param upperBound The upper bound of the range.
      * @return A Rotation2d object representing the normalized angle.

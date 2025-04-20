@@ -3,13 +3,19 @@ package frc.robot.ramenlib.wheelcalibration;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
 
+/**
+ * The CalibrationOrchestrator class manages the calibration process for the wheels
+ * of a swerve drive system, including taking readings and generating reports.
+ */
 public class CalibrationOrchestrator {
     private final int m_numWheels;
     private final WheelCalibration[] m_wheelCalibrations;
     private int m_numReadings;
     private int m_numFailedReadings;
 
-    // Constructor
+    /**
+     * Constructor.
+     */
     public CalibrationOrchestrator(SwerveDrive swerveDrive) {
         m_wheelCalibrations = createWheelCalibrations(swerveDrive);
         m_numWheels = m_wheelCalibrations.length;

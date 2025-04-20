@@ -1,11 +1,7 @@
 package frc.robot.ramenlib.logging;
 
-import java.util.function.Supplier;
-
-import edu.wpi.first.hal.can.CANStatus;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.datalog.IntegerLogEntry;
-import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -13,17 +9,24 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.OperatorConstants;
+import java.util.function.Supplier;
 
+/**
+ * The TriviaLogger class is responsible for managing various logging functionalities
+ * such as power, performance, and command logging in the robot system.
+ */
 public class TriviaLogger {
     // Singleton instance
     private static TriviaLogger m_instance = null;
 
     private DoubleLogEntry m_voltageLog = null;
-    private IntegerLogEntry m_FaultCount3V = null;
-    private IntegerLogEntry m_FaultCount5V = null;
-    private IntegerLogEntry m_FaultCount6V = null;
+    private IntegerLogEntry m_faultCount3V = null;
+    private IntegerLogEntry m_faultCount5V = null;
+    private IntegerLogEntry m_faultCount6V = null;
     private PDData m_pdData = null;
     private StructLogEntry<PDData> m_powerDistributionLog = null;
+
+    @SuppressWarnings("unused")
     private CommandLogger m_commandLogger = null;
     private CallbackLogger m_callbackLoggerForCommands = null;
 
@@ -46,7 +49,7 @@ public class TriviaLogger {
         return m_instance;
     }
 
-    private boolean isNTLoggingEnabled() {
+    private boolean isNtLoggingEnabled() {
         // We ALWAYS log to roborio logs anything that was place on the NetworkTables:
         // If it was important enough to send over the NETWORK, logging it is nearly free.
         return true;
@@ -79,10 +82,10 @@ public class TriviaLogger {
     private boolean isSimOrNotCompetitionMode() {
         return RobotBase.isSimulation() || !OperatorConstants.kCompetitionMode;
     }
-    
+
     private void enableLogging() {
         // Optionally enable logging of all NetworkTables data
-        DataLogManager.logNetworkTables(isNTLoggingEnabled());
+        DataLogManager.logNetworkTables(isNtLoggingEnabled());
 
         // Starts recording to data log
         DataLogManager.start();
@@ -99,23 +102,38 @@ public class TriviaLogger {
         initCommandLogging();
 
         System.out.println("TriviaLogging enabled!");
-        String roboRioSN = RobotController.getSerialNumber();
-        if (roboRioSN == null || roboRioSN.isEmpty()) {
-            roboRioSN = "Unknown";
+        String roboRioSn = RobotController.getSerialNumber();
+        if (roboRioSn == null || roboRioSn.isEmpty()) {
+            roboRioSn = "Unknown";
         }
-        System.out.println("RoboRio SN: " + roboRioSN);
+        System.out.println("RoboRio SN: " + roboRioSn);
     }
 
+    /**
+     * Updates all logging functionalities, including power, detailed power,
+     * performance data, and command logging. Called every 20ms on periodic
+     * loop.
+     */
     public void updateLogging() {
         updatePowerLogging();
         updateDetailedPowerLogging();
         updatePerformanceDataLogging();
         updateCommandLogging();
     }
-    
-    public void registerSubsystemCmdCallback(String subsystemName, Supplier<String> commandNameSupplier) {
+
+    /**
+     * Registers a callback for a subsystem to log the currently running command.
+     *
+     * @param subsystemName       The name of the subsystem. If null, "None" will be used.
+     * @param commandNameSupplier A supplier that provides the name of the current command.
+     */
+    public void registerSubsystemCmdCallback(
+        String subsystemName,
+        Supplier<String> commandNameSupplier) {
+
         if (m_callbackLoggerForCommands != null) {
-            String fullPath = "/my/Commands/BySubsystem/" + (subsystemName == null ? "None" : subsystemName);
+            String fullPath = "/my/Commands/BySubsystem/"
+                + (subsystemName == null ? "None" : subsystemName);
             m_callbackLoggerForCommands.add(fullPath, commandNameSupplier);
         }
     }
@@ -123,9 +141,9 @@ public class TriviaLogger {
     private void initPowerLogging() {
         if (isPowerLoggingEnabled()) {
             m_voltageLog = new DoubleLogEntry(DataLogManager.getLog(), "/my/Power/Voltage");
-            m_FaultCount3V = new IntegerLogEntry(DataLogManager.getLog(), "/my/Power/FaultCount3V");
-            m_FaultCount5V = new IntegerLogEntry(DataLogManager.getLog(), "/my/Power/FaultCount5V");
-            m_FaultCount6V = new IntegerLogEntry(DataLogManager.getLog(), "/my/Power/FaultCount6V");
+            m_faultCount3V = new IntegerLogEntry(DataLogManager.getLog(), "/my/Power/FaultCount3V");
+            m_faultCount5V = new IntegerLogEntry(DataLogManager.getLog(), "/my/Power/FaultCount5V");
+            m_faultCount6V = new IntegerLogEntry(DataLogManager.getLog(), "/my/Power/FaultCount6V");
         }
     }
 
@@ -133,7 +151,8 @@ public class TriviaLogger {
         if (isDetailedPowerLoggingEnabled()) {
             // Enable power distribution logging
             m_pdData = PDData.create(1, ModuleType.kRev);
-            m_powerDistributionLog = StructLogEntry.create(DataLogManager.getLog(), "/my/PowerDistribution", PDData.struct);
+            m_powerDistributionLog = StructLogEntry
+                .create(DataLogManager.getLog(), "/my/PowerDistribution", PDData.struct);
         }
     }
 
@@ -157,14 +176,14 @@ public class TriviaLogger {
             // Note we use update so that it only logs on change.
             m_voltageLog.update(RobotController.getBatteryVoltage());
         }
-        if (m_FaultCount3V != null) {
-            m_FaultCount3V.update(RobotController.getFaultCount3V3());
+        if (m_faultCount3V != null) {
+            m_faultCount3V.update(RobotController.getFaultCount3V3());
         }
-        if (m_FaultCount5V != null) {
-            m_FaultCount5V.update(RobotController.getFaultCount5V());
+        if (m_faultCount5V != null) {
+            m_faultCount5V.update(RobotController.getFaultCount5V());
         }
-        if (m_FaultCount6V != null) {
-            m_FaultCount6V.update(RobotController.getFaultCount6V());
+        if (m_faultCount6V != null) {
+            m_faultCount6V.update(RobotController.getFaultCount6V());
         }
     }
 

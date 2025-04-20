@@ -2,13 +2,18 @@ package frc.robot.ramenlib.sim.simcommands.pretend;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-// This command just sleeps for 1 second.  But during that second it DOES
-// hold the dependencies on the subsystem, just like a real command would.
+/**
+ * This command just sleeps for 1 second. But during that second it DOES
+ * hold the dependencies on the subsystem, just like a real command would.
+ */
 public class UnexpectedCommand extends Command {
     private String m_name;
     private boolean m_isDone;
     private boolean m_throwException = true;
 
+    /**
+     * Constructor.
+     */
     public UnexpectedCommand(String name) {
         m_name = name;
         m_isDone = false;
@@ -19,7 +24,8 @@ public class UnexpectedCommand extends Command {
         String errStr = "Unexpected command run: " + m_name;
         if (m_throwException) {
             throw new UnsupportedOperationException(errStr);
-        } else {
+        }
+        else {
             System.out.println(errStr);
         }
 
