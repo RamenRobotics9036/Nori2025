@@ -22,7 +22,9 @@ public class RelativeEncoderSim {
             m_relEncoder = relEncoder;
         }
         else {
-            System.out.println("ERROR: RelativeEncoderSim should only be instantiated in simulation mode.");
+            System.out.println(
+                "ERROR: RelativeEncoderSim should only "
+                    + "be instantiated in simulation mode.");
             m_relEncoder = null;
         }
     }
@@ -31,6 +33,11 @@ public class RelativeEncoderSim {
         return m_relEncoder.getPosition();
     }
 
+    /**
+     * Sets the position of the RelativeEncoder in simulation.
+     *
+     * @param position The desired position to set.
+     */
     public void setPosition(double position) {
         m_relEncoder.setPosition(position);
     }

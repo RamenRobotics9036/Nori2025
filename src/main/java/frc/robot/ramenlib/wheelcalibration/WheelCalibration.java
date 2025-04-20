@@ -138,7 +138,7 @@ public class WheelCalibration {
     // Returns an absolute value
     /**
      * Calculates the absolute change in degrees between the average reading and the
-     * configuration offset.  If no readings are available, it returns -1.0.
+     * configuration offset. If no readings are available, it returns -1.0.
      *
      * @return The absolute change in degrees, or -1.0 if no readings are available.
      */

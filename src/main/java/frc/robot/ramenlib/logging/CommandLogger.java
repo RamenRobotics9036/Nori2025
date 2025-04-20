@@ -1,20 +1,27 @@
 package frc.robot.ramenlib.logging;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+/**
+ * The CommandLogger class is responsible for logging the lifecycle events
+ * of commands executed by the CommandScheduler, such as initialization,
+ * interruption, and completion.
+ */
 public class CommandLogger {
     private StringLogEntry m_commandsLog = null;
 
-    // Constructor
+    /**
+     * Constructor.
+     */
     public CommandLogger() {
-        m_commandsLog = new StringLogEntry(DataLogManager.getLog(), "/my/Commands/SchedulerCommandLog");
+        m_commandsLog = new StringLogEntry(DataLogManager.getLog(),
+            "/my/Commands/SchedulerCommandLog");
         setupLoggingCallbacks();
     }
 
@@ -23,7 +30,7 @@ public class CommandLogger {
             command -> {
                 // Log when a command is initialized
                 m_commandsLog.append("Initialized: " + getCommandDescription(command));
-        });
+            });
 
         CommandScheduler.getInstance().onCommandInterrupt(
             (command, interruptingCommand) -> {
@@ -32,7 +39,7 @@ public class CommandLogger {
                     message += " by " + getSimpleCommandName(interruptingCommand.get());
                 }
                 m_commandsLog.append(message);
-        });
+            });
 
         CommandScheduler.getInstance().onCommandFinish(
             command -> {
@@ -41,30 +48,31 @@ public class CommandLogger {
             });
     }
 
-    private String getSimpleCommandName(Command command) { 
-        String name = command.getName(); 
-        if (name == null || name.isEmpty()) { 
+    private String getSimpleCommandName(Command command) {
+        String name = command.getName();
+        if (name == null || name.isEmpty()) {
             return "UNKNOWN";
-        } 
+        }
 
-        return "[" + name + "]"; 
-    } 
- 
-    private String getCommandDescription(Command command) { 
-        StringBuilder sb = new StringBuilder(); 
+        return "[" + name + "]";
+    }
 
-        String name = getSimpleCommandName(command); 
-        sb.append(name); 
+    private String getCommandDescription(Command command) {
+        StringBuilder sb = new StringBuilder();
 
-        Set<Subsystem> requirements = command.getRequirements(); 
-        if (requirements != null && !requirements.isEmpty()) { 
-            sb.append(" (Requires:"); 
-            sb.append(requirements.stream() 
-                .map(Subsystem::getName) 
-                .collect(Collectors.joining(","))); 
-            sb.append(")"); 
-        } 
+        String name = getSimpleCommandName(command);
+        sb.append(name);
 
-        return sb.toString(); 
-    } 
+        Set<Subsystem> requirements = command.getRequirements();
+        if (requirements != null && !requirements.isEmpty()) {
+            sb.append(" (Requires:");
+            sb.append(
+                requirements.stream()
+                    .map(Subsystem::getName)
+                    .collect(Collectors.joining(",")));
+            sb.append(")");
+        }
+
+        return sb.toString();
+    }
 }

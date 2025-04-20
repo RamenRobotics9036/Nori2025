@@ -1,18 +1,25 @@
 package frc.robot.ramenlib.sim.armsimulation;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import frc.robot.ramenlib.sim.simutil.RelativeEncoderSim;
+import java.util.function.DoubleSupplier;
 
+/**
+ * This class simulates an arm mechanism in a robotics system.
+ * It provides methods to initialize the arm's position, retrieve the setpoint,
+ * and update the physical output of the arm in simulation mode.
+ */
+@SuppressWarnings("AbbreviationAsWordInNameCheck")
 public class IOArmSim implements IOArmSimInterface {
     private DutyCycleEncoderSim m_absEncoderSim;
     private RelativeEncoderSim m_relEncoderSim;
     private DoubleSupplier m_setpointSupplier;
 
-    // Constructor
+    /**
+     * Constructor.
+     */
     public IOArmSim(
         DutyCycleEncoderSim absEncoderSim,
         RelativeEncoderSim relEncoderSim,
@@ -52,7 +59,7 @@ public class IOArmSim implements IOArmSimInterface {
 
     @Override
     public void setPhysicalOutputArmDegreesAbsolute(double physicalAngleDegrees) {
-        // NOTE: Normally, encoders use Rotations for units.  But conversion factor
+        // NOTE: Normally, encoders use Rotations for units. But conversion factor
         // was configured on the encoders to use radians.
         double physicalAngleRads = Units.degreesToRadians(physicalAngleDegrees);
 

@@ -1,24 +1,26 @@
 package frc.robot.ramenlib.sim.simvision;
 
-import java.util.Optional;
-
-import org.photonvision.PhotonUtils;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.ramenlib.sim.SimConstants;
+import java.util.Optional;
+import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
+/**
+ * Simulates a vision system for detecting targets and estimating poses.
+ */
 public class VisionSystemSim implements VisionSystemInterface {
     private VisionSim m_visionSim;
     private Pose3d m_absoluteTargetPose = new Pose3d();
     private Pose3d m_relativeTargetPose = new Pose3d();
     private Pose2d m_robotPose = new Pose2d();
 
-    // Constructor
+    /**
+     * Constructor.
+     */
     public VisionSystemSim(VisionSim visionSim) {
         m_visionSim = visionSim;
     }

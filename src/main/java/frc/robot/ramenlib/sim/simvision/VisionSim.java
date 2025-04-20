@@ -24,29 +24,35 @@
 
 package frc.robot.ramenlib.sim.simvision;
 
-import java.util.List;
-import java.util.Optional;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.ramenlib.sim.SimConstants.VisionSimConstants;
 import frc.robot.Robot;
-
+import frc.robot.ramenlib.sim.SimConstants.VisionSimConstants;
+import java.util.List;
+import java.util.Optional;
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
- 
+
+/**
+ * VisionSim is a simulation class for handling vision-related functionalities
+ * in a simulated environment. It integrates with PhotonVision to simulate
+ * cameras and targets on the field.
+ */
 public class VisionSim {
-    // Simulation
     private PhotonCamera m_camera;
     private PhotonCameraSim m_cameraSim;
     private VisionSystemSim m_visionSim;
     private Optional<PhotonTrackedTarget> m_bestTarget = Optional.empty();
- 
+
+    /**
+     * Constructor.
+     */
     public VisionSim() {
         if (!Robot.isSimulation()) {
             throw new RuntimeException("VisionSim should only be used in simulation");
@@ -74,7 +80,12 @@ public class VisionSim {
         // We disable the wire frame since we never open the PhotonVision local webview
         m_cameraSim.enableDrawWireframe(false);
     }
- 
+
+    /**
+     * Periodically updates the vision simulation with the current robot pose.
+     *
+     * @param robotSimPose The current pose of the robot in the simulation.
+     */
     public void simulationPeriodic(Pose2d robotSimPose) {
         m_visionSim.update(robotSimPose);
         calcNewBestTarget();
@@ -82,12 +93,16 @@ public class VisionSim {
 
     /** Reset pose history of the robot in the vision system simulation. */
     public void resetSimPose(Pose2d pose) {
-        if (Robot.isSimulation()) m_visionSim.resetRobotPose(pose);
+        if (Robot.isSimulation()) {
+            m_visionSim.resetRobotPose(pose);
+        }
     }
- 
+
     /** A Field2d for visualizing our robot and objects on the field. */
     public Field2d getSimDebugField() {
-        if (!Robot.isSimulation()) return null;
+        if (!Robot.isSimulation()) {
+            return null;
+        }
         return m_visionSim.getDebugField();
     }
 
@@ -96,25 +111,26 @@ public class VisionSim {
     }
 
     // If there's new information from the camera, we process it, and SAVE the best
-    // target.  That way, we still see that target even if there's no new camera info
+    // target. That way, we still see that target even if there's no new camera info
     // to read.
     private void calcNewBestTarget() {
         // Read in relevant data from the Camera
-        List<PhotonPipelineResult> pipeline_result_list = m_camera.getAllUnreadResults();
-        if (pipeline_result_list.isEmpty()) {
+        List<PhotonPipelineResult> pipelineResultList = m_camera.getAllUnreadResults();
+        if (pipelineResultList.isEmpty()) {
             return;
         }
 
         // Camera processed a new frame since last
         // Get the last one in the list.
-        PhotonPipelineResult most_recent = pipeline_result_list.get(pipeline_result_list.size() - 1);
-        if (!most_recent.hasTargets()) {
+        PhotonPipelineResult mostRecent = pipelineResultList
+            .get(pipelineResultList.size() - 1);
+        if (!mostRecent.hasTargets()) {
             // Save that we saw NO targets
             m_bestTarget = Optional.empty();
             return;
         }
 
-        PhotonTrackedTarget bestTarget = most_recent.getBestTarget();
+        PhotonTrackedTarget bestTarget = mostRecent.getBestTarget();
         m_bestTarget = Optional.of(bestTarget);
     }
 }
