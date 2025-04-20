@@ -14,7 +14,7 @@ public class RangeConvert {
     /**
      * NOTE: We allow for a buffer in the min and max degrees to allow for a little bit of wiggle
      * room in the simulation. For example, the simulation has gravity pulling down on the arm, so
-     * if the robot purposefully moves the arm to the lowwest point, the simulated arm will actually
+     * if the robot purposefully moves the arm to the lowest point, the simulated arm will actually
      * droop a little bit below the lowest point.
      */
     public RangeConvert(

@@ -10,8 +10,8 @@ public class PretendCommandIntakeSystem extends AbstractPretendCommand {
     /**
      * Constructor.
      */
-    public PretendCommandIntakeSystem(IntakeSystem inttakeSystem) {
-        super(inttakeSystem);
+    public PretendCommandIntakeSystem(IntakeSystem intakeSystem) {
+        super(intakeSystem);
     }
 
     @Override
