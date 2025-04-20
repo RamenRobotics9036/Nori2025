@@ -19,9 +19,9 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.ramenlib.logging.TriviaLogger;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.logging.TriviaLogger;
 
 public class ElevatorSystem extends SubsystemBase{
     //Motors are on opposite sides of a shaft

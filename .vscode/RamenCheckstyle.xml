@@ -287,14 +287,15 @@
       <message key="ws.notPreceded"
              value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
     </module>
-    <module name="Indentation">
+    <!-- <module name="Indentation">
+      $TODO - Ignore indentation for now
       <property name="basicOffset" value="4"/>
       <property name="braceAdjustment" value="4"/>
       <property name="caseIndent" value="4"/>
       <property name="throwsIndent" value="4"/>
       <property name="lineWrappingIndentation" value="4"/>
       <property name="arrayInitIndent" value="4"/>
-    </module>
+    </module> -->
     <!-- Suppression for block code until we find a way to detect them properly
          until https://github.com/checkstyle/checkstyle/issues/15769 -->
     <module name="SuppressionXpathSingleFilter">

@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.ramenlib.logging.TriviaLogger;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.logging.TriviaLogger;
 
 public class IntakeSystem extends SubsystemBase{
     //the front motor, for pulling the coarl in and scoring on L1
