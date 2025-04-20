@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.OuttakeConstants;
-import frc.robot.logging.TriviaLogger;
+import frc.robot.ramenlib.logging.TriviaLogger;
 
 public class OuttakeSystem extends SubsystemBase {
     private SparkFlex m_outtakeSparkFlex = new SparkFlex(OuttakeConstants.sparkflexID, MotorType.kBrushless);
