@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CommandConstants.AimAtLimeLightV2Constants;
 import frc.robot.subsystems.SwerveSubsystem;
 
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class AimAtLimeLightV2 extends Command {
     private SwerveSubsystem m_swerveDrive;
     private Timer m_timer = new Timer();

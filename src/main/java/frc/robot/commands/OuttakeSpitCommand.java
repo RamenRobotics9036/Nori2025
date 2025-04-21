@@ -6,6 +6,7 @@ import frc.robot.Constants.OuttakeConstants;
 import frc.robot.Constants.OuttakeSpitCommandConstants;
 import frc.robot.subsystems.OuttakeSystem;
 
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class OuttakeSpitCommand extends Command {
     private OuttakeSystem m_outtake;
     private Timer m_timer = new Timer();

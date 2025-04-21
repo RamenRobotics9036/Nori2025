@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.ElevatorSystem;
 
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class ElevatorToPositionCommand extends Command{
     private ElevatorSystem m_elevator;
     private double m_desiredPosition;

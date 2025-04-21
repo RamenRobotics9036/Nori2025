@@ -1,8 +1,10 @@
 package frc.robot.commands;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeDefaultCommandConstants;
 import frc.robot.subsystems.IntakeSystem;
 
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class IntakeDefaultCommand extends Command {
     private IntakeSystem m_intake;
 

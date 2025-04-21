@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSystem;
 
 //IMPORTANT: Just for testing. Not real command.
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class IntakeTestCommand extends Command{
     private IntakeSystem m_intake;
 
