@@ -4,16 +4,14 @@
 
 package frc.robot;
 
-import java.util.function.Supplier;
-
 import com.pathplanner.lib.config.PIDConstants;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import java.util.function.Supplier;
 import swervelib.math.Matter;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
@@ -25,6 +23,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public final class Constants
 {
   /**
@@ -52,8 +51,8 @@ public final class Constants
     // public static final String  kJsonDirectory = "pancake";
     public static final String  kJsonDirectory = "nori";
     public static final double kMaxSpeedMetersPerSecond = 5.06;
-    public static final double kRobotMass = Units.lbsToKilograms(129); // TODO: update
-    public static final Matter kChassisMatter = new Matter(new Translation3d(0, 0, Units.inchesToMeters(16)), kRobotMass); // TODO: update
+    public static final double kRobotMass = Units.lbsToKilograms(129); // $TODO update
+    public static final Matter kChassisMatter = new Matter(new Translation3d(0, 0, Units.inchesToMeters(16)), kRobotMass); // $TODO update
     public static final double kLoopTime = 0.13; //s, 20ms + 110ms sprk max velocity lag
   }
   /**
@@ -184,7 +183,7 @@ public final class Constants
   public static final class ElevatorConstants {
   public static final int kLeaderMotorID = 30; 
   public static final int kFollowMotorID = 31; 
-  public static final int kDIOIndex = 1; // TODO: placeholder 
+  public static final int kDIOIndex = 1; // $TODO placeholder 
   public static final int kStallLimit = 20; 
   public static final double kMaxOutputPercentage = 1; 
   //Elevator moves 5.625 in (0.1429 m) per rotation of the sprocket, gear ratio of 12:1 
@@ -205,7 +204,7 @@ public final class Constants
 
   public static final class ElevatorDefaultCommandConstants{
     // In centimeters
-    public static final double kElevatorSpeed = 0.5; //TODO: placeholder
+    public static final double kElevatorSpeed = 0.5; // $TODO placeholder
   }
   
   public static final class OuttakeConstants {

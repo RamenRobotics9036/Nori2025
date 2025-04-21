@@ -1,14 +1,14 @@
 package frc.robot.commands;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmDefaultCommandConstants;
 import frc.robot.subsystems.IntakeArmSystem;
+import java.util.function.Supplier;
 
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class ArmDefaultCommand extends Command {
     private IntakeArmSystem m_armSystem;
     private Supplier<Double> m_deltaArmAngleFromController;

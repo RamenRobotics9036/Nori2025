@@ -19,6 +19,7 @@ import swervelib.math.SwerveMath;
 /**
  * An example command that uses an example subsystem.
  */
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class AbsoluteDrive extends Command
 {
 

@@ -27,8 +27,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -40,17 +40,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.CommandConstants.AlignRobotConstants;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.SwerveConstants;
+import frc.robot.Robot;
 import frc.robot.ramenlib.logging.TriviaLogger;
 import frc.robot.ramenlib.sim.simvision.VisionSim;
 import frc.robot.ramenlib.sim.simvision.VisionSystemInterface;
 import frc.robot.ramenlib.sim.simvision.VisionSystemSim;
 import frc.robot.ramenlib.wheelcalibration.CalibrationOrchestrator;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.SwerveConstants;
-import frc.robot.Robot;
 import frc.robot.util.AutoLogic;
 import frc.robot.vision.VisionSystem;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -68,6 +67,7 @@ import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class SwerveSubsystem extends SubsystemBase
 {
 
@@ -565,6 +565,7 @@ public class SwerveSubsystem extends SubsystemBase
                            .forEach(it -> it.setAngle(0.0)));
   }
 
+  @SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
   public Supplier<Command> driveMeters(double distanceInMeters, double speedInMetersPerSecond) {
     return () -> {
       double startX = getPose().getX();

@@ -2,15 +2,14 @@ package frc.robot.subsystems;
  
 import com.revrobotics.RelativeEncoder; 
 import com.revrobotics.spark.SparkBase; 
+import com.revrobotics.spark.SparkBase.ControlType; 
 import com.revrobotics.spark.SparkClosedLoopController; 
 import com.revrobotics.spark.SparkLowLevel.MotorType; 
+import com.revrobotics.spark.SparkMax; 
 import com.revrobotics.spark.config.ClosedLoopConfig; 
 import com.revrobotics.spark.config.EncoderConfig; 
 import com.revrobotics.spark.config.SparkBaseConfig; 
 import com.revrobotics.spark.config.SparkMaxConfig; 
-import com.revrobotics.spark.SparkMax; 
-import com.revrobotics.spark.SparkBase.ControlType; 
- 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -21,7 +20,7 @@ import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase; 
- 
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.SetArmToAngleCommand;
 import frc.robot.ramenlib.logging.TriviaLogger;
@@ -31,9 +30,8 @@ import frc.robot.ramenlib.sim.armsimulation.IOArmSim;
 import frc.robot.ramenlib.sim.armsimulation.IOArmSimInterface;
 import frc.robot.ramenlib.sim.simutil.RangeConvert;
 import frc.robot.ramenlib.sim.simutil.RelativeEncoderSim;
-import frc.robot.Constants.ArmConstants;
  
- 
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class IntakeArmSystem extends SubsystemBase{ 
     private SparkMax m_armMotor = new SparkMax(ArmConstants.kArmMotorID, MotorType.kBrushless); 
     private RelativeEncoder m_armRelativeEncoder = m_armMotor.getEncoder(); 

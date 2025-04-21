@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.util.CommandAppliedController;
 
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class ControllerRumbleCommand extends Command {
     private double m_time;
     private double m_intensity;

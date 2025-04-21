@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveSubsystem;
 
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class DriveForwardCommand extends Command {
     private SwerveSubsystem m_swerveDrive;
     private double startX;

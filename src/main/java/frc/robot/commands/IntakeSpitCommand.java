@@ -6,6 +6,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeSpitCommandConstants;
 import frc.robot.subsystems.IntakeSystem;
 
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class IntakeSpitCommand extends Command {
     private IntakeSystem m_intake;
     private Timer m_timer = new Timer();

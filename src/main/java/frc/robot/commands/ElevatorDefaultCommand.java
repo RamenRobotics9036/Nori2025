@@ -1,13 +1,13 @@
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorDefaultCommandConstants;
 import frc.robot.subsystems.ElevatorSystem;
+import java.util.function.DoubleSupplier;
 
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class ElevatorDefaultCommand extends Command{
     private ElevatorSystem m_elevator;
     private DoubleSupplier m_joystick;
