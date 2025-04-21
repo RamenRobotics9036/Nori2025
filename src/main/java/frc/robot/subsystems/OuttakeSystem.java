@@ -3,20 +3,19 @@ package frc.robot.subsystems;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.OuttakeConstants;
 import frc.robot.ramenlib.logging.TriviaLogger;
 
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class OuttakeSystem extends SubsystemBase {
     private SparkFlex m_outtakeSparkFlex = new SparkFlex(OuttakeConstants.sparkflexID, MotorType.kBrushless);
     private SparkMax m_outtakeSparkMax = new SparkMax(OuttakeConstants.sparkmaxID, MotorType.kBrushless);

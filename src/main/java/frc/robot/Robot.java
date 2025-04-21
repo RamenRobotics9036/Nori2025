@@ -18,6 +18,7 @@ import frc.robot.ramenlib.logging.TriviaLogger;
  * build.gradle file in the
  * project.
  */
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 

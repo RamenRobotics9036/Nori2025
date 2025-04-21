@@ -11,6 +11,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.ramenlib.sim.simvision.VisionSystemInterface;
 
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class VisionSystem implements VisionSystemInterface {
 
     private NetworkTable m_limelightTable = NetworkTableInstance.getDefault()

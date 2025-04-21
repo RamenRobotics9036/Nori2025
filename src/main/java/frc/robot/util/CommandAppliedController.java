@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 /**
  * AppliedController.
  */
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class CommandAppliedController extends CommandXboxController {
 
     private double m_controllerExponent; //expo factor for the analog axises

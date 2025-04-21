@@ -16,11 +16,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.AutoNameConstants;
-
 import java.io.IOException;
 import java.util.List;
 import org.json.simple.parser.ParseException;
 
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class AutoLogic {
   public static SendableChooser<String> autoPicker = new SendableChooser<String>();
 

@@ -4,16 +4,14 @@
 
 package frc.robot;
 
-import java.util.function.Supplier;
-
 import com.pathplanner.lib.config.PIDConstants;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import java.util.function.Supplier;
 import swervelib.math.Matter;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
@@ -25,6 +23,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
+@SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public final class Constants
 {
   /**
