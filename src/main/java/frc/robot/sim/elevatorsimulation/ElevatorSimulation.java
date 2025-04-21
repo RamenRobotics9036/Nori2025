@@ -18,6 +18,11 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.ramenlib.sim.SimConstants.ElevatorSimConstants;
 
+/**
+ * Simulates an elevator mechanism for robotics applications.
+ * This class provides methods to control and visualize the elevator's behavior
+ * in a simulated environment.
+ */
 public class ElevatorSimulation implements AutoCloseable {
     // This gearbox represents a gearbox containing 4 Vex 775pro motors.
     private final DCMotor m_elevatorGearbox = DCMotor.getVex775Pro(4);
@@ -33,9 +38,11 @@ public class ElevatorSimulation implements AutoCloseable {
         ElevatorSimConstants.kElevatorkG,
         ElevatorSimConstants.kElevatorkV,
         ElevatorSimConstants.kElevatorkA);
-    private final Encoder m_encoder = new Encoder(5, 6); // $TODO
-                                                         // ElevatorSimConstants.kEncoderAChannel,
-                                                         // ElevatorSimConstants.kEncoderBChannel);
+
+    // $TODO - Use constants instead
+    // ElevatorSimConstants.kEncoderAChannel,
+    // ElevatorSimConstants.kEncoderBChannel);
+    private final Encoder m_encoder = new Encoder(5, 6);
     private final PWMSparkMax m_motor = new PWMSparkMax(ElevatorSimConstants.kMotorPort);
 
     // Simulation classes help us simulate what's going on, including gravity.
