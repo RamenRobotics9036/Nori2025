@@ -21,7 +21,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.ramenlib.logging.TriviaLogger;
 import frc.robot.ramenlib.sim.SimConstants.ElevatorSimConstants;
-import frc.robot.sim.elevatorsimulation.ElevatorSimulation;
+import frc.robot.ramenlib.sim.elevatorsimulation.ElevatorSimulation;
 
 @SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class ElevatorSystem extends SubsystemBase{
