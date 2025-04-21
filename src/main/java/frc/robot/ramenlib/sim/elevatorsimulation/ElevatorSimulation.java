@@ -115,6 +115,7 @@ public class ElevatorSimulation implements AutoCloseable {
     /** Update telemetry, including the mechanism visualization. */
     public void updateTelemetry() {
         // Update elevator visualization with position
+        System.out.println("Elevator position: " + m_encoder.getDistance());
         m_elevatorMech2d.setLength(m_encoder.getDistance());
     }
 

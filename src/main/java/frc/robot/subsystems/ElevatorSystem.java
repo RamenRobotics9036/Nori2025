@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -22,6 +23,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.ramenlib.logging.TriviaLogger;
 import frc.robot.ramenlib.sim.SimConstants.ElevatorSimConstants;
 import frc.robot.ramenlib.sim.elevatorsimulation.ElevatorSimulation;
+import frc.robot.commands.ElevatorToPositionCommand;
 
 @SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class ElevatorSystem extends SubsystemBase{
@@ -47,7 +49,7 @@ public class ElevatorSystem extends SubsystemBase{
         READYLOW,
         READY,
     }
-    private states m_state = states.INIT;
+    private states m_state = states.READY; // $TODO - Hack for simulation! states.INIT;
     
     public ElevatorSystem() {
         ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig();
@@ -97,6 +99,22 @@ public class ElevatorSystem extends SubsystemBase{
             tab.addBoolean("Limit Switch Value", () -> m_limitReached);
             tab.addNumber("Relative Encoder Position", () ->  m_encoderPosition);
             tab.addString("Elevator State", () -> m_state.toString());
+
+            if (RobotBase.isSimulation()) { 
+ 
+                // Add a button to test moving elevator up 
+                Command goDown = new ElevatorToPositionCommand(this, 0.0); // $TODO ElevatorConstants.kDownElevatorPosition);
+                tab.add("Elevator Down", goDown).withWidget("Command");
+
+                Command goL2 = new ElevatorToPositionCommand(this, ElevatorConstants.kLevel2ReefPosition);
+                tab.add("Elevator L2", goL2).withWidget("Command");
+
+                Command goL3 = new ElevatorToPositionCommand(this, ElevatorConstants.kLevel3ReefPosition);
+                tab.add("Elevator L3", goL3).withWidget("Command");
+
+                Command goL4 = new ElevatorToPositionCommand(this, 2.0); // $TODO ElevatorConstants.kLevel4ReefPosition);
+                tab.add("Elevator L4", goL4).withWidget("Command");
+            }
         }
 
         initLogging();
@@ -139,11 +157,15 @@ public class ElevatorSystem extends SubsystemBase{
                     // initializeMotorConfig is a no-op since we do not use the brake to keep the elevator in place
                     // initializeMotorConfig(false);
                 }
+                break;
+            default:
+                throw new IllegalStateException("Unexpected state: " + m_state);
         }
 
-        if (m_elevatorSim != null) {
+        // $TODO - Not sure if this is right
+        if (m_elevatorSim != null) { // && m_state != states.INIT) {
             // Run the simulation model.
-            m_elevatorSim.reachGoal(ElevatorSimConstants.kSetpointMeters);
+            m_elevatorSim.reachGoal(m_desiredPosition);
         }
     }
 
@@ -160,7 +182,7 @@ public class ElevatorSystem extends SubsystemBase{
         // set desired position
         // measured in rotations of motor * a constant
         if (m_state == states.READY || m_state == states.READYLOW){
-            m_desiredPosition = MathUtil.clamp(position, ElevatorConstants.kMaxElevatorPosition, ElevatorConstants.kDownElevatorPosition);
+            m_desiredPosition = position; // $TODO Fix this MathUtil.clamp(position, ElevatorConstants.kMaxElevatorPosition, ElevatorConstants.kDownElevatorPosition);
             m_PIDController.setReference(m_desiredPosition, ControlType.kPosition);
         }
     }
