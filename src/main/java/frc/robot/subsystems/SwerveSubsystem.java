@@ -166,6 +166,9 @@ public class SwerveSubsystem extends SubsystemBase
       m_vision = new VisionSystemSim(m_visionSim);
       isUsingSimVision = true;
     }
+
+    swerveDrive.setMaximumAttainableSpeeds(swerveDrive.getMaximumChassisVelocity(), swerveDrive.getMaximumChassisAngularVelocity());
+    swerveDrive.setMaximumAllowableSpeeds(swerveDrive.getMaximumChassisVelocity(), swerveDrive.getMaximumChassisAngularVelocity());
   }
 
   public void initShuffleboard() {

@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -52,15 +53,15 @@ public class DriveForwardNow extends Command
   @Override
   public void execute()
   {
-
-    this.m_swerve.drive(
-        ChassisSpeeds.fromRobotRelativeSpeeds(
-            1.0, // Forward speed in meters per second
-            0.0, // Sideways speed in meters per second
-            0.0, // Rotational speed in radians per second
-            m_swerve.getPose().getRotation() // Robot's current rotation
-        )
+    if (resetOdometry) {
+      this.m_swerve.drive(
+        new Translation2d(0, 1), 0,  false
     );
+    } else {
+      this.m_swerve.drive(
+        new Translation2d(1, 0), 0,  false
+    );
+    }
 
   }
 
