@@ -299,12 +299,12 @@ public class RobotContainer
   
   
     //D-pad drives straight (no gyro) for tests
-    m_driverController.povCenter().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> 0, () -> 0, true)));
-    m_driverController.povUp().onTrue((m_swerveDrive.driveCommand(() -> -0.2, () -> 0, () -> 0, true)));
-    m_driverController.povDown().onTrue((m_swerveDrive.driveCommand(() -> 0.2, () -> 0, () -> 0, true)));
-    /*m_driverController.povLeft().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> 0.3, () -> 0, false)));
-    m_driverController.povRight().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> -0.3, () -> 0, false)));
-    */
+    // m_driverController.povCenter().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> 0, () -> 0, true)));
+    // m_driverController.povUp().onTrue((m_swerveDrive.driveCommand(() -> -0.2, () -> 0, () -> 0, true)));
+    // m_driverController.povDown().onTrue((m_swerveDrive.driveCommand(() -> 0.2, () -> 0, () -> 0, true)));
+    // m_driverController.povLeft().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> 0.3, () -> 0, false)));
+    // m_driverController.povRight().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> -0.3, () -> 0, false)));
+    
 
     // $TODO m_swerveDrive.sysIdDriveMotorCommand()
 
