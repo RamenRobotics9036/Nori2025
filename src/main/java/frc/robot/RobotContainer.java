@@ -299,10 +299,10 @@ public class RobotContainer
   
   
     //D-pad drives straight (no gyro) for tests
-    /*
-    m_driverController.povUp().onTrue((m_swerveDrive.driveCommand(() -> 0.3, () -> 0, () -> 0, false)));
-    m_driverController.povDown().onTrue((m_swerveDrive.driveCommand(() -> -0.3, () -> 0, () -> 0, false)));
-    m_driverController.povLeft().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> 0.3, () -> 0, false)));
+    m_driverController.povCenter().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> 0, () -> 0, true)));
+    m_driverController.povUp().onTrue((m_swerveDrive.driveCommand(() -> -0.2, () -> 0, () -> 0, true)));
+    m_driverController.povDown().onTrue((m_swerveDrive.driveCommand(() -> 0.2, () -> 0, () -> 0, true)));
+    /*m_driverController.povLeft().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> 0.3, () -> 0, false)));
     m_driverController.povRight().onTrue((m_swerveDrive.driveCommand(() -> 0, () -> -0.3, () -> 0, false)));
     */
 
@@ -379,7 +379,7 @@ public class RobotContainer
       case AutoNameConstants.kCenterL4AutoName:
           return new DriveForwardNow(m_swerveDrive, 1, false)
           .andThen(CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kMaxElevatorPosition).withTimeout(2)))
-          .andThen(new DriveForwardNow(m_swerveDrive, 0.5, false))
+          .andThen(new DriveForwardNow(m_swerveDrive, 0.5, false)).withTimeout(3)
           .andThen(CmdWrapperOuttakeSystem(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed, true)));
       
       default:
