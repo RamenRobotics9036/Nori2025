@@ -147,7 +147,7 @@ public class RobotContainer
     NamedCommands.registerCommand("Shoot From Intake", CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
     NamedCommands.registerCommand("Idle Intake", CmdWrapperIntakeSystem(new IntakeDefaultCommand(m_intakeSystem).withTimeout(1)));
 
-    NamedCommands.registerCommand("Outtake from Bucket", CmdWrapperOuttakeSystem(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed)));
+    NamedCommands.registerCommand("Outtake from Bucket", CmdWrapperOuttakeSystem(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed).withTimeout(1)));
 
     NamedCommands.registerCommand("Align to April Tag Left Side", CmdWrapperUnexpectedCommand(m_swerveDrive.alignWithAprilTagCommand(
       AlignRobotConstants.transformDrive,
@@ -168,7 +168,7 @@ public class RobotContainer
     //[]\
 
 
-    NamedCommands.registerCommand("waitFiveSeconds", waitFiveSeconds);
+    //NamedCommands.registerCommand("waitFiveSeconds", waitFiveSeconds);
   }
 
   private Command printStartStop(Command command, String name) {
@@ -195,7 +195,7 @@ public class RobotContainer
   private Command CmdWrapperIntakeArmSystem(Command command) {
     // Now that we implemented sim for arm, re-enable these commands for sim.
     return command;
-  }
+  } 
 
   private Command CmdWrapperIntakeSystem(Command command) {
     if (disableCommandsInSim()) {
@@ -354,9 +354,9 @@ public class RobotContainer
 
   }
 
-  private Command waitFiveSeconds = new WaitCommand(5)
-    .beforeStarting(() -> System.out.println("Auto wait 5 seconds start"))
-    .andThen(() -> System.out.println("Auto end wait"));
+  //private Command waitFiveSeconds = new WaitCommand(5)
+    //.beforeStarting(() -> System.out.println("Auto wait 5 seconds start"))
+    //.andThen(() -> System.out.println("Auto end wait"));
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -365,31 +365,28 @@ public class RobotContainer
    */
   public Command getAutonomousCommand()
   {
-    switch (AutoLogic.autoPicker.getSelected()) {
-      case AutoNameConstants.kCenterL1AutoName:
-        return new DriveForwardNow(m_swerveDrive, 1.4, true)
-        .andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
-        .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
+    //This is the Autologic that is used through Path Planner
+    return AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
 
-        case AutoNameConstants.kSideL1AutoName:
-        return new DriveForwardNow(m_swerveDrive, 3, true)
-        .andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
-        .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
+    // This is the alternative Autologic code that is manually coded
+    //switch (AutoLogic.autoPicker.getSelected()) {
+      //case AutoNameConstants.kCenterL1AutoName:
+        //return new DriveForwardNow(m_swerveDrive, 1.4, true)
+        //.andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
+        //.andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
 
-      case AutoNameConstants.kCenterL4AutoName:
-          return new DriveForwardNow(m_swerveDrive, 1, false)
-          .andThen(CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kMaxElevatorPosition).withTimeout(2)))
-          .andThen(new DriveForwardNow(m_swerveDrive, 0.5, false)).withTimeout(3)
-          .andThen(CmdWrapperOuttakeSystem(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed, true)));
+      //case AutoNameConstants.kCenterL4AutoName:
+          //return new DriveForwardNow(m_swerveDrive, 1, false)
+          //.andThen(CmdWrapperElevatorSystem(new ElevatorToPositionCommand(m_elevatorSystem, ElevatorConstants.kMaxElevatorPosition).withTimeout(2)))
+          //.andThen(new DriveForwardNow(m_swerveDrive, 0.5, false))
+          //.andThen(CmdWrapperOuttakeSystem(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed, true)));
       
-      default:
-        return new DriveForwardNow(m_swerveDrive, 1.4, true).
-          andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
-          .andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
+      //default:
+        //return new DriveForwardNow(m_swerveDrive, 1.4, true).
+          //andThen(CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)))
+          //.andThen(CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
   }
-    // return AutoLogic.getAutoCommand(AutoLogic.autoPicker.getSelected());
-  }
-
+  
   public void setMotorBrake(boolean brake)
   {
     m_swerveDrive.setMotorBrake(brake);
