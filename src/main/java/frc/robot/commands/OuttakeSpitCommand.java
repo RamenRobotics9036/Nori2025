@@ -14,6 +14,9 @@ public class OuttakeSpitCommand extends Command {
     private double speed;
     private boolean canFinish = false;
 
+    // NECESSARILY requires two parameters: OuttakeSystem and a double containing a speed value
+    // Currently has a single preset, "speed", defined in Constants.java
+    // "Speed" refers to the speed of the spiked rubber cog used to eject the Coral, which spins to eject the Coral
     public OuttakeSpitCommand(OuttakeSystem outtake, double speed, boolean canFinish){
         m_outtake = outtake;
         this.speed = speed;

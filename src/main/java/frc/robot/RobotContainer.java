@@ -138,15 +138,25 @@ public class RobotContainer
     m_swerveDrive.initShuffleboard();
     AutoLogic.initShuffleBoard();
     addTestButtonsToShuffleboard();
-
+    
+    // "Arm" refers to the arm for the part with the rollers that grabs the Coral
+    // Three presets, Bottom (kMaxArmRotation), Top (kMinArmRotation), and L1 (L1ArmAngle), defined in Constants
+    // NOTE THAT MAX CORRESPONDS TO BOTTOM AND VICE VERSA!
     NamedCommands.registerCommand("Set Arm Position To Bottom", CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMaxArmRotation)));
     NamedCommands.registerCommand("Set Arm Position To Top", CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.kMinArmRotation)));
     NamedCommands.registerCommand("Set Arm Position To L1", CmdWrapperIntakeArmSystem(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle)));
 
+    // "Intake" refers to the 'hand' connected to the Arm
+    // The Intake is the part that contains the rollers that grab the Coral
+    // "Dispense Intake Into Bucket" and "Shoot From Intake" call IntakeSpitCommand
+    // Two presets, "speed" and "bucketSpeed", defined in Constants
     NamedCommands.registerCommand("Dispense Intake Into Bucket", CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed, true)));
     NamedCommands.registerCommand("Shoot From Intake", CmdWrapperIntakeSystem(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed, true)));
     NamedCommands.registerCommand("Idle Intake", CmdWrapperIntakeSystem(new IntakeDefaultCommand(m_intakeSystem).withTimeout(1)));
-
+    
+    // "Outtake" refers to the system that ejects the Coral from the bucket
+    // "Outtake from Bucket" ejects Coral out of the elevator bucket
+    // Calls OuttakeSpitCommand, uses "speed" preset defined in constants
     NamedCommands.registerCommand("Outtake from Bucket", CmdWrapperOuttakeSystem(new OuttakeSpitCommand(m_outtakeSystem, OuttakeSpitCommandConstants.speed)));
 
     NamedCommands.registerCommand("Align to April Tag Left Side", CmdWrapperUnexpectedCommand(m_swerveDrive.alignWithAprilTagCommand(

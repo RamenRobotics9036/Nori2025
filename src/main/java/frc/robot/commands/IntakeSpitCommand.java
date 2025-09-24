@@ -14,6 +14,11 @@ public class IntakeSpitCommand extends Command {
     private double m_speed;
     private boolean canFinish = false;
 
+    // NECESSARILY requires two parameters: IntakeSystem and a double containing a speed value
+    // Currently has multiple presets defined in Constants.java: speed and bucketSpeed
+    // m_speed refers to how fast the rollers spin
+    // This function is meant to be used to spinn the rollers quickly for a moment to eject Coral
+    // To deposit Coral into the bucket, this function is fed a negative value, and to eject Coral it's fed a positive one
     public IntakeSpitCommand(IntakeSystem intake, double speed, boolean canFinish){
         System.out.print("##### Intake1");
         m_speed = speed;

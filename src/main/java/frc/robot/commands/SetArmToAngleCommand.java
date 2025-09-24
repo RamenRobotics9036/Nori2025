@@ -12,6 +12,10 @@ public class SetArmToAngleCommand extends Command {
     private Timer m_timer = new Timer();
     private double m_desiredAngle = ArmConstants.kMinArmRotation;
 
+    // Parameters: IntakeArmSystem and a double containing the desired angle
+    // Currently has multiple presets defined in Constants.java:
+    // L1ArmAngle, kMinArmRotation, and kMaxArmRotation
+    // NOTICE: kMinArmRotation is the highest, and kMaxArmRotation corresponds to top
     public SetArmToAngleCommand(IntakeArmSystem armSystem, double desiredAngle) {
         m_armSystem = armSystem;
         m_desiredAngle = desiredAngle;
