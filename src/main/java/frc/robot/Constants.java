@@ -207,7 +207,7 @@ public final class Constants
   }
   
   public static final class OuttakeConstants {
-    public static final int sparkflexID = 32;
+    public static final int sparkflexID = 32; // No longer used
     public static final int sparkmaxID = 33;
     public static final int currentLimit = 20;
     public static final double motorGearRatio = 1;

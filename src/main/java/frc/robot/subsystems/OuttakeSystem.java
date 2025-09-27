@@ -17,7 +17,7 @@ import frc.robot.ramenlib.logging.TriviaLogger;
 
 @SuppressWarnings({"all"}) // suppress CheckStyle warnings in this file
 public class OuttakeSystem extends SubsystemBase {
-    private SparkFlex m_outtakeSparkFlex = new SparkFlex(OuttakeConstants.sparkflexID, MotorType.kBrushless);
+    // private SparkFlex m_outtakeSparkFlex = new SparkFlex(OuttakeConstants.sparkflexID, MotorType.kBrushless);
     private SparkMax m_outtakeSparkMax = new SparkMax(OuttakeConstants.sparkmaxID, MotorType.kBrushless);
     private RelativeEncoder m_relativeEncoder = m_outtakeSparkMax.getEncoder();
 
@@ -34,9 +34,9 @@ public class OuttakeSystem extends SubsystemBase {
         sparkFlexConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
         sparkFlexConfig.inverted(false);
         sparkFlexConfig.smartCurrentLimit(OuttakeConstants.currentLimit);
-        m_outtakeSparkFlex.configure(sparkFlexConfig, 
-            SparkBase.ResetMode.kResetSafeParameters, 
-            SparkBase.PersistMode.kPersistParameters);
+        // m_outtakeSparkFlex.configure(sparkFlexConfig, 
+        //    SparkBase.ResetMode.kResetSafeParameters, 
+        //    SparkBase.PersistMode.kPersistParameters);
 
         initShuffleboard();
     }
@@ -62,12 +62,12 @@ public class OuttakeSystem extends SubsystemBase {
 
     public void setMotorSpeeds(double speed) {
         m_outtakeSparkMax.set(speed);
-        m_outtakeSparkFlex.set(speed);
+        // m_outtakeSparkFlex.set(speed);
     }
 
     public void setMotorSpeeds(double sparkMaxSpeed, double sparkFlexSpeed) {
         m_outtakeSparkMax.set(sparkMaxSpeed);
-        m_outtakeSparkFlex.set(sparkFlexSpeed);
+        // m_outtakeSparkFlex.set(sparkFlexSpeed);
     }
 
     public double getLeaderPosition() {
