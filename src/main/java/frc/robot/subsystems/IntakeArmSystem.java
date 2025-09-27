@@ -97,7 +97,7 @@ public class IntakeArmSystem extends SubsystemBase{
 
 
         if (!m_armEncoder.isConnected()) { 
-            m_armRelativeEncoder.setPosition(0.0);
+            m_armRelativeEncoder.setPosition(ArmConstants.kMinArmRotation);
             System.out.println("WARNING: ARM ABSOLUTE ENCODER NOT PLUGGED IN!");
         } else { 
             m_armRelativeEncoder.setPosition(m_armAngleAbsolute); 

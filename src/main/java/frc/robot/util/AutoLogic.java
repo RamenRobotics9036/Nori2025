@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.AutoNameConstants;
+
 import java.io.IOException;
 import java.util.List;
 import org.json.simple.parser.ParseException;
@@ -128,15 +129,20 @@ public class AutoLogic {
   }
 
   public static void addAutoOptions() {
-    autoPicker.setDefaultOption(AutoNameConstants.kCenterL1AutoName, AutoNameConstants.kCenterL1AutoName);
-    addOptionToPicker(AutoNameConstants.kCenterL4AutoName);
-    addOptionToPicker(AutoNameConstants.kSideL1AutoName);
+    //autoPicker.setDefaultOption("CENTER 1 Coral L1", "auto center 1 coral");
+    autoPicker.setDefaultOption("left test", "TTTTest");
+    //autoPicker.setDefaultOption("CENTER 1 Coral L4", "auto center 1 coral L4");
+    //This was used for the manual code of the Auto
+    //autoPicker.setDefaultOption(AutoNameConstants.kCenterL1AutoName, AutoNameConstants.kCenterL1AutoName);
+    //addOptionToPicker(AutoNameConstants.kCenterL4AutoccxName);
+    
     // addOptionToPicker("auto lower l1");
     // addOptionToPicker("RIGHT 2 Coral L1 Robot Should Be next to Barge with OPPOSITE Color of Team Alliance", "auto lower 2 coral");
     // addOptionToPicker("auto lower 3 coral");
     // addOptionToPicker("LEFT 2 Coral L1 Robot Should Be next to Barge with SAME Color of Team Alliance", "auto mirror lower 2 coral");
 
-    // addOptionToPicker("LEFT 1 Coral", "auto 1 coral left");
-    // addOptionToPicker("RIGHT 1 Coral", "auto 1 coral right");
+    //These are alternatives to choice if needed during the competition through PathPlanner
+    addOptionToPicker("LEFT 1 Coral", "auto 1 coral left");
+    addOptionToPicker("RIGHT 1 Coral", "auto 1 coral right");
   }
 }
