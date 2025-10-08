@@ -13,19 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Set Elevator Position to L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Outtake from Bucket"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Set Elevator Position To Bottom"
+            "name": "Shoot From Intake"
           }
         },
         {
@@ -35,27 +23,21 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Set Arm Position To Bottom"
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Center to Left test continue"
+            "pathName": "test another l1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Set Arm Position To Top"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Dispense Intake Into Bucket"
+            "name": "Shoot From Intake"
           }
         }
       ]

@@ -131,8 +131,8 @@ public class AutoLogic {
   public static void addAutoOptions() {
     //autoPicker.setDefaultOption("Right auto", "Birdi Auto Right");
     //autoPicker.setDefaultOption("Left Auto", "Birdi Auto left");
-    //autoPicker.setDefaultOption("Center Auto", "Birdi Auto Center");
-    autoPicker.setDefaultOption("test auto freedom project", "TTTTest");
+    autoPicker.setDefaultOption("Center Auto", "Birdi Auto Center");
+    //autoPicker.setDefaultOption("test auto freedom project", "TTTTest");
     
     //This was used for the manual code of the Auto
     //autoPicker.setDefaultOption(AutoNameConstants.kCenterL1AutoName, AutoNameConstants.kCenterL1AutoName);
