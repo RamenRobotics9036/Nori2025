@@ -13,25 +13,25 @@
         {
           "type": "named",
           "data": {
-            "name": "Set Elevator Position to L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Outtake from Bucket"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Set Elevator Position To Bottom"
+            "name": "Shoot From Intake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Test Left part of TTTest"
+            "pathName": "Center to Left test"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "test another l1"
           }
         },
         {

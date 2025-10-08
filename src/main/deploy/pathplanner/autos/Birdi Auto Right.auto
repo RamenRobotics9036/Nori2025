@@ -7,19 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CoralTest3"
+            "pathName": "Right"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "CoralL1"
+            "name": "Set Arm Position To L1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Outtake from Bucket"
           }
         }
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }
