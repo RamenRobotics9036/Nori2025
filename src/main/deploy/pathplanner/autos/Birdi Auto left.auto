@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "auto lower l1"
+            "pathName": "Left"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Align to April Tag Right Side"
+            "name": "Set Arm Position To L1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Outtake from Bucket"
           }
         }
       ]

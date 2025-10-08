@@ -31,13 +31,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Left part of TTTest"
+            "pathName": "Center to Left test"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot From Intake"
+            "name": "Set Arm Position To Bottom"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center to Left test continue"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Arm Position To Top"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Dispense Intake Into Bucket"
           }
         }
       ]
