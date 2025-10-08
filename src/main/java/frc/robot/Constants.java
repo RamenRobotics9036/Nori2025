@@ -161,9 +161,9 @@ public final class Constants
     
     // Make sure the abolute encoder does NOT cross zero as the arm moves from top to bottom
     // This is the position of the arm in the up position, it should ALMOST be touching the endstop
-    public static final double kMinArmRotation = 0.44;
+    public static final double kMinArmRotation = 0.84;
     // This is the postition of the arm against the ground
-    public static final double kMaxArmRotation = 4.6;
+    public static final double kMaxArmRotation = 5.32;
     public static final double L1ArmAngle = 2.68;
     
     public static final double kAbsoluteEncoderOffset = 0;
