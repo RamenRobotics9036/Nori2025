@@ -15,30 +15,6 @@
           "data": {
             "name": "Shoot From Intake"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Center to Left test"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "test another l1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot From Intake"
-          }
         }
       ]
     }
