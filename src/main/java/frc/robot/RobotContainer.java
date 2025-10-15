@@ -324,7 +324,10 @@ public class RobotContainer
 
 
     // Command to spit out game pieces
-    m_armController.a().whileTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
+    //m_armController.a().whileTrue(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed));
+    //
+    m_armController.a().whileTrue(new SetArmToAngleCommand(m_armSystem, ArmConstants.L1ArmAngle).andThen(new IntakeSpitCommand(m_intakeSystem, IntakeSpitCommandConstants.speed)));
+    
     // Spit coral into outtake
     m_armController.b().whileTrue(new IntakeSpitCommand(m_intakeSystem, -IntakeSpitCommandConstants.bucketSpeed));
     // L2 preset
